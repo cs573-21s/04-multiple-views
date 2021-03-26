@@ -54,7 +54,7 @@ function drawMap(svg, path, countries, data, categories) {
 			.extent([[0, 0], [1920, 937]])
 			.on('start', brushstarted)
 			.on('brush', brushed)
-			// .on('end', brushended);
+			.on('end', brushended);
 		mapSvgData.call(brush);
 		
 		function brushstarted() {
@@ -67,13 +67,17 @@ function drawMap(svg, path, countries, data, categories) {
 			let selected = [];
 			if (selection) {
 				const [[x0, y0], [x1, y1]] = selection; 
-				mapSvgDataPaths.classed("hidden", c => {
+				mapSvgDataPaths.classed('hidden', c => {
 						return x0 > countryCentroids[c.properties.ADMIN][0]
 						|| x1 < countryCentroids[c.properties.ADMIN][0]
 						|| y0 > countryCentroids[c.properties.ADMIN][1]
 						|| y1 < countryCentroids[c.properties.ADMIN][1]
 				});
 			}
+		}
+		function brushended({selection}) {
+			if (selection) return;
+			mapSvgDataPaths.classed('hidden', false);
 		}
 }
 
@@ -120,9 +124,7 @@ window.addEventListener('load', async function() {
 	for (const country of countries.features) {
 		countryCentroids[country.properties.ADMIN] = path.centroid(country);
 	}
-	console.log(countryCentroids)
 	const countriesList = countries.features.map(feature => feature.properties.ADMIN);
-	console.log(countriesList);
 
 	const attacks = (await d3.csv('data/Terrorist attacks by weapon type - Global Terrorism Database (2018).csv'))
 		.map(transformCountryNames) // try to make country names uniform between geoJSON and csv data
@@ -145,10 +147,8 @@ window.addEventListener('load', async function() {
 		}))
 		.filter(a => a.Year >= 2013);
 	
-	console.log(attacks[0]);
 	// get categories from data
 	const categories = Object.keys(attacks[0]).filter(key => key !== 'Entity' && key !== 'Year');
-	console.log(categories);
 
 	const aggregateAttacks = attacks.reduce((acc, a) => {
 		if (a.Entity in acc) {
@@ -164,7 +164,6 @@ window.addEventListener('load', async function() {
 		}
 		return acc;
 	}, {});
-	console.log(aggregateAttacks[0]);
 	console.timeEnd('data fetch/parse');
 
 	drawMap(svgMap, path, countries, aggregateAttacks, categories);
