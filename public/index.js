@@ -79,17 +79,20 @@ function drawMap(svg, path, countries, data, categories, svgBar) {
 
 function drawBar(svg, data, categories) {
 	const dataToDraw = Object.values(data).filter(d => !d.isHidden);
-	if (!dataToDraw.length) return;
+	if (!dataToDraw.length) { // case where everything is hidden, clear bars from chart and exit
+		svg.selectAll('g.bars').remove();
+		return;
+	};
 	const barData = categories.map(c => ({ category: c, value: 0 }));
 	for (const d of dataToDraw) {
 		for (const category of categories) {
 			barData.find(a => a.category === category).value += d[category];
 		}
 	}
-	const bottomPadding = 200, barWidth = 60;
+	const padding = 200, barWidth = 40, bWidth = width / 4, bHeight = height / 2;
 	svg.selectAll('g').remove();
 	const categoryScale = d3.scaleOrdinal(d3.schemeCategory10).domain(categories); // TODO not perfect because there are 12 categories and only 10 colors :(
-	const barScale = d3.scaleLinear().domain(d3.extent(barData, d => d.value)).range([0, height - bottomPadding]);
+	const barScale = d3.scaleLinear().domain(d3.extent(barData, d => d.value)).range([0, bHeight - padding]);
 	let xPos = 0;
 	svg.append('g')
 		.attr('class', 'bars')
@@ -98,7 +101,7 @@ function drawBar(svg, data, categories) {
 		.enter()
 		.append('rect')
 		.attr('x', d => xPos += barWidth)
-		.attr('y', d => svg.attr('height') - barScale(d.value) - bottomPadding)
+		.attr('y', d => svg.attr('height') - barScale(d.value) - padding)
 		.attr('width', barWidth)
 		.attr('height', d => barScale(d.value))
 		.style('stroke', config.stroke)
@@ -110,7 +113,7 @@ function drawBar(svg, data, categories) {
 		.scale(d3.scalePoint().domain(categories).range([barWidth, barWidth * categories.length]))
 	const xAxisGroup = svg.append('g')
 		.attr('class', 'axis')
-		.attr('transform', `translate(30, ${height - bottomPadding})`)
+		.attr('transform', `translate(${barWidth / 2}, ${bHeight - padding})`)
 	xAxisGroup.call(xAxis);
 	xAxisGroup.attr('text-anchor', 'left')
 		.attr('font-size', '16');
@@ -119,12 +122,12 @@ function drawBar(svg, data, categories) {
 		.style('-webkit-font-smoothing', 'subpixel-antialiased')
 		.style('user-select', 'none');
 
-	const yAxisScale = d3.scaleLinear().domain(d3.extent(barData, d => d.value)).range([height - bottomPadding, 0]);
+	const yAxisScale = d3.scaleLinear().domain(d3.extent(barData, d => d.value)).range([bHeight - padding, 0]);
 	const yAxis = d3.axisLeft()
 		.scale(yAxisScale)
 	const yAxisGroup = svg.append('g')
 		.attr('class', 'axis')
-		.attr('transform', `translate(60, 0)`)
+		.attr('transform', `translate(${barWidth}, 0)`)
 		yAxisGroup.call(yAxis);
 		yAxisGroup.selectAll('.tick > text')
 		.style('-webkit-font-smoothing', 'subpixel-antialiased')
@@ -136,14 +139,14 @@ window.addEventListener('load', async function() {
 	const svgMap = d3.select('#map');
 	const svgBar = d3.select('#bar');
 	const { clientWidth, clientHeight } = document.body;
-	width = clientWidth / 2;
-	height = clientHeight / 2;
+	width = clientWidth;
+	height = clientHeight;
 	const projection = d3.geoMercator();
 	const path = d3.geoPath(projection);
 
 	svgMap.attr('width', width).attr('height', height);
 	projection.translate([width / 2, height / 2]);
-	svgBar.attr('width', width).attr('height', height);
+	svgBar.attr('width', width / 4).attr('height', height / 2);
 
 	
 	console.time('data fetch/parse');

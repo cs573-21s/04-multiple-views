@@ -9,3 +9,9 @@ body {
 .hidden {
 	fill: white;
 }
+
+#bar {
+	position: absolute;
+	top: 25%;
+	left: 0;
+}
