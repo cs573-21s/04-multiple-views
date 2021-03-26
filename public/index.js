@@ -52,7 +52,6 @@ function drawMap(svg, path, countries, data, categories, svgBar) {
 			}
 		}
 		function brushed({selection}) {
-			let selected = [];
 			if (selection) {
 				const [[x0, y0], [x1, y1]] = selection; 
 				mapSvgDataPaths.classed('hidden', c => {
@@ -71,19 +70,26 @@ function drawMap(svg, path, countries, data, categories, svgBar) {
 		function brushended({selection}) {
 			if (selection) return;
 			mapSvgDataPaths.classed('hidden', false);
+			for (const country in data) {
+				data[country].isHidden = false;
+			}
+			drawBar(svgBar, data, categories);
 		}
 }
 
 function drawBar(svg, data, categories) {
-	svg.select('g').remove();
+	const dataToDraw = Object.values(data).filter(d => !d.isHidden);
+	if (!dataToDraw.length) return;
 	const barData = categories.map(c => ({ category: c, value: 0 }));
-	for (const d of Object.values(data).filter(d => !d.isHidden)) {
+	for (const d of dataToDraw) {
 		for (const category of categories) {
 			barData.find(a => a.category === category).value += d[category];
 		}
 	}
+	const bottomPadding = 200, barWidth = 60;
+	svg.selectAll('g').remove();
 	const categoryScale = d3.scaleOrdinal(d3.schemeCategory10).domain(categories); // TODO not perfect because there are 12 categories and only 10 colors :(
-	const barScale = d3.scaleLinear().domain(d3.extent(barData, d => d.value)).range([0, 400]);
+	const barScale = d3.scaleLinear().domain(d3.extent(barData, d => d.value)).range([0, height - bottomPadding]);
 	let xPos = 0;
 	svg.append('g')
 		.attr('class', 'bars')
@@ -91,13 +97,38 @@ function drawBar(svg, data, categories) {
 		.data(barData)
 		.enter()
 		.append('rect')
-		.attr('x', d => xPos += 60)
-		.attr('y', d => svg.attr('height') - barScale(d.value) - 200) // TODO 200 is padding this should be a config thing somewhere instead of hard coded
-		.attr('width', 60)
+		.attr('x', d => xPos += barWidth)
+		.attr('y', d => svg.attr('height') - barScale(d.value) - bottomPadding)
+		.attr('width', barWidth)
 		.attr('height', d => barScale(d.value))
 		.style('stroke', config.stroke)
 		.style('stroke-width', '1')
-		.style('fill', d => categoryScale(d.category))
+		.style('fill', d => categoryScale(d.category));
+
+
+	const xAxis = d3.axisBottom()
+		.scale(d3.scalePoint().domain(categories).range([barWidth, barWidth * categories.length]))
+	const xAxisGroup = svg.append('g')
+		.attr('class', 'axis')
+		.attr('transform', `translate(30, ${height - bottomPadding})`)
+	xAxisGroup.call(xAxis);
+	xAxisGroup.attr('text-anchor', 'left')
+		.attr('font-size', '16');
+	xAxisGroup.selectAll('.tick > text')
+		.style('transform', 'rotate(90deg) translate(10px, -14px)')
+		.style('-webkit-font-smoothing', 'subpixel-antialiased')
+		.style('user-select', 'none');
+
+	const yAxisScale = d3.scaleLinear().domain(d3.extent(barData, d => d.value)).range([height - bottomPadding, 0]);
+	const yAxis = d3.axisLeft()
+		.scale(yAxisScale)
+	const yAxisGroup = svg.append('g')
+		.attr('class', 'axis')
+		.attr('transform', `translate(60, 0)`)
+		yAxisGroup.call(yAxis);
+		yAxisGroup.selectAll('.tick > text')
+		.style('-webkit-font-smoothing', 'subpixel-antialiased')
+		.style('user-select', 'none');
 }
 
 window.addEventListener('load', async function() {
@@ -105,8 +136,8 @@ window.addEventListener('load', async function() {
 	const svgMap = d3.select('#map');
 	const svgBar = d3.select('#bar');
 	const { clientWidth, clientHeight } = document.body;
-	width = clientWidth;
-	height = clientHeight;
+	width = clientWidth / 2;
+	height = clientHeight / 2;
 	const projection = d3.geoMercator();
 	const path = d3.geoPath(projection);
 
@@ -166,51 +197,3 @@ window.addEventListener('load', async function() {
 	drawMap(svgMap, path, countries, aggregateAttacks, categories, svgBar);
 	drawBar(svgBar, aggregateAttacks, categories);
 });
-
-
-
-// function brush(cell, circle, svg) {
-//   const brush = d3.brush()
-//       .extent([[padding / 2, padding / 2], [size - padding / 2, size - padding / 2]])
-//       .on("start", brushstarted)
-//       .on("brush", brushed)
-//       .on("end", brushended);
-
-//   cell.call(brush);
-
-//   let brushCell;
-
-//   // Clear the previously-active brush, if any.
-//   function brushstarted() {
-//     if (brushCell !== this) {
-//       d3.select(brushCell).call(brush.move, null);
-//       brushCell = this;
-//     }
-//   }
-
-//   // Highlight the selected circles.
-//   function brushed({selection}, [i, j]) {
-//     let selected = [];
-//     if (selection) {
-//       const [[x0, y0], [x1, y1]] = selection; 
-//       circle.classed("hidden",
-//         d => x0 > x[i](d[columns[i]])
-//           || x1 < x[i](d[columns[i]])
-//           || y0 > y[j](d[columns[j]])
-//           || y1 < y[j](d[columns[j]]));
-//       selected = data.filter(
-//         d => x0 < x[i](d[columns[i]])
-//           && x1 > x[i](d[columns[i]])
-//           && y0 < y[j](d[columns[j]])
-//           && y1 > y[j](d[columns[j]]));
-//     }
-//     svg.property("value", selected).dispatch("input");
-//   }
-
-//   // If the brush is empty, select all circles.
-//   function brushended({selection}) {
-//     if (selection) return;
-//     svg.property("value", []).dispatch("input");
-//     circle.classed("hidden", false);
-//   }
-// }
