@@ -1,3 +1,5 @@
+var width, height;
+
 const config = {
 	stroke: '#000',
 	map: {
@@ -20,12 +22,10 @@ function transformCountryNames(a) {
 	return a;
 }
 
-function drawMap(svg, path, countries, data, categories) {
+function drawMap(svg, path, countries, data, categories, svgBar) {
 	const colorMappingScale = d3.scaleLinear().domain(d3.extent([0, ...Object.values(data).map(a => Math.max(...Object.entries(a).filter(([key, value]) => categories.includes(key)).map(([key, value]) => value)))])).range(["rgb(200, 200, 220)", "blue"])
-
 	
 	const mapSvgData = svg.append('g');
-
 	const mapSvgDataPaths = mapSvgData.selectAll('path')
 		.data(countries.features)
 		.enter()
@@ -35,28 +35,16 @@ function drawMap(svg, path, countries, data, categories) {
 		.style('stroke-width', '1')
 		.attr('fill', c => c.properties.ADMIN in data ? colorMappingScale(Math.max(...Object.entries(data[c.properties.ADMIN]).filter(([key, value]) => categories.includes(key)).map(([key, value]) => value))) : 'white')
 
-	// let countriesWithData = countries.features.filter(d => d.properties.ADMIN in data);
-
-	// const mapSvgDataPaths = svg.append('g').selectAll('path')
-	// 	.data(countriesWithData)
-	// 	.enter()
-	// 	.append('path')
-	// 	.attr('d', path)
-	// 	.style('stroke', config.stroke)
-	// 	.style('stroke-width', '1')
-	// 	.attr('fill', c => colorMappingScale(Math.max(...Object.entries(data[c.properties.ADMIN]).filter(([key, value]) => categories.includes(key)).map(([key, value]) => value))))
-
-
-
-		// TODO temp hard coded 1920, 937
-		let brushCell;
+		/**
+		 * Brush stuff for map
+		 */
 		const brush = d3.brush()
-			.extent([[0, 0], [1920, 937]])
+			.extent([[0, 0], [width, height]])
 			.on('start', brushstarted)
 			.on('brush', brushed)
 			.on('end', brushended);
 		mapSvgData.call(brush);
-		
+		let brushCell;
 		function brushstarted() {
 			if (brushCell !== this) {
 				d3.select(brushCell).call(brush.move, null);
@@ -68,12 +56,17 @@ function drawMap(svg, path, countries, data, categories) {
 			if (selection) {
 				const [[x0, y0], [x1, y1]] = selection; 
 				mapSvgDataPaths.classed('hidden', c => {
-						return x0 > countryCentroids[c.properties.ADMIN][0]
+					const isHidden = x0 > countryCentroids[c.properties.ADMIN][0]
 						|| x1 < countryCentroids[c.properties.ADMIN][0]
 						|| y0 > countryCentroids[c.properties.ADMIN][1]
-						|| y1 < countryCentroids[c.properties.ADMIN][1]
+						|| y1 < countryCentroids[c.properties.ADMIN][1];
+					if (c.properties.ADMIN in data) {
+						data[c.properties.ADMIN].isHidden = isHidden;
+					}
+					return isHidden;
 				});
 			}
+			drawBar(svgBar, data, categories);
 		}
 		function brushended({selection}) {
 			if (selection) return;
@@ -82,8 +75,9 @@ function drawMap(svg, path, countries, data, categories) {
 }
 
 function drawBar(svg, data, categories) {
+	svg.select('g').remove();
 	const barData = categories.map(c => ({ category: c, value: 0 }));
-	for (const d of Object.values(data)) {
+	for (const d of Object.values(data).filter(d => !d.isHidden)) {
 		for (const category of categories) {
 			barData.find(a => a.category === category).value += d[category];
 		}
@@ -110,7 +104,9 @@ window.addEventListener('load', async function() {
 
 	const svgMap = d3.select('#map');
 	const svgBar = d3.select('#bar');
-	const { clientWidth: width, clientHeight: height } = document.body;
+	const { clientWidth, clientHeight } = document.body;
+	width = clientWidth;
+	height = clientHeight;
 	const projection = d3.geoMercator();
 	const path = d3.geoPath(projection);
 
@@ -157,7 +153,8 @@ window.addEventListener('load', async function() {
 			}
 		} else {
 			const newItem = {
-				...a
+				...a,
+				isHidden: false
 			};
 			delete newItem.Year;
 			acc[newItem.Entity] = (newItem);
@@ -166,7 +163,7 @@ window.addEventListener('load', async function() {
 	}, {});
 	console.timeEnd('data fetch/parse');
 
-	drawMap(svgMap, path, countries, aggregateAttacks, categories);
+	drawMap(svgMap, path, countries, aggregateAttacks, categories, svgBar);
 	drawBar(svgBar, aggregateAttacks, categories);
 });
 
