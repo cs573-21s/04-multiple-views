@@ -1,0 +1,24 @@
+{
+  "name": "04-multiple-views",
+  "version": "1.0.0",
+  "description": "Assignment 4 - Visualizations and Multiple Views  \r ===",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rmlamarche/04-multiple-views.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rmlamarche/04-multiple-views/issues"
+  },
+  "homepage": "https://github.com/rmlamarche/04-multiple-views#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
