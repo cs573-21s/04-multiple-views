@@ -1,5 +1,7 @@
 var width, height;
 
+const numFormat = new Intl.NumberFormat();
+
 const config = {
 	stroke: '#000',
 	map: {
@@ -65,6 +67,7 @@ function drawMap(svg, path, countries, data, categories, svgBar) {
 				});
 			}
 			drawBar(svgBar, data, categories);
+			drawTable(data, categories);
 		}
 		let brushTimer = null;
 		function debounceBrushed(event) {
@@ -80,6 +83,7 @@ function drawMap(svg, path, countries, data, categories, svgBar) {
 				data[country].isHidden = false;
 			}
 			drawBar(svgBar, data, categories);
+			drawTable(data, categories);
 		}
 }
 
@@ -97,6 +101,7 @@ function drawBar(svg, data, categories) {
 	}
 	const padding = 200, barWidth = 40, bWidth = width / 4, bHeight = height / 2;
 	svg.selectAll('g').remove();
+	svg.attr('width', bWidth).attr('height', bHeight);
 	const categoryScale = d3.scaleOrdinal(d3.schemeCategory10).domain(categories); // TODO not perfect because there are 12 categories and only 10 colors :(
 	const barScale = d3.scaleLinear().domain(d3.extent(barData, d => d.value)).range([0, bHeight - padding]);
 	let xPos = 0;
@@ -140,6 +145,29 @@ function drawBar(svg, data, categories) {
 		.style('user-select', 'none');
 }
 
+function drawTable(data, categories) {
+	const tableBody = table.querySelector('#table > tbody')
+	const rows = tableBody.querySelectorAll('tr');
+	for (const row of rows) {
+		row.remove();
+	}
+	for (const country in data) {
+		if (!data[country].isHidden) {
+			const newRow = document.createElement('tr');
+			const countryName = document.createElement('td');
+			countryName.innerText = country;
+			const counts = [document.createElement('td')];
+			counts[0].innerText = numFormat.format(data[country].total);
+			for (const category of categories) {
+				const idx = counts.push(document.createElement('td'));
+				counts[idx - 1].innerText = numFormat.format(data[country][category]);
+			}
+			newRow.append(countryName, ...counts);
+			tableBody.append(newRow);
+		}
+	}
+}
+
 window.addEventListener('load', async function() {
 
 	const svgMap = d3.select('#map');
@@ -181,7 +209,7 @@ window.addEventListener('load', async function() {
 			Vehicle: parseInt(a.Vehicle),
 			Year: parseInt(a.Year)
 		}))
-		.filter(a => a.Year >= 2013);
+		.filter(a => a.Year >= 2008);
 	
 	// get categories from data
 	const categories = Object.keys(attacks[0]).filter(key => key !== 'Entity' && key !== 'Year');
@@ -190,12 +218,17 @@ window.addEventListener('load', async function() {
 		if (a.Entity in acc) {
 			for (category of categories) {
 				acc[a.Entity][category] += a[category];
+				acc[a.Entity].total += a[category];
 			}
 		} else {
 			const newItem = {
 				...a,
-				isHidden: false
+				isHidden: false,
+				total: 0
 			};
+			for (category of categories) {
+				newItem.total += a[category];
+			}
 			delete newItem.Year;
 			acc[newItem.Entity] = (newItem);
 		}
@@ -205,4 +238,12 @@ window.addEventListener('load', async function() {
 
 	drawMap(svgMap, path, countries, aggregateAttacks, categories, svgBar);
 	drawBar(svgBar, aggregateAttacks, categories);
+	// make table header
+	const thead = document.querySelector('#table > thead > tr');
+	for (const category of categories) {
+		const th = document.createElement('th');
+		th.innerText = category;
+		thead.append(th);
+	}
+	drawTable(aggregateAttacks, categories);
 });

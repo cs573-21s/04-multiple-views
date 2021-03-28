@@ -15,3 +15,24 @@ body {
 	top: 25%;
 	left: 0;
 }
+
+#table {
+	width: 80%;
+	margin: 0 10%;
+	font-family: sans-serif;
+	font-size: 1.25em;
+	border-collapse: collapse;
+}
+#table th {
+	padding: 0.5em;
+}
+#table thead tr {
+	background: #bbb;
+}
+#table td {
+	/* border-bottom: 1px solid #999; */
+	padding: 0.5em;
+}
+#table tr:nth-child(2n) {
+	background: #ddd;
+}
