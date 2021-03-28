@@ -23,7 +23,7 @@ function transformCountryNames(a) {
 }
 
 function drawMap(svg, path, countries, data, categories, svgBar) {
-	const colorMappingScale = d3.scaleLinear().domain(d3.extent([0, ...Object.values(data).map(a => Math.max(...Object.entries(a).filter(([key, value]) => categories.includes(key)).map(([key, value]) => value)))])).range(["rgb(200, 200, 220)", "blue"])
+	const colorMappingScale = d3.scaleLinear().domain(d3.extent([0, ...Object.values(data).map(a => Math.max(...Object.entries(a).filter(([key, value]) => categories.includes(key)).map(([key, value]) => value)))])).range(["#edf5ff", "#001d6c"])
 	
 	const mapSvgData = svg.append('g');
 	const mapSvgDataPaths = mapSvgData.selectAll('path')
@@ -41,7 +41,7 @@ function drawMap(svg, path, countries, data, categories, svgBar) {
 		const brush = d3.brush()
 			.extent([[0, 0], [width, height]])
 			.on('start', brushstarted)
-			.on('brush', brushed)
+			.on('brush', debounceBrushed)
 			.on('end', brushended);
 		mapSvgData.call(brush);
 		let brushCell;
@@ -53,19 +53,25 @@ function drawMap(svg, path, countries, data, categories, svgBar) {
 		}
 		function brushed({selection}) {
 			if (selection) {
-				const [[x0, y0], [x1, y1]] = selection; 
+				const [[x0, y0], [x1, y1]] = selection;
 				mapSvgDataPaths.classed('hidden', c => {
-					const isHidden = x0 > countryCentroids[c.properties.ADMIN][0]
-						|| x1 < countryCentroids[c.properties.ADMIN][0]
-						|| y0 > countryCentroids[c.properties.ADMIN][1]
-						|| y1 < countryCentroids[c.properties.ADMIN][1];
-					if (c.properties.ADMIN in data) {
-						data[c.properties.ADMIN].isHidden = isHidden;
+					const country = c.properties.ADMIN;
+					const [x, y] = countryCentroids[country];
+					const isHidden = x0 > x || x1 < x || y0 > y || y1 < y;
+					if (country in data) {
+						data[country].isHidden = isHidden;
 					}
 					return isHidden;
 				});
 			}
 			drawBar(svgBar, data, categories);
+		}
+		let brushTimer = null;
+		function debounceBrushed(event) {
+			clearTimeout(brushTimer);
+			brushTimer = setTimeout(function() {
+				brushed(event);
+			}, 75);
 		}
 		function brushended({selection}) {
 			if (selection) return;
