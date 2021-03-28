@@ -4,7 +4,8 @@ let data,
 	path,
 	countries,
 	categories,
-	svgBar;
+	svgBar,
+	mapSvgDataPaths;
 
 const numFormat = new Intl.NumberFormat();
 
@@ -30,13 +31,17 @@ function transformCountryNames(a) {
 	return a;
 }
 
+function repaintMap() {
+	mapSvgDataPaths.classed('hidden', c => c.properties.ADMIN in data && data[c.properties.ADMIN].isHidden);
+}
+
 function drawMap() {
 	const colorMappingScale = d3.scaleLinear().domain(d3.extent([0, ...Object.values(data).map(a => Math.max(...Object.entries(a).filter(([key, value]) => categories.includes(key)).map(([key, value]) => value)))])).range(["#edf5ff", "#001d6c"])
 	
 	svgMap.selectAll('*').remove();
 
 	const mapSvgData = svgMap.append('g');
-	const mapSvgDataPaths = mapSvgData.selectAll('path')
+	mapSvgDataPaths = mapSvgData.selectAll('path')
 		.data(countries.features)
 		.enter()
 		.append('path')
@@ -185,7 +190,7 @@ function drawTable() {
 			}
 			data[clickedCountry].isHidden = false;
 			drawTable();
-			drawMap();
+			repaintMap();
 			drawBar();
 		}
 	});
