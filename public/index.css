@@ -29,8 +29,10 @@ body {
 #table thead tr {
 	background: #bbb;
 }
+#table td:first-of-type {
+	cursor: pointer;
+}
 #table td {
-	/* border-bottom: 1px solid #999; */
 	padding: 0.5em;
 }
 #table tr:nth-child(2n) {

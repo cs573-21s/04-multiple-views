@@ -5,7 +5,9 @@ let data,
 	countries,
 	categories,
 	svgBar,
-	mapSvgDataPaths;
+	mapSvgDataPaths,
+	brush,
+	brushCell;
 
 const numFormat = new Intl.NumberFormat();
 
@@ -54,13 +56,12 @@ function drawMap() {
 		/**
 		 * Brush stuff for map
 		 */
-		const brush = d3.brush()
+		brush = d3.brush()
 			.extent([[0, 0], [width, height]])
 			.on('start', brushstarted)
 			.on('brush', debounceBrushed)
 			.on('end', brushended);
 		mapSvgData.call(brush);
-		let brushCell;
 		function brushstarted() {
 			if (brushCell !== this) {
 				d3.select(brushCell).call(brush.move, null);
@@ -181,19 +182,6 @@ function drawTable() {
 			tableBody.append(newRow);
 		}
 	}
-	tableBody.addEventListener('click', function(event) {
-		if (event.target.classList.contains('bind-country-name')) {
-			event.preventDefault();
-			const clickedCountry = event.target.innerText;
-			for (const country in data) {
-				data[country].isHidden = true;
-			}
-			data[clickedCountry].isHidden = false;
-			drawTable();
-			repaintMap();
-			drawBar();
-		}
-	});
 }
 
 window.addEventListener('load', async function() {
@@ -268,10 +256,26 @@ window.addEventListener('load', async function() {
 	drawBar(svgBar, categories);
 	// make table header
 	const thead = document.querySelector('#table > thead > tr');
+	const tbody = document.querySelector('#table > tbody');
 	for (const category of categories) {
 		const th = document.createElement('th');
 		th.innerText = category;
 		thead.append(th);
 	}
+	tbody.addEventListener('click', function(event) {
+		if (event.target.classList.contains('bind-country-name')) {
+			event.preventDefault();
+			window.scrollTo({ top: 0, behavior: 'smooth' });
+			d3.select(brushCell).call(brush.clear);
+			const clickedCountry = event.target.innerText;
+			for (const country in data) {
+				data[country].isHidden = true;
+			}
+			data[clickedCountry].isHidden = false;
+			drawTable();
+			repaintMap();
+			drawBar();
+		}
+	});
 	drawTable(categories);
 });
