@@ -29,6 +29,10 @@ input#trip_distance{
 input#total_amount{
     width: 100%;
 }
+div.instrction{
+    height: 60%;
+    overflow-y: scroll;
+}
 div.instrction p {
     font-size: large;
     font-weight: bold;
