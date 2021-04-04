@@ -34,6 +34,9 @@ div.instrction p {
     font-weight: bold;
     text-align: center;
 }
+div.instrction span{
+    font-weight: bold;
+}
 #container {
     width: 80%;
     height: 100%;
