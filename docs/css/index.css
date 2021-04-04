@@ -15,8 +15,25 @@ body{
 /* svg{
     border: 1px solid black;
 } */
+div.head{
+    height: 15%;
+}
+div.head p{
+    text-align: center;
+    font-family: cursive;
+    font-weight: 900;
+}
+div.head span{
+    display: block;
+    text-align: center;
+    font-size: 5px;
+    font-family: cursive;
+    font-weight: 700;
+}
+div.sliderbar{
+    height: 25%;
+}
 div.trip_distance{
-    margin-top: 20px;
     margin-bottom: 20px;
 }
 div.total_amount{
@@ -30,7 +47,7 @@ input#total_amount{
     width: 100%;
 }
 div.instrction{
-    height: 60%;
+    height: 50%;
     overflow-y: scroll;
 }
 div.instrction p {
