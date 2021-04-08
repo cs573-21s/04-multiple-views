@@ -6,8 +6,17 @@ body {
 	height: 100vh;
 }
 
+.country {
+	transform: scale(1);
+	stroke-width: 1;
+	stroke: black;
+	animation-delay: 100ms;
+}
 .hidden {
 	fill: white;
+}
+.grow {
+	animation: pulse 1000ms 2;
 }
 
 #bar {
@@ -37,4 +46,16 @@ body {
 }
 #table tr:nth-child(2n) {
 	background: #ddd;
+}
+
+@keyframes pulse {
+	start {
+		transform: scale(0.95);
+	}
+	70% {
+		transform: scale(1.5);
+	}
+	end {
+		transform: scale(1);
+	}
 }

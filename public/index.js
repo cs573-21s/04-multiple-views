@@ -33,12 +33,25 @@ function transformCountryNames(a) {
 	return a;
 }
 
-function repaintMap() {
+function repaintMap(grow = false) {
 	mapSvgDataPaths.classed('hidden', c => c.properties.ADMIN in data && data[c.properties.ADMIN].isHidden);
+	if (grow) {
+		mapSvgDataPaths.sort((a, b) => a.isHidden ? 1 : -1);
+		mapSvgDataPaths.classed('grow', c => c.properties.ADMIN in data && !data[c.properties.ADMIN].isHidden);
+		// setTimeout(function() {
+		// 	mapSvgDataPaths.classed('grow', false);
+		// }, 1500);
+	}
 }
 
 function drawMap() {
-	const colorMappingScale = d3.scaleLinear().domain(d3.extent([0, ...Object.values(data).map(a => Math.max(...Object.entries(a).filter(([key, value]) => categories.includes(key)).map(([key, value]) => value)))])).range(["#edf5ff", "#001d6c"])
+	// const outlierCountries = ['Iraq', 'Pakistan', 'Afghanistan'];
+	const outlierCountries = Object.values(data).filter(c => c.total >= 1000).map(c => c.Entity);
+	const outlierColorMappingScale = d3.scaleLinear().domain(d3.extent([
+		...outlierCountries.map(oc => data[oc]).map(a => Math.min(...Object.entries(a).filter(([key, value]) => categories.includes(key)).map(([key, value]) => value))),
+		...outlierCountries.map(oc => data[oc]).map(a => Math.max(...Object.entries(a).filter(([key, value]) => categories.includes(key)).map(([key, value]) => value)))
+	])).range(["pink", "red"]);
+	const colorMappingScale = d3.scaleLinear().domain(d3.extent([0, ...Object.values(data).filter(c => !outlierCountries.includes(c.Entity)).map(a => Math.max(...Object.entries(a).filter(([key, value]) => categories.includes(key)).map(([key, value]) => value)))])).range(["#edf5ff", "#001d6c"]);
 	
 	svgMap.selectAll('*').remove();
 
@@ -48,9 +61,16 @@ function drawMap() {
 		.enter()
 		.append('path')
 		.attr('d', path)
-		.style('stroke', config.map.stroke)
-		.style('stroke-width', '1')
-		.attr('fill', c => c.properties.ADMIN in data ? colorMappingScale(Math.max(...Object.entries(data[c.properties.ADMIN]).filter(([key, value]) => categories.includes(key)).map(([key, value]) => value))) : 'white')
+		.attr('class', 'country')
+		.style('transform-origin', c => c.properties.ADMIN in data ? `${countryCentroids[c.properties.ADMIN][0]}px ${countryCentroids[c.properties.ADMIN][1]}px` : null)
+		.attr('fill', c => {
+			if (!(c.properties.ADMIN in data)) {
+				return 'white';
+			}
+			return outlierCountries.includes(c.properties.ADMIN)
+				? outlierColorMappingScale(Math.max(...Object.entries(data[c.properties.ADMIN]).filter(([key, value]) => categories.includes(key)).map(([key, value]) => value)))
+				: colorMappingScale(Math.max(...Object.entries(data[c.properties.ADMIN]).filter(([key, value]) => categories.includes(key)).map(([key, value]) => value)));
+		})
 		.classed('hidden', c => c.properties.ADMIN in data && data[c.properties.ADMIN].isHidden);
 
 		/**
@@ -273,7 +293,7 @@ window.addEventListener('load', async function() {
 			}
 			data[clickedCountry].isHidden = false;
 			drawTable();
-			repaintMap();
+			repaintMap(true);
 			drawBar();
 		}
 	});
