@@ -1,5 +1,29 @@
 Assignment 4 - Visualizations and Multiple Views  
 ===
+By: Andrew Nolan
+
+
+
+Technical Achievements
+---
+
+Design Achievements
+---
+
+References
+---
+1. Pokemon Font - https://www.onlinewebfonts.com/download/f4d1593471d222ddebd973210265762a
+2. Bottom Navbar - https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_bottom_nav
+3. Dataset - https://www.kaggle.com/mariotormo/complete-pokemon-dataset-updated-090420?select=pokedex_%28Update_05.20%29.csv
+4. Boxplot - https://www.d3-graph-gallery.com/graph/boxplot_several_groups.html
+5. Parallel Axis - https://bl.ocks.org/jasondavies/1341281
+6. Heatmap - https://www.d3-graph-gallery.com/graph/heatmap_tooltip.html
+7. Scatterplot Matrix - https://bl.ocks.org/mbostock/4063663
+8. Table - https://www.valentinog.com/blog/html-table/
+
+
+
+
 
 One of the most powerful techniques for mitigating the shortcomings of a given visualization is to link it with other views.
 Linking a map to a bar or scatterplot, for instance, may allow you to overcome the shortcomings of a map.
@@ -57,3 +81,6 @@ GitHub Details
 a4-username-firstName-lastName
 ```
 
+Sources
+===
+1. https://www.kaggle.com/mariotormo/complete-pokemon-dataset-updated-090420?select=pokedex_%28Update_05.20%29.csv

@@ -1,0 +1,60 @@
+@import url(https://db.onlinewebfonts.com/c/f4d1593471d222ddebd973210265762a?family=Pokemon);
+
+html, body{
+    background-color: darkblue;
+}
+
+.pokemon-font{
+    font-family: "Pokemon";
+    color: yellow;
+}
+
+h1{
+    font-size: 3em;
+    text-align: center;
+    text-shadow: -2px 2px 0 #000, 2px 2px 0 #000, 2px -2px 0 #000;
+    letter-spacing: 5px;
+}
+
+svg{
+    background-color: lightgrey;
+}
+
+.row{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.disabled{
+    display: none;
+}
+
+/* Bottom Naviation Bar */
+.navbar{
+    overflow: hidden;
+    background-color: lightgrey;
+    display: flex;
+    justify-content: space-evenly;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 5px;
+}
+
+.navbar button{
+    background-color: darkblue;
+    color: yellow;
+    font-family: "Pokemon";
+    text-align: center;
+    padding: 4px 10px;
+    width: 200px;
+    font-size: 16px;
+    text-shadow: -1px 1px 0 #000, 1px 1px 0 #000, 1px -1px 0 #000;
+    border-radius: 15px;
+}
+
+.navbar button:hover{
+    background-color: lightblue;
+    cursor: pointer;
+}

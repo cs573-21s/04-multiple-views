@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- Load Resources -->
+        <link rel="stylesheet" href="./styles/styles.css">
+        <link rel="stylesheet" href="./styles/table.css">
+        <link rel="stylesheet" href="./styles/heatmap.css">
+        <link rel="icon" href="./images/favicon.ico" type="image/x-icon" />
+        <script src="https://d3js.org/d3.v6.min.js"></script>
+        <script defer src="./scripts/typecomparison.js"></script>
+        <script defer src="./scripts/overallcomparison.js"></script>
+        <script defer src="./scripts/datatable.js"></script>
+
+        <!-- Meta Data -->
+        <title>CS 573 - A4</title>
+        <meta charset="utf-8">
+        <meta name="description"
+            content="My submission for WPI CS 573 assignment 4, multiple views. I created a tool for comparing pokemon types.">
+        <meta name="keywords" content="Andrew Nolan, CS 573, Pokemon, A4, Linked Vis, Linked Visualization, d3, Brush">
+
+    </head>
+
+    <body>
+        <h1 class="pokemon-font">Pokémon Type Comparison</h2>
+        <div class="row">
+            <div id="boxplotzone">
+                <div id="boxplot"></div>
+                <select id="statlist">
+                    <option value="HP">HP</option>
+                    <option value="Attack">Attack</option>
+                    <option value="Defense">Defense</option>
+                    <option value="Sp Attack">Sp Attack</option>
+                    <option value="Sp Defense">Sp Defense</option>
+                    <option value="Speed">Speed</option>
+                </select>
+                <select id="legendlist">
+                    <option value="Include All">Include All</option>
+                    <option value="Exclude Legendaries">Exclude Legendaries</option>
+                    <option value="Only Legendaries">Only Legendaries</option>
+                </select>
+            </div>
+            <div id="heatmap"></div>
+            <div class="disabled" id="scattermatrix"></div>
+            <div class="disabled" id="parallelaxes"></div>
+            <div class="disabled" id="dataset"></div>
+        </div>
+        <div class="navbar">
+            <button onclick="CompareTypes()">Type Comparison</button>
+            <button onclick="CompareStats()">Stat Comparison</button>
+            <button onclick="showData()">Dataset</button>
+        </div>
+
+        <br><br><br><br>
+    </body>
+
+
+    <script>
+        function CompareTypes(){
+            document.getElementById("boxplotzone").classList.remove("disabled");
+            document.getElementById("heatmap").classList.remove("disabled");
+            document.getElementById("scattermatrix").classList.add("disabled");
+            document.getElementById("parallelaxes").classList.add("disabled");
+            document.getElementById("dataset").classList.add("disabled");
+        }
+
+        function CompareStats(){
+            document.getElementById("boxplotzone").classList.add("disabled");
+            document.getElementById("heatmap").classList.add("disabled");
+            document.getElementById("scattermatrix").classList.remove("disabled");
+            document.getElementById("parallelaxes").classList.remove("disabled");
+            document.getElementById("dataset").classList.add("disabled");
+        }
+
+        function showData(){
+            document.getElementById("boxplotzone").classList.add("disabled");
+            document.getElementById("heatmap").classList.add("disabled");
+            document.getElementById("scattermatrix").classList.add("disabled");
+            document.getElementById("parallelaxes").classList.add("disabled");
+            document.getElementById("dataset").classList.remove("disabled");
+        }
+    </script> 
+</html>

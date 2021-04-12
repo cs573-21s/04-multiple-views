@@ -1,0 +1,18 @@
+/* Table */
+table{
+    border-collapse: collapse;
+    text-align: center;
+    background-color: whitesmoke;
+    margin: auto;
+    font-size: initial;
+    font-weight: initial;
+    letter-spacing: initial;
+    line-height: initial;
+}
+
+td{
+    font-size: 1.2em;
+    border: solid black 1px;
+    padding-left: 20px;
+    padding-right: 20px;
+}

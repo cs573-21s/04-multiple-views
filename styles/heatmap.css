@@ -1,0 +1,72 @@
+#heatmap .tick:nth-child(2){
+    color: #78c850;
+}
+#heatmap .tick:nth-child(3){
+    color: #F08030;
+}
+#heatmap .tick:nth-child(4){
+    color: #6890f0ed;
+}
+#heatmap .tick:nth-child(5){
+    color: #a8b820;
+}
+#heatmap .tick:nth-child(6){
+    color: #a8a878;
+}
+#heatmap .tick:nth-child(7){
+    color: #000000;
+}
+#heatmap .tick:nth-child(8){
+    color: #a040a0;
+}
+#heatmap .tick:nth-child(9){
+    color: #f8d030;
+}
+#heatmap .tick:nth-child(10){
+    color: #e0c068;
+}
+#heatmap .tick:nth-child(11){
+    color: #98D8D8;
+}
+#heatmap .tick:nth-child(12){
+    color: #ee99ac;
+}
+#heatmap .tick:nth-child(13){
+    color: #b8b8d0;
+}
+#heatmap .tick:nth-child(14){
+    color: #c03028;
+}
+#heatmap .tick:nth-child(15){
+    color: #f85888;
+}
+#heatmap .tick:nth-child(16){
+    color: #b8a038;
+}
+#heatmap .tick:nth-child(17){
+    color: #705898;
+}
+#heatmap .tick:nth-child(18){
+    color: #7038f8;
+}
+#heatmap .tick:nth-child(19){
+    color: #a890f0;
+}
+
+/* Tool tips for the heatmap */
+.toolTip {
+    position: absolute;
+    display: none;
+    min-width: 80px;
+    height: auto;
+    background: none repeat scroll 0 0 #ffffff;
+    border: 1px solid #6F257F;
+    border-radius: 25px;
+    padding: 5px;
+    text-align: center;
+    font-size: initial;
+    font-weight: initial;
+    letter-spacing: initial;
+    line-height: initial;
+    pointer-events: none;
+}
