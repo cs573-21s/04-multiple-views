@@ -25,15 +25,24 @@ pokedexData = [];
 // Read the pokedex csv
 d3.csv("../pokedex.csv").then( function(data) {
     pokedexData = data;
-    buildBoxPlot(data,"hp");
+    buildBoxPlot(data,"hp",0);
     readPokemonTypes();
 });
 
-function buildBoxPlot(pokemon,stat){
+function buildBoxPlot(pokemon,stat,legend){
     // Compute the summary stats
     let typeStats = d3.rollup(pokemon, 
         function(d){
-            let statList = d.map(function(g) { return parseInt(g[stat]);}).sort(d3.ascending);
+            let statList = d.map(function(g) { 
+                if(legend === 0){
+                    return parseInt(g[stat]);
+                }else if(g["status"] === "Normal" && legend === 1){
+                    return parseInt(g[stat]);
+                }else if(g["status"] !== "Normal" && legend === 2){
+                    return parseInt(g[stat]);
+                }
+            }).sort(d3.ascending);
+            statList = statList.filter(x => x !== undefined);
             min = statList[0];
             q1 = d3.quantile(statList,.25);
             median = d3.quantile(statList,.5);
@@ -70,10 +79,13 @@ function buildBoxPlot(pokemon,stat){
 
     // Draw the min/max range line
     // We draw it first so it's behind the rectangle
-    svg.selectAll("verticalLine")
-        .data(typeStats)
-        .enter()
+    let vertLines = svg.selectAll("verticalLine")
+        .data(typeStats);
+    vertLines.enter()
             .append("line")
+            .merge(vertLines)
+            .transition()
+            .duration(1000)
             .attr("x1", function(d){return x(d[0])+11.944444444444445})
             .attr("x2", function(d){return x(d[0])+11.944444444444445})
             .attr("y1", function(d){return y(d[1].min)})
@@ -84,16 +96,23 @@ function buildBoxPlot(pokemon,stat){
     // Draw the interquartile rectangle
     let boxWidth= 10;
     let halfOffset = 11.944444444444445 - 5;
-    svg.selectAll("boxes")
-        .data(typeStats)
-        .enter()
+    let allBoxes = svg.selectAll("boxes")
+        .data(typeStats);
+    allBoxes.enter()
         .append("rect")
+        .merge(allBoxes)
+            .transition()
+            .duration(1000)
             .attr("x",function(d){return(x(d[0])+halfOffset)})
             .attr("y",function(d){return(y(d[1].q3))})
             .attr("height",function(d){return(y(d[1].q1) - y(d[1].q3))})
             .attr("width", boxWidth)
             .attr("stroke","black")
             .style("fill",function(d){return(c[d[0]])});
+}
+
+function updateBoxes(data){
+    
 }
 
 function readPokemonTypes(){
@@ -163,6 +182,9 @@ function determineToolTip(t1,t2,number){
     }
 }
 
+let statlist = document.getElementById("statlist");
+legendlist = document.getElementById("legendlist");
+
 statlist.addEventListener("change", function () {
     document.getElementById("boxplot").innerHTML="";
 
@@ -173,18 +195,46 @@ statlist.addEventListener("change", function () {
     .append("g")
     .attr("transform","translate("+ margins.left + "," + margins.top + ")");
 
-    if (statlist.value === "HP") {
-        buildBoxPlot(pokedexData,"hp");
-    } else if (statlist.value === "Attack") {
-        buildBoxPlot(pokedexData,"attack");
-    } else if (statlist.value === "Defense") {
-        buildBoxPlot(pokedexData,"defense");
-    } else if (statlist.value === "Sp Defense") {
-        buildBoxPlot(pokedexData,"sp_defense");
-    } else if (statlist.value === "Sp Attack") {
-        buildBoxPlot(pokedexData,"sp_attack");
-     } else {
-        buildBoxPlot(pokedexData,"speed");
-    }
+    buildBoxPlot(pokedexData,determineStat(statlist.value),determineLegendValue(legendlist.value));    
 });
+
+function determineStat(statLongName){
+    if(statlist.value === "HP") {
+        return "hp";
+    } else if (statlist.value === "Attack") {
+        return "attack";
+    } else if (statlist.value === "Defense") {
+        return "defense";
+    } else if (statlist.value === "Sp Defense") {
+        return "sp_defense";
+    } else if (statlist.value === "Sp Attack") {
+        return "sp_attack";
+    } else {
+        return "speed";
+    }
+}
+
+
+legendlist.addEventListener("change", function () {
+    document.getElementById("boxplot").innerHTML="";
+
+    svg = d3.select("#boxplot")
+    .append("svg")
+    .attr("width", width + margins.left + margins.right)
+    .attr("height", height + margins.top + margins.bottom)
+    .append("g")
+    .attr("transform","translate("+ margins.left + "," + margins.top + ")");
+
+    buildBoxPlot(pokedexData,determineStat(statlist.value),determineLegendValue(legendlist.value));    
+});
+
+function determineLegendValue(legendLongName){
+    if (legendlist.value === "Include All") {
+        return 0;
+    } else if (legendlist.value === "Exclude Legendaries") {
+        return 1;
+    } else {
+        return 2;
+    }
+}
 

@@ -18,7 +18,7 @@ References
 4. Boxplot - https://www.d3-graph-gallery.com/graph/boxplot_several_groups.html
 5. Parallel Axis - https://bl.ocks.org/jasondavies/1341281
 6. Heatmap - https://www.d3-graph-gallery.com/graph/heatmap_tooltip.html
-7. Scatterplot Matrix - https://bl.ocks.org/mbostock/4063663
+7. Scatterplot Matrix - https://observablehq.com/@d3/brushable-scatterplot-matrix
 8. Table - https://www.valentinog.com/blog/html-table/
 
 
