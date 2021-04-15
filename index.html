@@ -1,0 +1,243 @@
+<html>
+<head>
+<style>
+  html, body{
+    background-color: #407c4d;
+  }
+  .yearBar{
+    fill: white;
+  }
+</style>
+</head>
+<body>
+    <svg id="yearOverview"></svg> <br>
+    <svg id="dayOverview"></svg>
+</body>
+</html>
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="//alexmacy.github.io/crossfilter/crossfilter.v1.min.js"></script>
+
+<script>
+console.log(d3);
+// Load data in
+d3.csv('spotify.csv', function(er, data){
+    data.forEach(function(d){
+        d["endTime"] = d["endTime"],
+        d["artistName"] = d["artistName"],
+        d["trackName"] = d["trackName"],
+        d["minPlayed"] = +d["msPlayed"]/60000
+
+        //console.log(d)
+    })
+
+    /*var spotify = crossfilter(data),
+      all = spotify.groupAll(),
+      date = spotify.dimension(function(d){ return d.date });
+      dates = date.group(d3.timeDay),
+      hour = spotify.dimension(function(d){ return d.endTime }),
+      hours = hour.group(d3.timeHour);*/
+    
+  /*  var charts = [
+      barChart()
+        .dimension(date)
+        .group(dates)
+        .x(d3.)
+
+    ]
+    */
+
+    var spotifyData = buildData(data);
+    yearChart(spotifyData);
+    var averages = dailyAvg(spotifyData);
+    dayChart(averages);
+
+  });
+// hash key function (difference between 3/26/20 to the date)
+function hashKey(date){
+    var index, difference,
+    startingDate = new Date("2020-03-26"),
+    newDate  = new Date(date);
+
+    difference = newDate.getTime() - startingDate.getTime();
+    index = difference / (1000 * 3600 * 24);
+    
+    //console.log(index);
+    return index;
+}
+
+// build data struct
+function buildData(d){
+    console.log(d);
+    //initializing data struct
+    var data = new Array(366)
+    
+    for (var i = 0; i < data.length; i++){
+      var byHour = new Array(24).fill(0);
+        data[i] = {
+            "date" : "",
+            "total": 0,
+            "time": byHour
+        }
+    }
+    //console.log(data);
+    var row;
+    for (row = 0; row < d.length; row++){ //d.length
+        var index, day;
+
+        day = d[row].endTime.substring(0,10);                   //getting date
+        index = hashKey(day);                                   //getting index for data struct       
+        var hour = parseInt(d[row].endTime.substring(11,13));   //getting hour
+        
+        if (data[index].date == ""){                            //if date not added yet, add date
+            data[index].date = day;
+        }
+        data[index].total += d[row].minPlayed;                  //adding to total time for specific date
+        data[index].time[hour] += d[row].minPlayed;             //adding time to corresponding hour
+    };
+    
+    console.log(data);
+    return data;
+}
+
+// getting averages
+function dailyAvg(d){
+  var averages = new Array(24);
+  for (var i = 0; i < averages.length; i++){
+    averages[i] = {"hour": i, "time": 0}
+  }
+  
+  for (var i = 0; i < d.length; i++){     //for every row in year data set
+    var byHour = d[i].time; 
+    for (var j = 0; j < averages.length; j++){
+     averages[j].time += byHour[j];       //add the time by hour to new struct
+    }
+  }
+
+  for (var i = 0; i < averages.length; i++){
+    averages[i].time = (averages[i].time/d.length)
+  }
+  console.log(averages)
+  return averages;
+}
+
+</script>
+
+<script>
+  // establishing variables
+  var margin = 50,
+    width = window.innerWidth - (2 * margin),
+    height = 500 - 2 * margin;
+  
+  function yearChart(d){
+    // creating svg
+    var svg = d3.select("#yearOverview")
+      .attr("width", width + 2 * margin)
+      .attr("height", height + 2 * margin)
+      .attr("transform", "translate(" + margin + ", " + margin + ")")
+
+    // scaling
+    var xscale = d3.scaleBand()
+      .domain(d.map(function(d){ return (d.date) }))
+      .range( [0, width])
+      .padding(0.4);
+
+    var yscale = d3.scaleLinear()
+      .domain( d3.extent(d, function(d){ return d.total; }))
+      .range( [height, 0] );
+
+    var brush = d3.brush()
+      .extent([ [0,0], [1600,1600] ])
+      .on('brush end', brushed)
+    
+      d3.select('#yearOverview')
+        .append('g')
+        .call(brush);
+
+    // Add Y axis label
+    svg.append("text")
+      .attr("text-anchor", "middle")
+      .attr("x", -(height/2))
+      .attr("y", 0)
+      .attr("dy", ".75em")
+      .attr("transform", "rotate(-90)")
+      .text("Amount of Time on Spotify");
+
+    // Add Bars
+    var bars = svg.selectAll(".bar")
+      .data(d)
+      .enter().append("rect")
+      .attr("class", "yearBar")
+      .attr("x", function(d){ return xscale(d.date) + margin })
+      .attr("y", function(d){ return yscale(d.total)/2 })
+      .attr("height", function(d){ return height - yscale(d.total) })
+      .attr("width", function(d){ return xscale.bandwidth() })
+     /* .on("select", function(d){ return
+        console.log(d.date);
+      })*/
+      
+  }
+
+  function dayChart(d){
+    // creating svg
+    var svg = d3.select("#dayOverview")
+    .attr("width", width + 2 * margin)
+    .attr("height", height + 2 * margin)
+    .attr("transform", "translate(" + margin + ", " + margin + ")")
+
+    // scaling
+    //var maxTime = d3.max(d, function(d){ return d.time; })
+    var xscale = d3.scaleLinear()
+      .domain([0, 60])
+      .range([0, width])
+
+    var yscale = d3.scaleBand()
+      .domain(d.map(function(d){ return d.hour }))
+      .range([0, height]);
+
+    // Add Y axis label
+    svg.append("text")
+      .attr("text-anchor", "middle")
+      .attr("x", -(height/2))
+      .attr("y", 0)
+      .attr("dy", ".75em")
+      .attr("transform", "rotate(-90)")
+      .text("Time");
+
+    // Add Bars
+    var bars = svg.selectAll(".bar")
+      .data(d)
+      .enter().append("rect")
+      .attr("class", "dayBar")
+      .attr("x", function(d){ return xscale(2.75); })
+      .attr("y", function(d){ return yscale(d.hour); })
+      .attr("height", function(d){ return 10; })
+      .attr("width", function(d){ return xscale(d.time); })
+}
+
+  function brushed(e){
+    var sel = e.selection;
+    
+    d3.selectAll('.yearBar')
+      .style("fill", function(d){
+        console.log(d.date);
+
+        x = d3.scaleBand()
+        .domain(d.map(function(d){ return (d.date) }))
+        .range( [0, window.innerWidth])
+        .padding(0.4);  
+
+        // if in box
+        if (d.date >= sel[0][0] && (xscale(d.date) + 50) <= sel[1][0]){
+          console.log("red");
+          return "red";
+        }else{
+        //if out box
+        console.log(d);
+        return "white";
+        }
+    })
+  }
+
+</script>
+
