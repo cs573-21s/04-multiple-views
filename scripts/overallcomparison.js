@@ -1,4 +1,4 @@
-let x = generateSplom();
+generateSplom();
 
 function generateSplom(){
     let width = 1200;
@@ -16,6 +16,7 @@ function generateSplom(){
         columns = data.columns.filter(d => filterStats(d));
         size = (width - (columns.length + 1) * padding) / columns.length + padding;
         buildSplom(data);
+
     });
 
     let x;
@@ -107,12 +108,7 @@ function generateSplom(){
                         .call(g=>g.selectAll(".tick line").attr("stroke","#eee"));
     }
 
-    function filterStats(d) {
-        if (d === "hp" || d === "attack" || d === "defense" || d === "sp_attack" || d === "sp_defense" || d === "speed") {
-            return true;
-        }
-        return false;
-    }
+
 
     function brush(cell, circle, svg, data){
         let brush = d3.brush()
@@ -158,4 +154,71 @@ function generateSplom(){
             circle.classed("hidden",false);
         }
     }
+}
+
+function filterStats(d) {
+    if (d === "hp" || d === "attack" || d === "defense" || d === "sp_attack" || d === "sp_defense" || d === "speed") {
+        return true;
+    }
+    return false;
+}
+
+generateParallelAxis();
+function generateParallelAxis(){
+    d3.csv("../pokedex.csv").then( function(data) {
+        let margin = ({top: 25, right: 30, bottom: 20, left: 20});
+
+        let keys = data.columns.filter(d=>filterStats(d));
+
+        let width = keys.length * 160;
+        let height = width/2;
+        
+        let y = new Map(Array.from(keys, key => [key, d3.scaleLinear(d3.extent(data, d=>parseInt(d[key])),[margin.top,height - margin.bottom])]));
+
+        let x = d3.scalePoint(keys, [ margin.right, width - margin.left]);
+
+        let c = {Grass:"#78c850",Fire:"#F08030",Water:"#6890f0",Bug:"#a8b820",Normal:"#a8a878",Dark:"#000000",Poison:"#a040a0",Electric:"#f8d030",Ground:"#e0c068",Ice:"#98D8D8",Fairy:"#ee99ac",Steel:"#b8b8d0",Fighting:"#c03028",Psychic:"#f85888",Rock:"#b8a038",Ghost:"#705898",Dragon:"#7038f8",Flying:"#a890f0"}
+
+        let svg = d3.create("svg")
+            .attr("width", width)
+            .attr("viewBox", [0,0,width,height]);
+
+        let line = d3.line()
+            .defined(([, value]) => value != null)
+            .y(([key, value]) => y.get(key)(value))
+            .x(([key]) => x(key))
+
+        svg.append("g")
+            .attr("fill","none")
+            .attr("stroke-width", 1.5)
+            .selectAll("path")
+            .data(data)
+            .join("path")
+                .attr("stroke", d => c[d["type_1"]])
+                .attr("d", d => line(d3.cross(keys, [d], (key,d) => [key, parseInt(d[key])])));
+            //  .append("title")
+            //      .text(d => d.name);
+
+        svg.append("g")
+            .selectAll("g")
+            .data(keys)
+            .join("g")
+                .attr("transform", d => `translate(${x(d)},0)`)
+                .each(function(d){d3.select(this).call(d3.axisLeft(y.get(d)));})
+                .call(g => g.append("text")
+                    .attr("y", margin.top-15)
+                    .attr("x", -20)
+                    .attr("text-anchor","start")
+                    .attr("fill","currentColor")
+                    .text(d => d))
+                .call(g => g.selectAll("text")
+                    .clone(true).lower()
+                    .attr("fill","none")
+                    .attr("stroke-width",3)
+                    .attr("stoke-linejoin","round")
+                    .attr("stroke","white"));
+
+        document.getElementById("parallelaxes").appendChild(svg.node());
+
+    });
 }
