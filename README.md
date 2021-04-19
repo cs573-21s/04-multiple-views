@@ -1,6 +1,6 @@
 Assignment 4 - Visualizations and Multiple Views  
 ===
-Two types of visualizations that I wanted to try were a map and a parallel coordinates chart. I found an interesting interactive visualization on the USDA's website ([SNAP Policy Database: Interactive Tool](https://www.ers.usda.gov/data-products/snap-policy-data-sets/snap-policy-index-interactive-tool/)). I used the same data set to creat something similar but with a parallel coordinates chart instead of small multiples (and with d3 instead of Tableau :-).
+Two types of visualizations that I wanted to try were a map and a parallel coordinates chart. I found an interesting interactive visualization on the USDA's website ([SNAP Policy Database: Interactive Tool](https://www.ers.usda.gov/data-products/snap-policy-data-sets/snap-policy-index-interactive-tool/)). I used the same data set to create something similar but with a parallel coordinates chart instead of small multiples (and with d3 instead of Tableau :-).
 
 References
 ---
