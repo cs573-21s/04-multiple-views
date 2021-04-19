@@ -1,52 +1,35 @@
 Assignment 4 - Visualizations and Multiple Views  
 ===
+Two types of visualizations that I wanted to try were a map and a parallel coordinates chart. I found an interesting interactive visualization on the USDA's website ([SNAP Policy Database: Interactive Tool](https://www.ers.usda.gov/data-products/snap-policy-data-sets/snap-policy-index-interactive-tool/)). I used the same data set to creat something similar but with a parallel coordinates chart instead of small multiples (and with d3 instead of Tableau :-).
 
-One of the most powerful techniques for mitigating the shortcomings of a given visualization is to link it with other views.
-Linking a map to a bar or scatterplot, for instance, may allow you to overcome the shortcomings of a map.
-In general, linking visualizations allows you to explore different parts of the data between views, and mitigates the shortcomings of a given view by pairing it with other views.
-This technique, called coordinated multiple views, is the focus of this assignment.
-
-Your task is to choose an interesting dataset and visualize it in *at least two* **linked** views, where interactions in any given view updates the others.
-Each view should use a different visualization type, and interaction in one of the views should impact what's shown in the other views.
-
-You should choose data and visualizations that are sufficiently complex and interesting to ensure a user can discover interesting patterns and trends on their own.
-
-For this assignment you should write everything from scratch.
-You may *reference and adapt* code from books or the web, and if you do please provide a References section with links at the end of your Readme.
-
-Resources
+References
 ---
+I did not write the code from scratch and used the following examples:
 
-Data is Plural has a list of interesting datasets, many of which require processing.
+1. [State Choropleth](https://observablehq.com/@d3/state-choropleth)
 
-These three examples are intended to show you what multiple views visualizations might look like. 
-I wouldn't recommend using them as a your starting point, but you may find some inspiration:
+2. [Zoom to Bounding Box](https://observablehq.com/@d3/zoom-to-bounding-box?collection=@d3/d3-geo)
 
-1. This [scatterplot matrix](http://bl.ocks.org/mbostock/4063663) has code that explains brushing and linking. But remember you'll be doing this with different types of views.
+3. [Basic parallel coordinates chart](https://www.d3-graph-gallery.com/graph/parallel_basic.html)
 
-2. The example visualization for [Crossfilter](http://square.github.io/crossfilter/) uses coordinated multiple views. The interaction and brushing technique is well-executed.
+4. [Interactive Visualization using d3](https://github.com/Rama-C/Interactive_Visualization_using_D3)
 
-3. The [dispatching events](https://github.com/d3/d3-dispatch) page is a good example of using events, rather than explicit functions, for controlling behavior. Views can listen for events in other views and respond accordingly.
+5. [d3 Slider](https://github.com/MasterMaps/d3-slider)
 
-*If you aren't familiar with event-based programming you should experiment with d3.dispatch and other approaches to coordinating views well before the deadline (it's tricky.)*
+6. [d3 Simple Slider](https://github.com/johnwalley/d3-simple-slider)
 
-Don't forget to run a local webserver when you're coding and debugging.
-
-Requirements
+Technical Achievements
 ---
+- 
 
-0. Your code should be forked from the GitHub repo and linked using GitHub pages.
-1. Your project should load a dataset you found on the web. Put this file in your repo.
-2. Your project should use d3 to build a visualization of the dataset. 
-3. Your writeup (readme.md in the repo) should contain the following:
+Design Achievements
+---
+-
 
-- Working link to the visualization hosted on gh-pages.
+Working link to the visualization hosted on gh-pages.
 - Concise description and screenshot of your visualization.
 - Description of the technical achievements you attempted with this visualization.
 - Description of the design achievements you attempted with this visualization.
-
-GitHub Details
----
 
 - Fork the GitHub Repository. You now have a copy associated with your username.
 - Make changes to index.html to fulfill the project requirements. 
