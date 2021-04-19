@@ -15,7 +15,7 @@ let yearAttr = new Object(),
 
 function initializeData() {
     var request = new XMLHttpRequest();
-    request.open("GET", "../raw_data.csv");
+    request.open("GET", "./raw_data.csv");
     request.onreadystatechange = () => {
         if (request.readyState === 4 && (request.status === 200 || request.status === 0)) {
             data = csvToDim3Table(request.responseText);
