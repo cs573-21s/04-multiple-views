@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <title>CS573 a4</title>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <style>
+    body {
+      margin: 0px; 
+      width: 100vw; 
+      height: 100vh;
+    }
+
+    .svg-container {
+      display: inline-block;
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      vertical-align: top;
+      overflow: hidden;
+    }
+
+    .svg-content {
+      display: inline-block;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    div.tooltip-point {
+        position: absolute;
+        text-align: left;
+        padding: .5rem;
+        background: #FFFFFF;
+        color: #000000;
+        border: 1px solid #000000;
+        border-radius: 8px;
+        pointer-events: none;
+        font-family: sans-serif;
+        font-size: 1rem;
+    }
+
+    text {
+        font-family: sans-serif;
+        font-weight: bold;
+    }
+
+  </style>
+</head>
+<body>
+    <div id="container" class="svg-container">
+    </div>
+
+    <script>
+        console.log(d3);
+
+        var svg = d3.select('div#container').append('svg')
+            .attr('viewBox', '0 0 1920 1080')
+            .attr('preserveAspectRatio', 'xMinYMin meet')
+            .classed('svg-content', true)
+
+        var tooltip = d3.select("body").append("div")
+            .attr("class", "tooltip-point")
+            .style("opacity", 0);
+
+        var x = d3.scaleLinear()
+            .domain([1500, 5000])
+            .range([0, 800]);
+        
+        var y = d3.scaleLinear()
+            .domain([10, 49])
+            .range([ 500, 0]);
+
+        svg.append("g")
+            .attr("transform","translate(100, 620)")
+            .call(d3.axisBottom(x)
+                    .ticks(4));
+
+        svg.append("text")
+            .attr("x", 530 )
+            .attr("y",  680 )
+            .style("text-anchor", "middle")
+            .text("Weight");
+    
+        svg.append("text")
+            .attr("transform", "rotate(-90)")    
+            .attr("x", -350 )
+            .attr("y",  50 )
+            .style("text-anchor", "middle")
+            .text("MPG");
+
+        svg.append("g")
+            .attr("transform","translate(90, 100)")
+            .call(d3.axisLeft(y)
+                    .ticks(4));
+
+        d3.csv('cars-sample.csv', function(data) {     
+
+            svg.append('g')
+                .selectAll("dot")
+                .data(data)
+                .enter()
+                .append("circle")
+                    .attr("cx", function (d) {
+                        return x(d.Weight);
+                    })
+                    .attr("cy", function (d) {
+                        return y(d.MPG); 
+                    })
+                    .attr("r", function (d) {
+                        return d.Weight*0.003
+                    })
+                    .attr("transform","translate(100, 100)")
+                    .attr("fill", function (d) {
+                        switch(d.Manufacturer) {
+                            case "ford":
+                                return "lime";
+                            case "bmw":
+                                return "red";
+                            case "toyota":
+                                return "purple";
+                            case "honda":
+                                return "green";
+                            case "mercedes":
+                                return "blue";
+                        }
+                    })
+                    .style("opacity", 0.5)  
+                    .on('mouseover', function (d,i) {
+                        d3.select(this).transition()
+                            .duration('50')
+                            .style('opacity',1);
+
+                        tooltip.transition()
+                            .duration(50)
+                            .style('opacity', 1);
+
+                        let profile = 'Weight: ' + (d.Weight.toString()) + '<br>MPG: ' + (d.MPG.toString()) + '<br>Manufacturer: ' + (d.Manufacturer.toString());
+
+                        tooltip.html(profile)
+                            .style("left", (d3.event.pageX + 20) + "px")
+                            .style("top", (d3.event.pageY - 15) + "px");
+                    })
+                    .on('mouseout', function (d,i) {
+                        d3.select(this).transition()
+                            .duration('50')
+                            .style('opacity',0.5);
+                        
+                        tooltip.transition()
+                            .duration(50)
+                            .style('opacity', 0);
+                    });
+        })
+    </script>
+</body>
+</html>
