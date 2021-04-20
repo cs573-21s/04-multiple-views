@@ -121,6 +121,32 @@ function typeComparison() {
             .data(typeStats);
         allBoxes.enter()
             .append("rect")
+            .on("click", function(d,e){
+                // Handle the heatmap
+                let c2 = { "0.5": "#f51d0a", "1": "#d8e3d8", "2": "#119c13" };
+                let rects = heatmapsvg.selectAll("rect");
+                let i = -1;
+                rects.each(function (f) {
+                    active = false;
+                    if(f.Attacking === e[0]){
+                        active = true;
+                        i++;
+                    }else if(e[0] === this.classList[0]){
+                        active = true;
+                    }
+                    d3.select(this).style("fill", active ? c2[f[pokemonTypes[i]]] : "#eee");
+                });
+
+                // Handle the box plot
+                let boxes = svg.selectAll("rect");
+                boxes.each(function (f) {
+                    active = false;
+                    if(f[0] === e[0]){
+                        active = true;
+                    }
+                    d3.select(this).style("fill", active ? c[f[0]] : "#eee");
+                });
+            })
             .on("mousemove", function (d, e) {
                 tooltip
                     .style("left", event.pageX - 105 + "px")
@@ -186,6 +212,33 @@ function typeComparison() {
                 .attr("height", y.bandwidth())
                 .style("fill", function (d) { return (c[d[t]]) })
                 .style("cursor", "crosshair")
+                .attr("class", t)
+                .on("click", function(d,e){
+                    // Handle the heatmap
+                    let rects = heatmapsvg.selectAll("rect");
+                    rects.each(function (f) {
+                        active = false;
+                        if(f.Attacking === e.Attacking){
+                            active = true;
+                        }else if(d.target.classList[0] === this.classList[0]){
+                            active = true;
+                        }
+                        d3.select(this).style("fill", active ? c[f[this.classList[0]]] : "#eee");
+                    });
+
+                    // Handle the box plot
+                    let c2 = { Grass: "#78c850", Fire: "#F08030", Water: "#6890f0", Bug: "#a8b820", Normal: "#a8a878", Dark: "#000000", Poison: "#a040a0", Electric: "#f8d030", Ground: "#e0c068", Ice: "#98D8D8", Fairy: "#ee99ac", Steel: "#b8b8d0", Fighting: "#c03028", Psychic: "#f85888", Rock: "#b8a038", Ghost: "#705898", Dragon: "#7038f8", Flying: "#a890f0" }
+                    let boxes = svg.selectAll("rect");
+                    boxes.each(function (f) {
+                        active = false;
+                        if(f[0] === e.Attacking){
+                            active = true;
+                        }else if(d.target.classList[0] === f[0]){
+                            active = true;
+                        }
+                        d3.select(this).style("fill", active ? c2[f[0]] : "#eee");
+                    });
+                })
                 .on("mousemove", function (d, e) {
                     tooltip
                         .style("left", event.pageX - 250 + "px")
@@ -223,16 +276,6 @@ function typeComparison() {
     legendlist = document.getElementById("legendlist");
 
     statlist.addEventListener("change", function () {
-        //document.getElementById("boxplot").innerHTML="";
-
-        // svg = d3.select("#boxplot")
-        // .append("svg")
-        // .attr("width", width + margins.left + margins.right)
-        // .attr("height", height + margins.top + margins.bottom)
-        // .append("g")
-        // .attr("transform","translate("+ margins.left + "," + margins.top + ")");
-
-        //buildBoxPlot(pokedexData,determineStat(statlist.value),determineLegendValue(legendlist.value));
         determineTypeStats(pokedexData, determineStat(statlist.value), determineLegendValue(legendlist.value));
         updateBoxes(typeStats, boxX, boxY);
     });
@@ -255,16 +298,6 @@ function typeComparison() {
 
 
     legendlist.addEventListener("change", function () {
-        //document.getElementById("boxplot").innerHTML="";
-
-        // svg = d3.select("#boxplot")
-        // .append("svg")
-        // .attr("width", width + margins.left + margins.right)
-        // .attr("height", height + margins.top + margins.bottom)
-        // .append("g")
-        // .attr("transform","translate("+ margins.left + "," + margins.top + ")");
-
-        //buildBoxPlot(pokedexData,determineStat(statlist.value),determineLegendValue(legendlist.value));
         determineTypeStats(pokedexData, determineStat(statlist.value), determineLegendValue(legendlist.value));
         updateBoxes(typeStats, boxX, boxY);
     });
@@ -281,3 +314,10 @@ function typeComparison() {
 }
 
 
+function heatMapClick(e){
+    console.log(e)
+}
+
+function boxPlotClick(e){
+
+}
