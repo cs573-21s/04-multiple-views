@@ -1,59 +1,33 @@
 Assignment 4 - Visualizations and Multiple Views  
 ===
+Link: https://github.com/Tahrifa/Tahrifa.github.io/tree/main/04-MapsAndViews
 
-One of the most powerful techniques for mitigating the shortcomings of a given visualization is to link it with other views.
-Linking a map to a bar or scatterplot, for instance, may allow you to overcome the shortcomings of a map.
-In general, linking visualizations allows you to explore different parts of the data between views, and mitigates the shortcomings of a given view by pairing it with other views.
-This technique, called coordinated multiple views, is the focus of this assignment.
+Description:
+I chose the migration in the United States from 2005 to 2015 as the topic of this assignment. Migration here is defined by the US census bureau as leaving and settle in a new place for more than a year. For example, a person can be counted as a immigrant at the end of 2015 if he moved in a year or more ago. I mainly look at three aspects about this topic: migration in total across the US, migration ratio by region and migration by gender, with each represented by line chart, pie chart and horizontal bar chart.
 
-Your task is to choose an interesting dataset and visualize it in *at least two* **linked** views, where interactions in any given view updates the others.
-Each view should use a different visualization type, and interaction in one of the views should impact what's shown in the other views.
+1. Migration in total across the US - Line chart
 
-You should choose data and visualizations that are sufficiently complex and interesting to ensure a user can discover interesting patterns and trends on their own.
+Line chart is composed of Year(2005-2015), the number of immigrants(line above x axis) and the number of emigrants(line below x axis). A brush is added to select period interval to examine the change in other two charts during the selected period. This chart shows the inflow and outflow every year basically cancels out, reflecting the stability of migration in the US.
 
-For this assignment you should write everything from scratch.
-You may *reference and adapt* code from books or the web, and if you do please provide a References section with links at the end of your Readme.
+![image](https://user-images.githubusercontent.com/54874663/113340918-807bac00-92fa-11eb-8e1f-ebcee9d66787.png)
 
-Resources
----
+2. Migration ratio by region - Pie chart
 
-Data is Plural has a list of interesting datasets, many of which require processing.
+Migration ratio is defined as the quotient of inflow and outflow. By default, the migration ratio in four regions - Northeast, Midwest, South, West - ranges from 2005 to 2015. The value in other periods can be achieved by selecting years in the line chart. Note that a mouseover on a specific region will lead to line chart and horizontal bar to present specific information about this region. This chart attests to the fact that southern region is usually the destination of migrants.
 
-These three examples are intended to show you what multiple views visualizations might look like. 
-I wouldn't recommend using them as a your starting point, but you may find some inspiration:
+![image](https://user-images.githubusercontent.com/54874663/113341576-51196f00-92fb-11eb-9143-d85609433fd8.png)
 
-1. This [scatterplot matrix](http://bl.ocks.org/mbostock/4063663) has code that explains brushing and linking. But remember you'll be doing this with different types of views.
+3. Migration by gender - Horizontal bar
 
-2. The example visualization for [Crossfilter](http://square.github.io/crossfilter/) uses coordinated multiple views. The interaction and brushing technique is well-executed.
+Generally speaking, the net flow of male and female stays at zero with small variation. A mousehover on particulat gender will relay this to the other two charts to make corresponding change about this gender.
 
-3. The [dispatching events](https://github.com/d3/d3-dispatch) page is a good example of using events, rather than explicit functions, for controlling behavior. Views can listen for events in other views and respond accordingly.
+![image](https://user-images.githubusercontent.com/54874663/113341217-ec5e1480-92fa-11eb-828b-4f4afcf8556d.png)
 
-*If you aren't familiar with event-based programming you should experiment with d3.dispatch and other approaches to coordinating views well before the deadline (it's tricky.)*
+Technical achievements
+I adopted d3.brush in first chart to fulfill the function of year selection.
+d3.dispatch is used to realize the flow of selected data among these three charts. The key lies in the clear logic, otherwise charts will display information that is against common sense. We devote a large amount of time to it.
 
-Don't forget to run a local webserver when you're coding and debugging.
-
-Requirements
----
-
-0. Your code should be forked from the GitHub repo and linked using GitHub pages.
-1. Your project should load a dataset you found on the web. Put this file in your repo.
-2. Your project should use d3 to build a visualization of the dataset. 
-3. Your writeup (readme.md in the repo) should contain the following:
-
-- Working link to the visualization hosted on gh-pages.
-- Concise description and screenshot of your visualization.
-- Description of the technical achievements you attempted with this visualization.
-- Description of the design achievements you attempted with this visualization.
-
-GitHub Details
----
-
-- Fork the GitHub Repository. You now have a copy associated with your username.
-- Make changes to index.html to fulfill the project requirements. 
-- Make sure your "master" branch matches your "gh-pages" branch, if using gh-pages for hosting. See the GitHub Guides referenced above if you need help.
-- Edit the README.md with a link to your site, for example http://YourUsernameGoesHere.github.io/04-MapsAndViews/index.html
-- To submit, make a [Pull Request](https://help.github.com/articles/using-pull-requests/) on the original repository. Name it: 
-```
-a4-username-firstName-lastName
-```
-
+Design achievements
+Harmonic colors across three charts. Steelblue and orange stands for inflow and outflow respectively.
+Negative number is used to describe outflow.
+Smooth transition.

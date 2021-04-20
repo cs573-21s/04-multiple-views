@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Multiple coordinated view</title>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <style>
+
+        .axis text {
+          font: 10px sans-serif;
+        }
+
+        .axis path,
+        .axis line {
+          fill: none;
+          stroke: #000;
+          shape-rendering: crispEdges;
+        }
+
+        .brush .extent {
+          stroke: #fff;
+          stroke-opacity: .6;
+          stroke-width: 2px;
+          fill-opacity: .1;
+          shape-rendering: crispEdges;
+        }
+        .resize path {
+            fill: #666;
+            fill-opacity: .8;
+            stroke: #666;
+            stroke-width: 1.5px;
+}
+
+        * {font-family:sans-serif;font-size:15px}
+
+    </style>
+
+
+
+</head>
+<body>
+
+<script>
+
+    var margin = {top: 300, right: 40, bottom: 200, left: 40},
+        width = 1200 - margin.left - margin.right,
+        height = 750 - margin.top - margin.bottom,
+        padding=100;
+
+    var x=d3.scale.ordinal() //d3.time.scale()
+         //.domain(d3.range(2005, 2016))
+         .rangePoints([0, 2*width/3],0.7);
+
+        y=d3.scale.linear()
+         //.domain([150, -150])
+         .range([-130, 130]);
+
+        x_hbar=d3.scale.linear()
+                 .range([-250, 250]);
+
+        y_hbar=d3.scale.ordinal()
+                 .domain(["male", "female"])
+                 .rangeBands([-200, 0], 0.5);
+
+    var mycolors = ['#2b8cbe', '#fdae6b']
+        m = 10
+        r = 50;
+
+    var xAxis=d3.svg.axis()
+             .scale(x)
+             .orient("bottom");
+
+        yAxis=d3.svg.axis()
+             .scale(y)
+             .orient("left");
+
+        xAxis_hbar=d3.svg.axis()
+                        .scale(x_hbar)
+                        .ticks(10)
+                        .orient("bottom");
+
+        yAxis_hbar=d3.svg.axis()
+                        .scale(y_hbar)
+                        .outerTickSize(0) // remove end tick
+                        .tickSize(0) // remove tick
+                        .tickFormat("") // remove tick label
+                        .orient("right");
+
+
+    var bar_margin={right: 200, down:450},
+        pie_margin={right:40, down:40},
+        hbar_margin={right:850, down:200};
+
+
+
+    var svg=d3.select("body").append("svg")
+           .attr("width", width + margin.left + margin.right)
+           .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform","translate(0,100)");
+
+        svg.append("svg:text")
+                    .attr("class", "ratio")
+                    .attr("x",615)
+                    .attr("y",-70)
+                    .attr("dy", ".35em")
+                    .style("text-anchor", "middle")
+                    .style('font-size', '25px')
+                    .text("Migration in the United States")
+
+        // add legend
+           var legend=svg.append('g')
+                     .attr("class", "legend")
+                     .selectAll('rect')
+                     .data(['Inflow', 'Outflow'])
+                     .enter()
+
+
+           // draw legend colored rectangles
+            legend.append("rect")
+                  .attr("x",  function(d, i){return 0.8*width/2+width*i/4})
+                  .attr("y", -35)
+                  .attr("width", 18)
+                  .attr("height", 15)
+                  .style("fill", function(d, i){return ["#2b8cbe", '#fdae6b'][i]});
+
+           // draw legend text
+              legend.append("text")
+                  .attr("x", function(d, i){return 0.85*width/2+width*i/4})
+                  .attr("y", -34)
+                  .attr("dy", ".71em")
+                  .style("text-anchor", "start")
+                  .text(function(d) { return d;});
+
+
+        g_bar=svg.append("g")
+            .attr("class", "bar")
+            .attr("transform", "translate(" + bar_margin.right + "," + bar_margin.down + ")");
+
+        g_pie=svg.append("g")
+            .attr("class", "pie")
+            .attr("transform", "translate(" + pie_margin.right + "," + pie_margin.down + ")");
+
+        g_hbar=svg.append("g")
+            .attr("class", "hbar")
+            .attr("transform", "translate(" + hbar_margin.right + "," + hbar_margin.down + ")");
+
+
+    dispatch=d3.dispatch("update_bar", "update_pie", "update_hbar");
+
+    d3.csv('Interregion migration flow from 2005 to 2015.csv',
+
+       function(error, migrationData){
+           if (error) throw error;
+
+           //data=migrationData.filter(function(row){return +row['Year']<=2010;});
+           sexData=migrationData.filter(function(row){return row['Attribute']=='male'||row['Attribute']=='female'});
+           //regionData=migrationData.map(function(d){return {'Year': d.Year, 'Attribute':d.Attribute, 'In_total':d.In_Northeast, 'Out_total':d.Out_Northeast}})
+
+           generateBar(sexData);
+           generatePie(sexData);
+           generateHbar(sexData);
+
+           dispatch.on("update_pie", update_pie);
+           dispatch.on("update_hbar", update_hbar);
+           dispatch.on("update_bar", update_bar);
+    })
+
+ update_hbar=function(data, start, end, region){
+
+  //console.log(data);
+
+   d3.select("g.hbar").selectAll("*").remove();
+
+   generateHbar(data, start, end, region);
+
+};
+
+ update_pie=function(newdata, start, end){
+
+   //console.log(newdata);
+
+   d3.select("g.pie").selectAll("*").remove();
+
+   generatePie(newdata, start, end);
+
+};
+
+ update_bar=function(data, region=['In_total', 'Out_total']){
+
+  //console.log(data);
+
+   svg.select('g.bar').selectAll("*").remove();
+
+   generateBar(data, region);
+
+};
+
+
+dataTotal=function(sexData){
+          return d3.nest()
+                   .key(function(d){return d.Year})
+                   .rollup(function(v){ return{
+                      Year: d3.mean(v, function(d){return d.Year; }),
+                      In_total: d3.sum(v, function(d) { return +d.In_total; }),
+                      Out_total: d3.sum(v, function(d) { return +d.Out_total;}),
+                      In_Northeast: d3.sum(v, function(d) { return +d.In_Northeast;}),
+                      In_Midwest: d3.sum(v, function(d) { return +d.In_Midwest;}),
+                      In_South: d3.sum(v, function(d) { return +d.In_South;}),
+                      In_West: d3.sum(v, function(d) { return +d.In_West;}),
+                      Out_Northeast: d3.sum(v, function(d) { return +d.Out_Northeast;}),
+                      Out_Midwest: d3.sum(v, function(d) { return +d.Out_Midwest;}),
+                      Out_South: d3.sum(v, function(d) { return +d.Out_South;}),
+                      Out_West: d3.sum(v, function(d) { return +d.Out_West;}),
+                     };
+                   })
+                   .entries(sexData);
+           };
+
+
+
+ generateHbar=function(sexData, start=2005, end=2015, region=["In_total", "Out_total"]){
+
+      data=sexData.filter(function(row){return +row['Year']>=start && +row['Year']<=end;});
+      //console.log(data);
+
+
+      maleInflow=d3.sum(data, function(d){
+
+             if (d.Attribute==="male") {return +d[region[0]]};
+      })
+
+      maleOutflow=d3.sum(data, function(d){
+
+             if (d.Attribute==="male") {return +d[region[1]]};
+      })
+
+      femaleInflow=d3.sum(data, function(d){
+
+             if (d.Attribute==="female") {return +d[region[0]]};
+      })
+
+      femaleOutflow=d3.sum(data, function(d){
+
+             if (d.Attribute==="female") {return +d[region[1]]};
+      });
+
+      max=d3.max([maleInflow, maleOutflow, femaleInflow, femaleOutflow]);
+      x_hbar.domain([-max-500, max+500]);
+
+
+      g_hbar.append("g")
+          .attr("class", "x axis")
+          .call(xAxis_hbar);
+
+      g_hbar.append("g")
+          .attr("class", "y axis")
+          .call(yAxis_hbar);
+
+
+      g_hbar.append("text")
+                    .attr("class", "introduction")
+                    .attr("x",0)
+                    .attr("y",35)
+                    .attr("dy", ".35em")
+                    .style("text-anchor", "middle")
+                    .style('font-size', '18px')
+                    .text("Migration by gender")
+
+
+        inflow=g_hbar.append("g")
+              .attr("class", "inflow")
+              .selectAll(".inflow")
+              .data([{sex: "male", inflow:maleInflow}, {sex:"female", inflow:femaleInflow}])
+
+        inflow.enter().append("text")
+              .attr("class", "sex")
+              .attr("text-anchor", "start")
+              .attr("fill", function(d,i){return ["black", "black"][i]})
+              .attr("x", function(d) {
+                return x_hbar(d.inflow)+10;
+              })
+              .attr("y", function(d,i) {
+                return y_hbar(d.sex)+y_hbar.rangeBand()/2
+              })
+              .text(function(d,i){
+                 return ["Male","Female"][i];
+              })
+              .style("font-size", "15px")
+              .style("font-family", "sans-serif");
+
+        inflow.enter().append("rect")
+              .attr("class", 'hbar')
+              .attr('x', 0)
+              .attr('y', function(d){return y_hbar(d.sex)})
+              .attr("width", function(d) { return x_hbar(d.inflow) })
+              .attr("height", y_hbar.rangeBand())
+              .style("fill", "#2b8cbe")
+              .attr("opacity", 0.8)
+               .on("mouseover", function(d){
+                    //console.log(data.filter(function(v){return v.Attribute==d.sex}));
+                    //console.log(sexData.filter(function(v){return v.Attribute==d.sex}));
+
+                    //console.log(sexData.filter(function(v){return v.Attribute==d.sex}))
+                    //generateBar(data.filter(function(v){return v.Attribute==d.sex}))
+                    dispatch.update_bar(data.filter(function(v){return v.Attribute==d.sex}))
+                    dispatch.update_pie(data,2005, 2015)
+                    g_hbar.selectAll(".hbartext").style("fill","#e34a33");
+                    g_hbar.selectAll(".sex").style("fill","#e34a33");
+               })
+               .on("mouseout", function(d){
+
+                   dispatch.update_bar(sexData)
+                   dispatch.update_pie(sexData)
+                   dispatch.update_hbar(sexData)
+
+               })
+
+        inflow.enter().append("text")
+              .attr("class", "hbartext")
+              .attr("text-anchor", "start")
+              .attr("fill", "black")
+              .attr("x", function(d) {
+                return x_hbar(d.inflow)-45;
+              })
+              .attr("y", function(d,i) {
+                return y_hbar(d.sex)+y_hbar.rangeBand()/2
+              })
+              .text(function(d){
+                 return d.inflow;
+              });
+
+      outflow=g_hbar.append("g")
+                .attr("class", "outflow")
+                .selectAll(".outflow")
+                .data([{sex:"male", outflow:maleOutflow}, {sex:"female", outflow:femaleOutflow}])
+
+       outflow.enter().append("rect")
+              .attr("class", 'hbar')
+              .attr('x', function(d){return x_hbar(-d.outflow)})
+              .attr('y', function(d){return y_hbar(d.sex)})
+              .attr("width", function(d) {return x_hbar(d.outflow)})
+              .attr("height", y_hbar.rangeBand())
+              .style("fill", "#fdae6b")
+              .attr("opacity", 0.8)
+               .on("mouseover", function(d){
+
+                    //console.log(sexData.filter(function(v){return v.Attribute==d.sex}))
+                    dispatch.update_bar(data.filter(function(v){return v.Attribute==d.sex}))
+                    dispatch.update_pie(sexData.filter(function(v){return v.Attribute==d.sex}))
+                    g_hbar.selectAll(".hbartext").style("fill","#e34a33");
+                    g_hbar.selectAll(".sex").style("fill","#e34a33");
+               })
+               .on("mouseout", function(d){
+
+                   dispatch.update_bar(sexData)
+                   dispatch.update_pie(sexData)
+                   dispatch.update_hbar(sexData)
+
+               });
+
+      outflow.enter().append("text")
+              .attr("class", "hbartext")
+              .attr("text-anchor", "start")
+              .attr("fill", "black")
+              .attr("x", function(d,i) {
+                return x_hbar(-d.outflow)+5;
+              })
+              .attr("y", function(d) {
+                return y_hbar(d.sex)+y_hbar.rangeBand()/2
+              })
+              .text(function(d){
+                 return -d.outflow;
+              });
+ }
+
+
+
+
+
+ generateBar=function(sexData, region=['In_total', 'Out_total']){
+
+           //console.log(sexData);
+
+           //sex data
+           //sexData=data.filter(function(row){return row.Attribute=="male" || row.Attribute=="female"});
+
+           data=dataTotal(sexData).map(function(d){return d.values});
+           //console.log(data);
+
+
+           x.domain(data.map(function(d){return +d.Year}).sort())
+
+           max=d3.max([d3.max(data, function(d){return +d[region[0]]}),
+                      d3.max(data, function(d){return +d[region[1]]})])
+
+           y.domain([max, -max]);
+
+           g_bar.append("g")
+              .attr("class", "x axis")
+              .call(xAxis);
+
+           g_bar.append("g")
+              .attr("class", "y axis")
+              .call(yAxis);
+
+           g_bar.append("text")
+                    .attr("class", "introduction")
+                    .attr("x",350)
+                    .attr("y",160)
+                    .attr("dy", ".35em")
+                    .style("text-anchor", "middle")
+                    .style('font-size', '18px')
+                    .text("Migration in total across the US")
+
+           var inflow = d3.svg.line()
+                    .x(function(d) { return x(d.Year); })
+                    .y(function(d) { return y(+d[region[0]]); });
+
+               outflow = d3.svg.line()
+                    .x(function(d) { return x(d.Year); })
+                    .y(function(d) { return -y(+d[region[1]]); });
+
+           g_bar.append("g")
+                .attr("class", "inflow")
+                .append("path")
+                .attr("class", "line")
+                .attr("d", inflow(data))
+                .style("fill", "none")
+                .style("stroke", "#2b8cbe")
+                .style("stroke-width", 2)
+
+           g_bar.append("g")
+                .attr("class", "outflow")
+                .append("path")
+                .attr("class", "line")
+                .attr("d", outflow(data))
+                .style("fill", "none")
+                .style("stroke", "#fdae6b")
+                .style("stroke-width", 2);
+
+            g_bar.append("g")
+                    .attr("class", "inflowValue")
+                    .selectAll("circle")
+                    .data(data)
+                    .enter().append("circle")
+                    .attr("r", 5)
+                    .attr("cx", function(d) { return x(d.Year); })
+                    .attr("cy", function(d) { return y(+d[region[0]])})
+                    .style("fill","#a6bddb");
+
+             g_bar.append("g")
+                     .attr("class", "outflowValue")
+                     .selectAll("circle")
+                     .data(data)
+                     .enter().append("circle")
+                     .attr("r", 5)
+                     .attr("cx", function(d) { return x(d.Year); })
+                     .attr("cy", function(d) { return -y(+d[region[1]])})
+                     .style("opacity", 0.5)
+                     .style("fill", "#e34a33");
+
+
+
+           // draw the brush
+            brush=d3.svg.brush()
+                 .x(x)
+                 .on("brush", brushmove)
+                 .on("brushend", brushend);
+
+            // brush handler
+            var arc = d3.svg.arc()
+               .outerRadius(height / 5)
+               .startAngle(0)
+               .endAngle(function(d, i) { return i ? -Math.PI : Math.PI; });
+
+            brushGroup=g_bar.append("g")
+                      .attr("class", "brush")
+                      .call(brush);
+
+            brushGroup.selectAll(".resize").append("path")
+                 .attr("transform", "translate(0," +  y(0) / 2 + ")")
+                 .attr("d", arc);
+
+            brushGroup.selectAll("rect")
+                      .attr("y", -height+50)
+                      .attr("height", (height-50)*2)
+
+
+           // brush functions
+           function brushmove(){
+
+               z=d3.scale.linear()
+                    .domain(x.range())
+                    .range(x.domain());
+               b=brush.extent();
+
+               var localBrushYearStart = (brush.empty()) ? 2005 : Math.ceil(z(b[0])),
+                   localBrushYearEnd = (brush.empty()) ? 2015 : Math.ceil(z(b[1]));
+
+               d3.select("g.brush").call((brush.empty()) ? brush.clear() : brush.extent([z.invert(localBrushYearStart),
+                                                                                         z.invert(localBrushYearEnd)]));
+
+               // Fade all years in the histogram not within the brush
+               d3.selectAll("rect.bar").style("opacity", function(d, i) {
+                  return d.Year >= localBrushYearStart && d.Year < localBrushYearEnd || brush.empty() ? "0.8" : ".4";
+               });
+
+
+           }
+
+           function brushend(){
+
+               var  localBrushYearStart1 = (brush.empty()) ? 2005 : Math.ceil(z(b[0])),
+                    localBrushYearEnd1 = (brush.empty()) ? 2015 : Math.floor(z(b[1]));
+
+                d3.selectAll("rect.bar").style("opacity", function(d, i) {
+                    return d.Year >= localBrushYearStart1 && d.Year <= localBrushYearEnd1 || brush.empty() ? "0.8" : ".4";
+                });
+
+               //filteredData=sexData.filter(function(row){return +row['Year']>=localBrushYearStart1 && +row['Year']<=localBrushYearEnd1;})
+               dispatch.update_pie(sexData, localBrushYearStart1, localBrushYearEnd1)
+               dispatch.update_hbar(sexData, localBrushYearStart1, localBrushYearEnd1)
+               //console.log(filteredData)
+               //console.log(localBrushYearStart1)
+               //console.log(localBrushYearEnd1);
+
+           }
+
+    }
+
+  generatePie=function(sexData, start=2005, end=2015){
+
+
+      filteredData=sexData.filter(function(row){return +row['Year']>=start && +row['Year']<=end;});
+      data=dataTotal(filteredData).map(function(d){return d.values});
+      var area=[
+                ["In_Northeast", "Out_Northeast"],["In_Midwest", "Out_Midwest"],
+                ["In_South", "Out_South"],["In_West", "Out_West"]
+               ];
+
+      data=[
+             [d3.sum(data, function(d){return +d.In_Northeast}), d3.sum(data, function(d){return +d.Out_Northeast})],
+             [d3.sum(data, function(d){return +d.In_Midwest}), d3.sum(data, function(d){return +d.Out_Midwest})],
+             [d3.sum(data, function(d){return +d.In_South}), d3.sum(data, function(d){return +d.Out_South})],
+             [d3.sum(data, function(d){return +d.In_West}), d3.sum(data, function(d){return +d.Out_West})]
+           ]
+      var percentageFormat = d3.format("%");
+
+       g_pie.append("text")
+                    .attr("class", "introduction")
+                    .attr("x",200)
+                    .attr("y",190)
+                    .attr("dy", ".35em")
+                    .style("text-anchor", "middle")
+                    .style('font-size', '18px')
+                    .text("Migration ratio by region")
+
+       var arc = d3.svg.arc()
+			.outerRadius(r)
+            .innerRadius(0);
+
+        var pie = d3.layout.pie()
+                .value(function(d) { return d; })
+                .sort(null);
+
+        var svg = d3.select("g.pie")
+                .selectAll("svg")
+                .data(data)
+                .enter()
+                .append("svg")
+                .attr("class", "pie")
+                .attr("width",  (r + m)*30)
+                .attr("height", (r + m)*30)
+                .attr("id", function(d,i) {return 'pie'+i;})
+                .on("mouseover",function(d,i){
+
+                    dispatch.update_bar(filteredData, area[i])
+                    dispatch.update_hbar(sexData, start, end, region=area[i])
+                    d3.select(this).attr("fill","#e34a33");
+
+                })
+                .on("mouseout",function(d,i){
+
+                    dispatch.update_bar(sexData)
+                    dispatch.update_pie(sexData)
+                    dispatch.update_hbar(sexData)
+                })
+                .append("svg:g")
+                .attr("transform", function(d, i){return "translate(" + (120*i+50) + "," + (50) + ")"});
+
+        var path = svg.selectAll("path")
+                .data(pie)
+                .enter()
+                .append("svg:path")
+                .attr("d", arc)
+                .style("fill", function(d, i) { return mycolors[i]; })
+                .each(function(d) { this._current = d; }); // store the initial angles
+
+        var titles = svg.append("svg:text")
+                .attr("class", "title")
+                .text(function(d,i) {
+                  return ["Northeast", "Midwest", "South", "West"][i]})
+                .attr("dy", "5px")
+                .attr("text-anchor", "middle");
+        var ratios=svg.append("svg:text")
+                .attr("class", "ratio")
+                .attr("x",0)
+                .attr("y",100)
+                .attr("dy", ".35em")
+                .style("text-anchor", "middle")
+                .text(function(d,i) {
+                    return percentageFormat(d[0]/(d[1]+d[0]));
+                });
+    }
+
+</script>
+</body>
+</html>
