@@ -136,6 +136,13 @@ function generateSplom() {
         }
 
         function brushed({ selection }, [i, j]) {
+            let parallelSelection = document.getElementById("parallelaxes").getElementsByClassName("selection")
+            if(parallelSelection){
+                for(let i=0;i<parallelSelection.length;i++){
+                    parallelSelection[i].style.display = "none";
+                }
+            }
+
             let selected = [];
             if (selection) {
                 let [[x0, y0], [x1, y1]] = selection;
@@ -281,6 +288,13 @@ function generateParallelAxis() {
         let selections = new Map();
 
         function brushed({ selection }, key) {
+            let splom = document.getElementById("scattermatrix").getElementsByClassName("selection")
+            if(splom){
+                for(let i=0;i<splom.length;i++){
+                    splom[i].style.display = "none";
+                }
+            }
+
             // Set up the selection brush, get it's coordinates
             if (selection === null) {
                 selections.delete(key);
