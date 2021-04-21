@@ -26,7 +26,13 @@ svg{
 }
 
 .disabled{
-    display: none;
+    display: none !important;
+}
+
+#statcomparezone{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 /* Bottom Naviation Bar */

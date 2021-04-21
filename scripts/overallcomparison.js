@@ -1,3 +1,5 @@
+let deselectColor = "#eee";
+
 generateSplom();
 
 function generateSplom() {
@@ -66,7 +68,12 @@ function generateSplom() {
 
         let circle = cell.selectAll("circle")
             .attr("r", 3.5)
-            .attr("fill", d => c[d.type_1]);
+            .attr("fill", d => c[d.type_1])
+            .attr("id", d => d.id);
+
+        // Currently not working because the brush is over the dots
+        // circle.append("title")
+        //     .text(d => d.name);
 
         cell.call(brush, circle, svg, data);
 
@@ -143,6 +150,26 @@ function generateSplom() {
                         y0 < y[j](d[columns[j]]) &&
                         y1 > y[j](d[columns[j]]));
             }
+
+            let parallel = d3.select("#parallelaxes svg");
+            let path = parallel.selectAll("path");
+            path.each(function (d) {
+                let active = false;
+                selected.forEach(function(e){
+                    if(d !== null){
+                        if(d.id === e.id){
+                            active = true;
+                            return true;
+                        }   
+                    }
+                });
+                d3.select(this).style("stroke", active ? c[d.type_1] : deselectColor);
+                if (active) {
+                    d3.select(this).raise();
+                }
+            });
+
+            parallel.property("value", selected).dispatch("input");
             svg.property("value", selected).dispatch("input");
         }
 
@@ -150,12 +177,23 @@ function generateSplom() {
             if (selection) {
                 return;
             }
+            let parallel = d3.select("#parallelaxes svg")
+            let path = parallel.selectAll("path");
+            path.each(function (d) {
+                if(d !== null){
+                    d3.select(this).style("stroke", c[d.type_1]);
+                }
+            });
+
+
+            parallel.property("value", []).dispatch("input");
             svg.property("value", []).dispatch("input");
             circle.classed("hidden", false);
         }
     }
 }
 
+// Filters the data based on the specific column
 function filterStats(d) {
     if (d === "hp" || d === "attack" || d === "defense" || d === "sp_attack" || d === "sp_defense" || d === "speed") {
         return true;
@@ -166,6 +204,7 @@ function filterStats(d) {
 generateParallelAxis();
 function generateParallelAxis() {
     d3.csv("../pokedex.csv").then(function (data) {
+        // Set up the SVG properties
         let margin = ({ top: 25, right: 30, bottom: 20, left: 20 });
 
         let keys = data.columns.filter(d => filterStats(d));
@@ -179,14 +218,15 @@ function generateParallelAxis() {
 
         let c = { Grass: "#78c850", Fire: "#F08030", Water: "#6890f0", Bug: "#a8b820", Normal: "#a8a878", Dark: "#000000", Poison: "#a040a0", Electric: "#f8d030", Ground: "#e0c068", Ice: "#98D8D8", Fairy: "#ee99ac", Steel: "#b8b8d0", Fighting: "#c03028", Psychic: "#f85888", Rock: "#b8a038", Ghost: "#705898", Dragon: "#7038f8", Flying: "#a890f0" };
 
-        let deselectColor = "#eee";
-
         let brushWidth = 50;
 
+        // Create the SVG
         let svg = d3.create("svg")
             .attr("width", width)
             .attr("viewBox", [0, 0, width, height]);
 
+        // Create the brush
+        // Using brushY because the x axis doesn't matter here
         let brush = d3.brushY()
             .extent([
                 [-(brushWidth / 2), margin.top],
@@ -194,11 +234,13 @@ function generateParallelAxis() {
             ])
             .on("start brush end", brushed);
 
+        // Define the function for creating the lines
         let line = d3.line()
             .defined(([, value]) => value != null)
             .y(([key, value]) => y.get(key)(value))
             .x(([key]) => x(key))
 
+        // Create the paths for the parallel axes
         let path = svg.append("g")
             .attr("fill", "none")
             .attr("stroke-width", 1.5)
@@ -206,11 +248,15 @@ function generateParallelAxis() {
             .data(data)
             .join("path")
             .attr("stroke", d => c[d["type_1"]])
+            .attr("id",d => d.id)
             .attr("d", d => line(d3.cross(keys, [d], (key, d) => [key, parseInt(d[key])])))
 
+        // Add a mouseover title to the paths
+        // Needs to be added here, if just .append at the end of the previous .attr, let path will be the titles instead of the lines
         path.append("title")
             .text(d => d.name);
 
+        // Create each of the axes and their brushes
         svg.append("g")
             .selectAll("g")
             .data(keys)
@@ -231,14 +277,19 @@ function generateParallelAxis() {
                 .attr("stroke", "white"))
             .call(brush);
 
+        // The range of the brush selection
         let selections = new Map();
 
         function brushed({ selection }, key) {
+            // Set up the selection brush, get it's coordinates
             if (selection === null) {
                 selections.delete(key);
             } else {
                 selections.set(key, selection.map(y.get(key).invert));
             }
+
+            // Update the parallel axes to show which paths are selected
+            // Also store the data of the selected
             const selected = [];
             path.each(function (d) {
                 let active = Array.from(selections).every(([key, [min, max]]) => parseInt(d[key]) >= min && parseInt(d[key]) <= max);
@@ -248,9 +299,30 @@ function generateParallelAxis() {
                     selected.push(d);
                 }
             });
+
+            // Get the contents of the Scatter plot matrix
+            let scatter = d3.select("#scattermatrix svg")
+            let circles= scatter.selectAll("circle");
+
+            // Disable the dots that are not selected by the parallel axes
+            circles.classed("hidden", d => circleClass(d));
+            function circleClass(d){
+                let hidden = true;
+                selected.forEach(function(e){
+                    if(d.id === e.id){
+                        hidden = false;
+                        return false;
+                    }   
+                });
+                return hidden;
+            }
+
+            // Update the data property of the two svgs
+            scatter.property("value", selected).dispatch("input");
             svg.property("value", selected).dispatch("input");
         }
 
+        // Append the newly created SVG to the web page
         document.getElementById("parallelaxes").appendChild(svg.property("value", data).node());
 
     });

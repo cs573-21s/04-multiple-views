@@ -134,7 +134,8 @@ function typeComparison() {
                     }else if(e[0] === this.classList[0]){
                         active = true;
                     }
-                    d3.select(this).style("fill", active ? c2[f[pokemonTypes[i]]] : "#eee");
+                    //d3.select(this).style("fill", active ? c2[f[pokemonTypes[i]]] : "#eee");
+                    d3.select(this).style("fill-opacity", active ? 1 : 0.1);
                 });
 
                 // Handle the box plot
@@ -145,6 +146,7 @@ function typeComparison() {
                         active = true;
                     }
                     d3.select(this).style("fill", active ? c[f[0]] : "#eee");
+                    //d3.select(this).style("fill-opacity", active ? 1 : 0.1);
                 });
             })
             .on("mousemove", function (d, e) {
@@ -223,7 +225,8 @@ function typeComparison() {
                         }else if(d.target.classList[0] === this.classList[0]){
                             active = true;
                         }
-                        d3.select(this).style("fill", active ? c[f[this.classList[0]]] : "#eee");
+                        //d3.select(this).style("fill", active ? c[f[this.classList[0]]] : "#eee");
+                        d3.select(this).style("fill-opacity", active ? 1 : 0.1);
                     });
 
                     // Handle the box plot
@@ -237,6 +240,7 @@ function typeComparison() {
                             active = true;
                         }
                         d3.select(this).style("fill", active ? c2[f[0]] : "#eee");
+                        //d3.select(this).style("fill-opacity", active ? 1 : 0.1);
                     });
                 })
                 .on("mousemove", function (d, e) {
@@ -277,6 +281,10 @@ function typeComparison() {
 
     statlist.addEventListener("change", function () {
         determineTypeStats(pokedexData, determineStat(statlist.value), determineLegendValue(legendlist.value));
+        let rects = heatmapsvg.selectAll("rect");
+        rects.each(function (f) {
+            d3.select(this).style("fill-opacity",1);
+        });
         updateBoxes(typeStats, boxX, boxY);
     });
 
@@ -299,6 +307,10 @@ function typeComparison() {
 
     legendlist.addEventListener("change", function () {
         determineTypeStats(pokedexData, determineStat(statlist.value), determineLegendValue(legendlist.value));
+        let rects = heatmapsvg.selectAll("rect");
+        rects.each(function (f) {
+            d3.select(this).style("fill-opacity",1);
+        });
         updateBoxes(typeStats, boxX, boxY);
     });
 

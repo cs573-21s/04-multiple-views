@@ -25,7 +25,7 @@
     <body>
         <h1 class="pokemon-font">Pokémon Type Comparison</h2>
         <div class="row">
-            <div id="boxplotzone">
+            <div class="disabled" id="boxplotzone">
                 <div id="boxplot"></div>
                 <select id="statlist">
                     <option value="HP">HP</option>
@@ -41,9 +41,11 @@
                     <option value="Only Legendaries">Only Legendaries</option>
                 </select>
             </div>
-            <div id="heatmap"></div>
-            <div class="disabled" id="scattermatrix"></div>
-            <div class="disabled" id="parallelaxes"></div>
+            <div class="disabled" id="heatmap"></div>
+            <div id="statcomparezone">
+                <div  id="scattermatrix"></div>
+                <div  id="parallelaxes"></div>
+            </div>
             <div class="disabled" id="dataset"></div>
         </div>
         <div class="navbar">
@@ -60,24 +62,21 @@
         function CompareTypes(){
             document.getElementById("boxplotzone").classList.remove("disabled");
             document.getElementById("heatmap").classList.remove("disabled");
-            document.getElementById("scattermatrix").classList.add("disabled");
-            document.getElementById("parallelaxes").classList.add("disabled");
+            document.getElementById("statcomparezone").classList.add("disabled");
             document.getElementById("dataset").classList.add("disabled");
         }
 
         function CompareStats(){
             document.getElementById("boxplotzone").classList.add("disabled");
             document.getElementById("heatmap").classList.add("disabled");
-            document.getElementById("scattermatrix").classList.remove("disabled");
-            document.getElementById("parallelaxes").classList.remove("disabled");
+            document.getElementById("statcomparezone").classList.remove("disabled");
             document.getElementById("dataset").classList.add("disabled");
         }
 
         function showData(){
             document.getElementById("boxplotzone").classList.add("disabled");
             document.getElementById("heatmap").classList.add("disabled");
-            document.getElementById("scattermatrix").classList.add("disabled");
-            document.getElementById("parallelaxes").classList.add("disabled");
+            document.getElementById("statcomparezone").classList.add("disabled");
             document.getElementById("dataset").classList.remove("disabled");
         }
     </script> 
