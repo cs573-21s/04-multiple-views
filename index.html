@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<meta charset="utf-8" />
+<head>
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap"
+      rel="stylesheet"
+    />
+</head>
+<style>
+html {
+    margin: 0; padding: 0;
+}
+  body { 
+    margin: 0; padding: 0;
+    font-family: "Roboto", sans-serif;
+    color: white;
+
+    font-size: 0.8em;
+    background-color: #0C1016;
+  }
+  .graph-container {
+    background-color: #ececec;
+  }
+
+
+  td,
+  th {
+    padding: 7px 4px;
+  }
+
+  .table-list {
+    position: absolute;
+    top: 50%;
+    width: 240px;
+    height: auto;
+    overflow: scroll;
+    background: linear-gradient(transparent, #110813ad);
+    padding: 1em;
+  }
+
+  .charts {
+      position: fixed;
+      right: 0;
+      width: 350px;
+      height: 100%;
+      padding-top: 5em;
+      pointer-events: none;
+  }
+
+  .map-view {
+    width: 100%;
+    height: 100%;
+  }
+  path {
+    stroke: #cccccc57;
+    stroke-width: 0.25px;
+    fill: #0C1016;
+    cursor: pointer;
+  }
+
+  .title-content-list {
+      position: fixed;
+      top: 5%;
+      left: 3%;
+      width: 30%;
+      color: white;
+      pointer-events: none;
+  }
+  .title-content-list p {
+      font-size: 1.3em;
+      color: rgba(255, 255, 255, 0.411);
+      margin-top: -0.5em;
+      margin-bottom: 1em;
+      font-weight: 500;
+  }
+
+  .profileInfo {
+      display: flex;
+      align-items: center;
+  }
+  .profileInfo img {
+      height: 25px;
+      width: 25px;
+      border-radius: 50%;
+  }
+  .profileInfo span {
+      margin-left: 3%;
+      font-size: 1.2em;
+  }
+</style>
+<body>
+  <div class="container">
+    <div class="title-content-list">
+        <h1>Geospatial Exploration of World Religions</h1>
+        <p>Assignment 4 • Data Visualization</p>
+        <div class="profileInfo">
+            <img src="profile.jpg" />
+            <span>Michael Osei</span>
+        </div>
+    </div>
+    <div class="charts">
+        <div class="major"></div>
+        <div class="minor"></div>
+
+    </div>
+    <div class="map-view"></div>
+    <div class="table-list"></div>
+  </div>
+
+  <!-- load the d3.js library -->
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+  <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+  <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+  <script src="https://unpkg.com/topojson@3"></script>
+
+  <script>
+    var width = "100vw", height = "100vh";
+
+    var projection = d3
+      .geoMercator()
+      .center([-20, 45])
+      .scale(125)
+      .rotate([0, 0]);
+
+    var svg = d3
+      .select("body")
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height);
+
+
+    // set the dimensions and margins of the graph
+    var margin = { top: 10, right: 30, bottom: 30, left: 60 },
+      widthMaja = 350 - margin.left - margin.right,
+      heightMaja = 250 - margin.top - margin.bottom;
+
+
+    var majorCharts = d3.select(".charts")
+        .append("svg")
+        .attr("width", widthMaja + margin.left + margin.right)
+        .attr("height", heightMaja + margin.top + margin.bottom + 50)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    majorCharts
+      .append("rect")
+      .attr("width", widthMaja)
+      .attr("height", heightMaja + margin.top + margin.bottom - 40)
+      .attr("fill", "#ECECEC");
+
+    let x = d3.scaleLinear().domain([1500, 5000]).range([0, widthMaja]);
+
+    majorCharts
+      .append("g")
+      .attr("transform", "translate(0," + heightMaja + ")")
+      .call(d3.axisBottom(x));
+
+    let y = d3.scaleLinear().domain([5, 47]).range([heightMaja, 0]);
+
+    majorCharts.append("g").call(d3.axisLeft(y));
+
+    let z = d3.scaleSqrt().domain([1500, 5000]).range([2, 10]);
+
+    let ticks = d3.selectAll(".tick text");
+    ticks.each(function (_, i) {
+      if (i % 2 === 0) {
+        d3.select(this).remove();
+      }
+    });
+
+    const xAxisGrid = d3
+      .axisBottom(x)
+      .tickSize(-heightMaja)
+      .tickFormat("")
+      .ticks(10);
+    const yAxisGrid = d3.axisLeft(y).tickSize(-widthMaja).tickFormat("").ticks(10);
+
+    majorCharts
+      .append("g")
+      .attr("class", "x axis-grid")
+      .attr("transform", "translate(0," + heightMaja + ")")
+      .call(xAxisGrid);
+
+    majorCharts.append("g").attr("class", "y axis-grid").call(yAxisGrid);
+    
+    majorCharts.append("text")
+       .attr("x", 90)
+       .attr("y", -1)
+       .style('fill', '#F37231')
+       .attr("font-size", "12px")
+       .text("Main Religions")
+
+    majorCharts
+      .append("text")
+      .attr("class", "x label")
+      .style('fill', '#4E5256')
+      .attr("text-anchor", "end")
+      .attr("x", widthMaja / 2 + 20)
+      .attr("y", heightMaja + 35)
+      .text("Weight");
+
+    majorCharts
+      .append("text")
+      .attr("class", "y label")
+      .style('fill', '#4E5256')
+      .attr("text-anchor", "end")
+      .attr("x", -(heightMaja / 2) + 25)
+      .attr("y", -40)
+      .attr("dy", ".75em")
+      .attr("transform", "rotate(-90)")
+      .text("MPG");
+
+
+    var path = d3.geoPath().projection(projection);
+
+    var g = svg.append("g");
+
+
+    let mouseOver = function(d) {
+        d3.selectAll(".path")
+        .transition()
+        .duration(200)
+        .style("opacity", .5)
+        d3.select(this)
+        .transition()
+        .duration(200)
+        .style("opacity", 1)
+        .style("fill", "#1e2838")
+    }
+
+    let mouseLeave = function(d) {
+        d3.selectAll(".path")
+        .transition()
+        .duration(200)
+        d3.select(this)
+        .transition()
+        .duration(200)
+        .style("opacity", 1)
+        .style("fill", "#0C1016")
+    }
+
+    // load and display the World
+    d3.json("world-110m2.json").then(function (topology) {
+      g.selectAll("path")
+        .data(topojson.feature(topology, topology.objects.countries).features)
+        .enter()
+        .append("path")
+        .on("mouseover", mouseOver )
+        .on("mouseleave", mouseLeave )
+        .attr("d", path);
+    });
+
+    d3.csv("religious.csv").then(function (data) {
+      let limitTable = 15;
+      let filteredData = [0, 10];
+
+
+
+      // Render the initial lists.
+      function tabulate(dataInput) {
+        var table = d3.select(".table-list").append("table");
+        var thead = table.append("thead");
+        var tbody = table.append("tbody");
+
+        let validFields = dataInput.columns.filter(function (d, idx) {
+          return filteredData.includes(idx);
+        });
+
+        let validRows = dataInput.filter(function (d, idx) {
+          return idx < limitTable;
+        });
+
+        console.log(dataInput)
+
+
+        let vDb = dataInput.columns.filter(function (d, idx) {
+            return [2, 3, 4, 5, 6, 7, 8, 9].includes(idx);
+        });
+
+        console.log(vDb)
+        // append the rectangles for the bar chart
+        majorCharts
+            .selectAll("bar")
+            .data(vDb)
+            .enter()
+            .append("rect")
+            .attr("x", function(d) { return d; })
+            .attr("width", 2)
+            .attr("fill", "#EEEEEE")
+            .attr("y", function(d) { return y(25); })
+            .attr("height", function(d) { return heightMaja - y(25); });
+
+        // append the header row
+        thead
+          .append("tr")
+          .selectAll("th")
+          .data(validFields)
+          .enter()
+          .append("th")
+          .text(function (column) {
+            return column;
+          });
+
+        // create a row for each object in the data
+        var rows = tbody
+          .selectAll("tr")
+          .data(validRows)
+          .enter()
+          .append("tr")
+          .selectAll("td")
+          .data(function (row) {
+            return validFields.map(function (column) {
+              return row[column];
+            });
+          })
+          .enter()
+          .append("td")
+          .text(function (d) {
+            return d;
+          });
+        return table;
+      }
+
+      console.log(data);
+      //let shortData = data.slice(0, 25);
+
+      // render the table(s)
+      tabulate(data);
+    });
+
+
+    function checkFilters(data) {
+      return data.Weight > 0 && data.MPG > 0;
+    }
+
+
+
+    d3.csv("cars.csv").then(function (data) {
+      let filteredData = data.filter(checkFilters);
+/*
+      // append the rectangles for the bar chart
+      majorCharts
+        .selectAll("bar")
+        .data(filteredData)
+        .enter()
+        .append("rect")
+        .attr("x", function(d) { return x(d.Weight); })
+        .attr("width", 2)
+        .attr("fill", "#EEEEEE")
+        .attr("y", function(d) { return y(d.MPG); })
+        .attr("height", function(d) { return heightMaja - y(d.MPG); });
+ */ 
+  
+    });
+
+
+  </script>
+</body>
