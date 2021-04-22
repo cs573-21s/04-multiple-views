@@ -218,17 +218,18 @@ d3.csv("stress-level.csv", function(data) {
 
             })
 
-            .style("fill", function(d) {
+			.style("fill", function(d) {
 
             var value = d.properties.StressLevel;
 
             if (value) {
+        		//console.log("value,color",value,color(value));
                 return color(value);
             } else {
                 return "rgb(213,222,217)";
             }
 
-        }); 
+        });
 
     });
 
