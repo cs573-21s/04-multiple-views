@@ -1,59 +1,41 @@
 Assignment 4 - Visualizations and Multiple Views  
 ===
 
-One of the most powerful techniques for mitigating the shortcomings of a given visualization is to link it with other views.
-Linking a map to a bar or scatterplot, for instance, may allow you to overcome the shortcomings of a map.
-In general, linking visualizations allows you to explore different parts of the data between views, and mitigates the shortcomings of a given view by pairing it with other views.
-This technique, called coordinated multiple views, is the focus of this assignment.
+## Link
+https://mike3osei.github.io/04-ghd3/index.html
 
-Your task is to choose an interesting dataset and visualize it in *at least two* **linked** views, where interactions in any given view updates the others.
-Each view should use a different visualization type, and interaction in one of the views should impact what's shown in the other views.
+## Description 
 
-You should choose data and visualizations that are sufficiently complex and interesting to ensure a user can discover interesting patterns and trends on their own.
+The Geospatial Exploration of World Religions is an application that takes the religious experience of the world and tries to tell a story about diversity in faith within our global communities. The data talks about the percentage of shares of faith that are found in each communitiy. This is a good way of measuring similarity in faith across different regions in the world.
 
-For this assignment you should write everything from scratch.
-You may *reference and adapt* code from books or the web, and if you do please provide a References section with links at the end of your Readme.
 
-Resources
----
+Special thanks to D3 Graph Gallery for their examples in maps, animation and geoJson data examples. I pulled a lot of influence from how they managed their code. Another special thanks to Crossfilter and their fast multidimensional filtering for coordinated views. I took a lot of inspiration from them as well.
 
-Data is Plural has a list of interesting datasets, many of which require processing.
+https://www.d3-graph-gallery.com/backgroundmap
+http://square.github.io/crossfilter/
 
-These three examples are intended to show you what multiple views visualizations might look like. 
-I wouldn't recommend using them as a your starting point, but you may find some inspiration:
+Without you all this application would not be possible.
 
-1. This [scatterplot matrix](http://bl.ocks.org/mbostock/4063663) has code that explains brushing and linking. But remember you'll be doing this with different types of views.
 
-2. The example visualization for [Crossfilter](http://square.github.io/crossfilter/) uses coordinated multiple views. The interaction and brushing technique is well-executed.
+![alt text](main.png)
 
-3. The [dispatching events](https://github.com/d3/d3-dispatch) page is a good example of using events, rather than explicit functions, for controlling behavior. Views can listen for events in other views and respond accordingly.
+## Screenshots 
+![alt text](screen2.png)
+![alt text](screen1.png)
 
-*If you aren't familiar with event-based programming you should experiment with d3.dispatch and other approaches to coordinating views well before the deadline (it's tricky.)*
+## Technical • Achievements  
 
-Don't forget to run a local webserver when you're coding and debugging.
+The data which was used, had to be normalized throughout because it was not clean data. The CSV combined two different separate data types and filtering / mapping all of them at scale was technically challenging.
 
-Requirements
----
+I utilized Dispatch Events to handle the synchronization of the charts or different views as well.
 
-0. Your code should be forked from the GitHub repo and linked using GitHub pages.
-1. Your project should load a dataset you found on the web. Put this file in your repo.
-2. Your project should use d3 to build a visualization of the dataset. 
-3. Your writeup (readme.md in the repo) should contain the following:
+As one hovers over a country separate information relative to that specific place arrives. I was able to keep the hover dialog attached to the cursor or pointer as well which made the datavis pretty unique.
 
-- Working link to the visualization hosted on gh-pages.
-- Concise description and screenshot of your visualization.
-- Description of the technical achievements you attempted with this visualization.
-- Description of the design achievements you attempted with this visualization.
 
-GitHub Details
----
+## Design • Achievements  
 
-- Fork the GitHub Repository. You now have a copy associated with your username.
-- Make changes to index.html to fulfill the project requirements. 
-- Make sure your "master" branch matches your "gh-pages" branch, if using gh-pages for hosting. See the GitHub Guides referenced above if you need help.
-- Edit the README.md with a link to your site, for example http://YourUsernameGoesHere.github.io/04-MapsAndViews/index.html
-- To submit, make a [Pull Request](https://help.github.com/articles/using-pull-requests/) on the original repository. Name it: 
-```
-a4-username-firstName-lastName
-```
+Previously I had never implemented any form of animation in my data visualizations. I was able to utilize d3 animations to transition throughout the hovering of countries.
 
+As scales the screen you'll notice that the responsiveness of the application stays in tack. It was challenging with px base system but I made use of percentages to more help the user experience on different screens.
+
+Implemented external icon library to more adequately represent what was going on in the visualization.
