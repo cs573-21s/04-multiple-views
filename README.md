@@ -10,6 +10,7 @@ Page is divided into five part. On the left side of the page, there are two slid
 Interactive in slide bar or scatter plot chart or bar chart will impact what is shown in other view. For example, if you brush in the scatter plot chart, the number of passengers carried at different time interval will change to match the selected data in scatter plot chart. At mean time, slide bar will change to match with interval of selected data in scatter plot.       
      
 There are several interesting details in the page. No matter what area you brush in the bar chart, it will always automatically transform to the smallest sharp point interval that contains it. The clock pattern allows the user to more intuitively know the time interval of the selected data.     
+<img src="img/a4-2.gif">   
      
 Technology Achievement:
 ----
