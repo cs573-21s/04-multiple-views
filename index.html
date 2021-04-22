@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/jquery-ui.min.css">
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="js/jQuery.min.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
+    <script src="js/index.js"></script>
+</head>
+
+<body>
+    <div id="container">
+        <div class="pannel">
+            <div class="head">
+                <p>New York City yellow taxi trip recorded</p>
+                <span>0 - 6 AM</span>
+            </div>
+            <div class="sliderbar">
+                <div class="trip_distance">
+                    <p>
+                        <label for="trip_distance">Trip_distance:</label>
+                        <input type="text" id="trip_distance" readonly
+                            style="border:0; color:#f6931f; font-weight:bold;">
+                    </p>
+
+                    <div id="slider-range-trip_distance"></div>
+                </div>
+                <div class="total_amount">
+                    <p>
+                        <label for="total_amount">Total_amount:</label>
+                        <input type="text" id="total_amount" readonly
+                            style="border:0; color:#f6931f; font-weight:bold;">
+                    </p>
+                    <div id="slider-range-total_amount"></div>
+                </div>
+            </div>
+
+            <div class="instrction">
+                <p>How to use</p>
+                <ol>
+                    <li>You can <span>drag the slide bar</span> or <span>brush on scatter plot</span> or <span>brush on
+                            bar chart</span> to check which area of NewYork has more passengers.
+                    </li>
+                    <br>
+                    <li>You can <span>click the button</span> at the top right of the map to
+                        switch the type of map.
+                    </li>
+                </ol>
+            </div>
+        </div>
+        <div class="mapBox">
+            <div class="clock"></div>
+            <button id="heatmap">heatmap</button>
+            <button id="linemap">linemap</button>
+            <div class="mapGeo"></div>
+            <div class="mapHeat">
+                <div class="mapHeat_legend">
+                    <span>PULocationID Count</span>
+                    <img src="img/Oranges.png" alt="">
+                </div>
+
+            </div>
+        </div>
+        <div class="scatter"></div>
+        <div class="bar"></div>
+        <div class="date">
+            <table border="1">
+                <tr>
+                    <th>id</th>
+                    <th>tpep_pickup_datetime</th>
+                    <th>tpep_dropoff_datetime</th>
+                    <th>trip_distance</th>
+                    <th>PULocationID</th>
+                    <th>DOLocationID</th>
+                    <th>tip_amount</th>
+                    <th>total_amount</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+</body>
+
+</html>
