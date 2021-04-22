@@ -14,7 +14,7 @@ There are several interesting details in the page. No matter what area you brush
      
 Technology Achievement:
 ----
-1.	link the slide bar, scatter plot chart, bar chart, map, dash board together. In bar graphs, scatter graphs, and sliders, interaction in one of these chart or slide bar will impact other views or slide bar.     
+1.	link the slide bar, scatter plot chart, bar chart, map, dash board together. In bar graphs, scatter graphs, and sliders, interaction in one of these chart or slide bar will impact other views.     
 2.	Area in bar chart will automatically transform to the smallest sharp point interval that contains it.   
      
 Design Achievement:
