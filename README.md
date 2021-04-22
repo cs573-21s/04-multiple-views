@@ -2,7 +2,7 @@ Assignment 4 - Visualizations and Multiple Views
 ===
 
 ## Link
-https://mike3osei.github.io/04-ghd3/index.html
+https://mike3osei.github.io/04-multiple-views/index.html
 
 ## Description 
 
