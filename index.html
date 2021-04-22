@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://d3js.org/d3.v4.min.js"></script>
+<div id="donut_chart"></div>
+<div id="chart_title"></div>
+<style type="text/css">
+
+/* On mouse hover, lighten state color */
+path:hover {
+	fill-opacity: .7;
+}
+
+/* Custom Tooltip Style */
+div.tooltip {   
+ 	position: absolute;           
+	text-align: center;
+	width: 60px;                  
+	height: 28px;                 
+	padding: 2px;
+	font: 12px sans-serif;        
+	background: white;   
+	border: 0px;      
+	border-radius: 8px;           
+	pointer-events: none;
+}
+        
+/* Legend Font Style */
+body {
+	font: 11px sans-serif;
+}
+
+/* Donut Chart Position */
+.donut_chart_pos {
+	position:absolute;
+	left:870px;
+	top:50px;
+}
+
+</style>
+</head>
+<body>
+<script type="text/javascript">
+		
+var width = 960;
+var height = 480;
+
+var projection = d3.geo.albersUsa()
+	.translate([width/2, height/2])   
+	.scale([1000]);          
+        
+var path = d3.geo.path()             
+	.projection(projection); 
+ 
+		
+var color = d3.scale.linear()
+	.range(["rgb(245,243,244)","rgb(217,4,41)"]);
+
+var map = d3.select("body")
+	.append("svg")
+	.attr("width", width)
+	.attr("height", height);
+        
+var tooltip = d3.select("body")
+	.append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
+
+var pieLegend;
+var donut_chart;
+var chart_title;
+
+function makePie(chosenState) {
+	// - - - - PIE CHART - - - -
+	d3.csv("stress-coping.csv", function(data) {
+		// set dimensions
+		var width = 450
+			height = 500
+			margin = 40
+
+		var radius = Math.min(width, height) / 2 - margin
+
+		// append the svg object to the div called 'donut_chart'
+		donut_chart = d3.select("#donut_chart")
+			.append("svg")
+				.attr("class", "donut_chart_pos")
+				.attr("width", width)
+				.attr("height", height)
+			.append("g")
+				.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+		var i = 0;
+		for (i; i < data.length; i++)  {
+			var dataState = data[i].State;
+			if (dataState == chosenState) {
+				break;
+			}
+		}
+		var stateData = {a: data[i].DrugsDrinking, b: data[i].Eat, c:data[i].Nothing, d:data[i].Other, e:data[i].TalkToFriends, f:data[i].Workout}
+
+		console.log(stateData);
+		// set the colors
+		var color = d3.scaleOrdinal()
+		.domain(stateData)
+		.range(["#f94144", "#f8961e", "#43aa8b", "#90be6d", "#f9c74f", "#277da1"])
+
+		// groups in pie chart
+		var pie = d3.pie()
+		.value(function(d) {return d.value; })
+		var data_ready = pie(d3.entries(stateData))
+
+		// make pie chart
+		donut_chart
+		.selectAll('whatever')
+		.data(data_ready)
+		.enter()
+		.append('path')
+		.attr('d', d3.arc()
+			.innerRadius(100)         
+			.outerRadius(radius)
+		)
+		.attr('fill', function(d){ return(color(d.data.key)) })
+		.attr("stroke", "white")
+		.style("stroke-width", "2px")
+		.style("opacity", 0.9);
+
+		donut_chart.append("text")
+            .attr("text-anchor", "middle")
+            .style("font-size", "20px")
+            .text(chosenState);
+
+		donut_chart.append("text")
+            .attr("text-anchor", "middle")
+            .style("font-size", "20px")
+			.attr("y", 230)
+            .text("How People Cope With Stress");
+
+
+		var legendText = ["Drugs/Drinking", "Eat", "Nothing", "Other", "Talk to Friends", "Workout"];
+
+		pieLegend = d3.select("#donut_chart").append("svg")
+                    .attr("class", "donut_chart_pos")
+					.attr("width", 140)
+					.attr("height", 200)
+					.selectAll("g")
+					.data(color.domain().slice().reverse())
+					.enter()
+					.append("g")
+					.attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+		pieLegend.append("rect")
+			.attr("width", 18)
+			.attr("height", 18)
+			.style("fill", color);
+
+		pieLegend.append("text")
+			.data(legendText)
+			.attr("x", 24)
+			.attr("y", 9)
+			.attr("dy", ".35em")
+			.text(function(d) { return d; });
+
+		});
+	}
+
+function breakout(d) {
+    const chosenState = d.properties.name;
+    var breakoutText = [chosenState, "Stress Level"];
+    makePie(chosenState);
+}
+
+// Load data
+d3.csv("stress-level.csv", function(data) {
+    color.domain([0.0,1.0]); 
+
+    // Load GeoJSON data 
+    d3.json("us-states.json", function(json) {
+
+        for (var i = 0; i < data.length; i++) {
+
+            var dataState = data[i].State;
+            var dataValue = data[i].StressLevel;
+
+            for (var j = 0; j < json.features.length; j++)  {
+                var jsonState = json.features[j].properties.name;
+
+                if (dataState == jsonState) {
+					json.features[j].properties.StressLevel = dataValue; 
+					break;
+                }
+            }
+        }
+                
+        map.selectAll("path")
+            .data(json.features)
+            .enter()
+            .append("path")
+            .attr("d", path)
+            .style("stroke", "#fff")
+            .style("stroke-width", "1")
+            
+            .on("mouseover", function(d) {      
+                tooltip.transition()       
+                .duration(200)
+                .style("opacity", .9);
+                tooltip.text(d.properties.name)
+                .style("left", (d3.event.pageX) + "px")
+                .style("top", (d3.event.pageY - 28) + "px");
+            
+                breakout(d); // second visualization
+            })
+
+            // mouse out fade            
+            .on("mouseout", function(d) {       
+                tooltip.transition()        
+                .duration(500)      
+                .style("opacity", 0);
+                
+				donut_chart.remove();	
+				pieLegend.remove();
+				chart_title.remove();
+
+            })
+
+            .style("fill", function(d) {
+
+            var value = d.properties.StressLevel;
+
+            if (value) {
+                return color(value);
+            } else {
+                return "rgb(213,222,217)";
+            }
+
+        }); 
+
+    });
+
+});
+</script>
+</body>
+</html>
