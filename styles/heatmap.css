@@ -1,3 +1,7 @@
+#heatmap .tick{
+    font-size: 11px;
+}
+
 #heatmap .tick:nth-child(2){
     color: #78c850;
 }

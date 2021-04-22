@@ -1,8 +1,8 @@
 let deselectColor = "#eee";
 
-generateSplom();
+generateSplom(0,"9");
 
-function generateSplom() {
+function generateSplom(legend, generation) {
     let width = 1200;
     let padding = 20;
     let size;
@@ -17,9 +17,13 @@ function generateSplom() {
         pokemonData = data;
         columns = data.columns.filter(d => filterStats(d));
         size = (width - (columns.length + 1) * padding) / columns.length + padding;
-        buildSplom(data);
 
+        data = data.filter(d => dataFilter(d,generation,legend));
+
+        buildSplom(data);
     });
+
+
 
     let x;
     let y;
@@ -72,8 +76,8 @@ function generateSplom() {
             .attr("id", d => d.id);
 
         // Currently not working because the brush is over the dots
-        // circle.append("title")
-        //     .text(d => d.name);
+        circle.append("title")
+            .text(d => d.name);
 
         cell.call(brush, circle, svg, data);
 
@@ -122,7 +126,13 @@ function generateSplom() {
             .extent([[padding / 2, padding / 2], [size - padding / 2, size - padding / 2]])
             .on("start", brushstarted)
             .on("brush", brushed)
-            .on("end", brushend);
+            .on("end", brushend)
+            
+
+        brush.addEventListener("mouseover", function(){
+            console.log("test");
+            return true;
+        })
 
         cell.call(brush);
 
@@ -208,13 +218,16 @@ function filterStats(d) {
     return false;
 }
 
-generateParallelAxis();
-function generateParallelAxis() {
+generateParallelAxis(0, "9");
+function generateParallelAxis(legend, generation) {
     d3.csv("../pokedex.csv").then(function (data) {
+
         // Set up the SVG properties
         let margin = ({ top: 25, right: 30, bottom: 20, left: 20 });
 
         let keys = data.columns.filter(d => filterStats(d));
+
+        data = data.filter(d => dataFilter(d,generation,legend));
 
         let width = keys.length * 160;
         let height = width / 2;
@@ -340,4 +353,48 @@ function generateParallelAxis() {
         document.getElementById("parallelaxes").appendChild(svg.property("value", data).node());
 
     });
+}
+
+let legendlist2 = document.getElementById("legendlist2");
+let generation2 = document.getElementById("generation2");
+
+legendlist2.addEventListener("change", function () {
+    document.getElementById("scattermatrix").innerHTML = "";
+    document.getElementById("parallelaxes").innerHTML = "";
+    generateSplom(determineLegendValue(), generation2.value);
+    generateParallelAxis(determineLegendValue(), generation2.value)
+});
+
+function determineLegendValue() {
+    if (legendlist2.value === "Include All") {
+        return 0;
+    } else if (legendlist2.value === "Exclude Legendaries") {
+        return 1;
+    } else {
+        return 2;
+    }
+}
+
+generation2.addEventListener("change", function(){
+    document.getElementById("scattermatrix").innerHTML = "";
+    document.getElementById("parallelaxes").innerHTML = "";
+    generateSplom(determineLegendValue(), generation2.value);
+    generateParallelAxis(determineLegendValue(), generation2.value)
+});
+
+
+function dataFilter(d, generation, legend){
+    if(d.generation === generation || generation === "9"){
+        if (legend === 0) {
+            return true;
+        } else if (d["status"] === "Normal" && legend === 1) {
+            return true;
+        } else if (d["status"] !== "Normal" && legend === 2) {
+            return true;
+        }else{
+            return false;
+        }
+    }else{
+        return false;
+    }
 }

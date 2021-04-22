@@ -1,7 +1,7 @@
 // This code generates a boxplot comparing the stat data of different pokemon types and a heatmap showing the effectiveness of each type
 typeComparison();
 function typeComparison() {
-    let margins = { top: 10, right: 30, left: 42, bottom: 40 }
+    let margins = { top: 10, right: 30, left: 50, bottom: 40 }
 
     let width = 500 - margins.left - margins.right;
     let height = 500 - margins.top - margins.bottom;
@@ -27,7 +27,7 @@ function typeComparison() {
     // Read the pokedex csv
     d3.csv("../pokedex.csv").then(function (data) {
         pokedexData = data;
-        buildBoxPlot(data, "hp", 0);
+        buildBoxPlot(data, "hp", 0, "9");
         readPokemonTypes();
     });
 
@@ -38,18 +38,21 @@ function typeComparison() {
     let boxY;
     let typeStats;
 
-    function determineTypeStats(pokemon, stat, legend) {
+    function determineTypeStats(pokemon, stat, legend, generation) {
         // Compute the summary stats
         typeStats = d3.rollup(pokemon,
             function (d) {
                 let statList = d.map(function (g) {
-                    if (legend === 0) {
-                        return parseInt(g[stat]);
-                    } else if (g["status"] === "Normal" && legend === 1) {
-                        return parseInt(g[stat]);
-                    } else if (g["status"] !== "Normal" && legend === 2) {
-                        return parseInt(g[stat]);
+                    if(g.generation === generation || generation === "9"){
+                        if (legend === 0) {
+                            return parseInt(g[stat]);
+                        } else if (g["status"] === "Normal" && legend === 1) {
+                            return parseInt(g[stat]);
+                        } else if (g["status"] !== "Normal" && legend === 2) {
+                            return parseInt(g[stat]);
+                        }
                     }
+                    
                 }).sort(d3.ascending);
                 statList = statList.filter(x => x !== undefined);
                 min = statList[0];
@@ -63,9 +66,9 @@ function typeComparison() {
             function (d) { return d.type_1; });
     }
 
-    function buildBoxPlot(pokemon, stat, legend) {
+    function buildBoxPlot(pokemon, stat, legend, generation) {
 
-        determineTypeStats(pokemon, stat, legend);
+        determineTypeStats(pokemon, stat, legend, generation);
 
         for (const t of typeStats.keys()) {
             pokemonTypes.push(t);
@@ -78,6 +81,7 @@ function typeComparison() {
         svg.append("g")
             .attr("transform", "translate(0," + height + ")")
             .call(d3.axisBottom(boxX))
+            .attr("class","xaxis")
             .selectAll("text")
             .attr("transform", "rotate(45)")
             .style("text-anchor", "start");
@@ -90,7 +94,7 @@ function typeComparison() {
             .range([height, 0])
         svg.append("g").call(d3.axisLeft(boxY));
 
-        updateBoxes(typeStats, boxX, boxY, stat, legend)
+        updateBoxes(typeStats, boxX, boxY)
     }
 
     function updateBoxes(typeStats, x, y) {
@@ -160,9 +164,11 @@ function typeComparison() {
             .merge(allBoxes)
             .transition()
             .duration(1000)
+            .attr("rx", 2)
+            .attr("ry", 2)
             .attr("x", function (d) { return (x(d[0]) + halfOffset) })
-            .attr("y", function (d) { return (y(d[1].q3)) })
-            .attr("height", function (d) { return (y(d[1].q1) - y(d[1].q3)) })
+            .attr("y", function (d) { if(y(d[1].q1) === undefined) return y(100); ;return (y(d[1].q3)) })
+            .attr("height", function (d) { if(d[1].q1 === undefined) return 0; if(d[1].q1 === d[1].q3) return 1; return (y(d[1].q1) - y(d[1].q3)) })
             .attr("width", boxWidth)
             .attr("stroke", "black")
             .style("fill", function (d) { return (c[d[0]]) })
@@ -197,7 +203,7 @@ function typeComparison() {
             .call(d3.axisLeft(y))
 
         // heatmap colors
-        let c = { "0.5": "#f51d0a", "1": "#d8e3d8", "2": "#119c13" };
+        let c = { "0.5": "#f51d0a", "1": "#dddddd", "2": "#119c13" };
 
         // Create the tooltip
         let tooltip = d3.select("body").append("div").attr("class", "toolTip");
@@ -277,10 +283,11 @@ function typeComparison() {
     }
 
     let statlist = document.getElementById("statlist");
-    legendlist = document.getElementById("legendlist");
+    let legendlist = document.getElementById("legendlist");
+    let generation = document.getElementById("generation");
 
     statlist.addEventListener("change", function () {
-        determineTypeStats(pokedexData, determineStat(statlist.value), determineLegendValue(legendlist.value));
+        determineTypeStats(pokedexData, determineStat(statlist.value), determineLegendValue(legendlist.value),generation.value);
         let rects = heatmapsvg.selectAll("rect");
         rects.each(function (f) {
             d3.select(this).style("fill-opacity",1);
@@ -306,7 +313,7 @@ function typeComparison() {
 
 
     legendlist.addEventListener("change", function () {
-        determineTypeStats(pokedexData, determineStat(statlist.value), determineLegendValue(legendlist.value));
+        determineTypeStats(pokedexData, determineStat(statlist.value), determineLegendValue(legendlist.value),generation.value);
         let rects = heatmapsvg.selectAll("rect");
         rects.each(function (f) {
             d3.select(this).style("fill-opacity",1);
@@ -323,6 +330,15 @@ function typeComparison() {
             return 2;
         }
     }
+
+    generation.addEventListener("change", function(){
+        determineTypeStats(pokedexData, determineStat(statlist.value), determineLegendValue(legendlist.value),generation.value);
+        let rects = heatmapsvg.selectAll("rect");
+        rects.each(function (f) {
+            d3.select(this).style("fill-opacity",1);
+        });
+        updateBoxes(typeStats, boxX, boxY);
+    });
 }
 
 
