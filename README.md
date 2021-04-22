@@ -21,5 +21,9 @@ Design Achievement:
 -----
 1.	The layout of various graphics and sliders has been carefully designed so that they don’t look cluttered
 2.	Many transition animations are used in the design, such as map switching and bar chart changes.
+
+reference
+----
+https://bl.ocks.org/mbostock/5872848
      
 <img src="img/a4-1.gif">
