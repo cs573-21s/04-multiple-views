@@ -425,13 +425,13 @@ $(function () {
                     .attr('x', mapGeoWidth * 7 / 10 + 20)
                     .attr('y', mapGeoHeight * 9 / 10 + 7.5)
                     .style('font-size', 15)
-                    .text('unchoosed path')
+                    .text('unselected path')
 
                 linemapLegend.append('text')
                     .attr('x', mapGeoWidth * 7 / 10 + 20)
                     .attr('y', mapGeoHeight * 9 / 10 + 27.5)
                     .style('font-size', 15)
-                    .text('choosed path')
+                    .text('selected path')
 
                 dispatch.on('brushScatter.map', function (extentForScatterChoose, extentForBarChoose) {
                     let getHoursX1 = x.invert(extentForBarChoose[0]).getHours();
