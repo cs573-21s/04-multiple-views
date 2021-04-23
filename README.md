@@ -1,6 +1,6 @@
 Assignment 4 - Visualizations and Multiple Views  
 ===
-Two types of visualizations that I wanted to try were a map and a parallel coordinates chart. I found an interesting interactive visualization on the USDA's website ([SNAP Policy Database: Interactive Tool](https://www.ers.usda.gov/data-products/snap-policy-data-sets/snap-policy-index-interactive-tool/)). I used the same data set to create something similar but with a parallel coordinates chart instead of small multiples (and with d3 instead of Tableau :-).
+Two types of visualizations that I wanted to try were a map and a parallel coordinates chart. I found an interesting interactive visualization on the USDA's website ([SNAP Policy Database: Interactive Tool](https://www.ers.usda.gov/data-products/snap-policy-data-sets/snap-policy-index-interactive-tool/)). I used the same data set to create something similar but with a parallel coordinates chart instead of small multiples (and with d3 instead of Tableau :-). There is a slider that changes the charts for the data for the year. And when you click on a state the state and it's corresponding line in the parallel coordinates chart are highlighted. 
 
 References
 ---
@@ -18,13 +18,19 @@ I did not write the code from scratch and used the following examples:
 
 6. [d3 Simple Slider](https://github.com/johnwalley/d3-simple-slider)
 
+7. [Color Legend](https://observablehq.com/@d3/color-legend)
+
 Technical Achievements
 ---
-- 
+- Implemented new-to-me chart types of map and parallel coordinates.
+- Interactive slider updates both charts for that year's data and the heading.
+- Color legend for the map.
+- Tooltip showing the state's name and SNAP policy index.
 
 Design Achievements
 ---
--
+- Matching the colors of the charts and a complimentary color for highlighting. 
+- Working with the div elements to get the layout I wanted.
 
 Working link to the visualization hosted on gh-pages.
 - Concise description and screenshot of your visualization.
