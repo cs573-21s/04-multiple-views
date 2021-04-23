@@ -135,7 +135,14 @@
               // draw each country
               .attr("d", path)
               // set the color of each country
-              .attr("fill", (d,i) => colorScale(data.get(d.properties.GEO_ID)[selectedFilterIndex]))
+              .attr("fill", function(d,i) {
+                if (d == selectedStateData) {
+                  selectedState = d3.select(this)
+                  return SELECTED_COLOR
+                } else {
+                  return colorScale(data.get(d.properties.GEO_ID)[selectedFilterIndex])
+                }
+              })
               .attr("stroke", "#FFF")
               .attr("stroke-width", 1)
               .on("click", clickMapHandler)
