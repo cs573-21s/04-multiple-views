@@ -18,7 +18,7 @@ var pack = d3.pack()
     .size([width - 2, height - 2])
     .padding(3);
 
-d3.csv("https://raw.githubusercontent.com/imogencs/04-multiple-views/main/animals.csv", function (data) {
+d3.csv("https://raw.githubusercontent.com/imogencs/04-multiple-views/main/reptiles.csv", function (data) {
     // console.log(data.columns)
     var root = stratify(data)
         .sum(function (d) { return d.value; })
