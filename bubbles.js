@@ -1,3 +1,7 @@
+// references
+// https://bl.ocks.org/mbostock/ca5b03a33affa4160321
+// https://medium.com/@mbostock/a-better-way-to-code-2b1d2876a3a0
+
 var svg = d3.select("svg"),
     width = +svg.attr("width"),
     height = +svg.attr("height");
@@ -14,12 +18,8 @@ var pack = d3.pack()
     .size([width - 2, height - 2])
     .padding(3);
 
-d3.csv("flare.csv").then( function(data) {
-//   if (error) throw error;
+d3.csv("https://raw.githubusercontent.com/imogencs/04-multiple-views/main/flare.csv").then( function(data) {
 
-console.log(data)
-svg.append('circle')
-.attr('r', 10)
   var root = stratify(data)
       .sum(function(d) { return d.value; })
       .sort(function(a, b) { return b.value - a.value; });
