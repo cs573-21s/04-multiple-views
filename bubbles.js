@@ -12,7 +12,11 @@ var color = d3.scaleSequential(d3.interpolateMagma)
     .domain([-4, 4]);
 
 var stratify = d3.stratify()
-    .parentId(function (d) { return d.class.substring(0, d.class.lastIndexOf(".")); });
+    .parentId(function (d) {
+        console.log(d.value)
+        console.log(d)
+        return d.class.substring(0, d.class.lastIndexOf("."));
+    });
 
 var pack = d3.pack()
     .size([width - 2, height - 2])
@@ -21,8 +25,12 @@ var pack = d3.pack()
 d3.csv("https://raw.githubusercontent.com/imogencs/04-multiple-views/main/reptiles.csv", function (data) {
     // console.log(data.columns)
     console.log(data)
+    // console.log(data.value)
     var root = stratify(data)
-        .sum(function (d) { return d.value; })
+        .sum(function (d) {
+            console.log(d.value)
+            return d.value;
+        })
         .sort(function (a, b) { return b.value - a.value; });
     console.log(root)
 
