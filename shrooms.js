@@ -22,6 +22,8 @@ var filters = [
     {spec_cap_color: ""}
 ]
 
+var filters_list = ["Cap Color"]
+
 
 // append the svg object to the body of the page
 // var svg = d3.select("#svgcontainer")
@@ -116,6 +118,7 @@ d3.csv("https://raw.githubusercontent.com/jwu2018/04-multiple-views/main/data/cl
         // Cap color
         var cap_color_button = d3.select("#filtercontainer")
             .append('select')
+            .attr('height', height / 3)
             // .attr('y', 70)
 
         cap_color_button // Add a button
@@ -223,61 +226,69 @@ d3.csv("https://raw.githubusercontent.com/jwu2018/04-multiple-views/main/data/cl
      *                                 BAR CHARTS
      *----------------------------------------------------------------------------------------**/
      function build_barchart() {
-    
-        let numBars = filters.length
-        let max = Math.max.apply(null, data)
-    
-        // let markedBars = indices_to_compare(10)
-        // let markedBars = indices
 
-        // Create svg for bar chart
-        var svg = d3.select("#barcontainer")
+        let svg = d3.select("#barcontainer")
             .append('svg')
             .attr('height', height)
             .attr('width', width)
             .attr('id', 'barsvg')
-    
-        // Add Y axis
-        let y = d3.scaleLinear()
-            .domain([0, max])
-            .range([height, 0]);
-    
-        // plain lines for axes - no ticks or numbers 
-        svg.append('line')
-            .attr('x1', margin)
-            .attr('y1', height)
-            .attr('x2', margin)
-            .attr('y2', margin)
-            .attr('stroke', 'black')
-            .attr('stroke-width', 3)
-            .attr('id', 'yAxis')
-        svg.append('line')
-            .attr('x1', margin)
-            .attr('y1', height)
-            .attr('x2', width - 2*margin)
-            .attr('y2', height)
-            .attr('stroke', 'black')
-            .attr('stroke-width', 3)
-            .attr('id', 'xAxis')
-    
-        // Bars
-        let interval = width / numBars / 10
-        let barWidth = width / numBars / 5 * 4
-        for (let i = 0; i < numBars; i++) {
-            svg.append('rect')
-                .attr('fill', 'none')
-                .attr('stroke', 'black')
-                .attr('x', i * (interval * 2 + barWidth) + interval)
-                .attr('y', y(data[i]))
-                .attr('height', height - y(data[i]))
-                .attr('width', barWidth)
-            if (i === markedBars.random_idx || i === markedBars.other_idx) {
-                svg.append('circle')
-                    .attr('r', barWidth / 8)
-                    .attr('cy', height - interval * 2)
-                    .attr('cx', i * (interval * 2 + barWidth) + interval + barWidth / 2)
-                    .attr('fill', 'black')
+        // let margin = 200,
+        // width = svg.attr("width") - margin,
+        // height = svg.attr("height") - margin;
+
+
+        let xScale = d3.scaleBand().range ([0, width]).padding(0.4),
+            yScale = d3.scaleLinear().range ([height/3, 0]);
+
+        let g = svg.append("g")
+            .attr("transform", "translate(" + 50 + "," + 50 + ")");
+
+        xScale.domain(filters_list);
+        yScale.domain([0, 100]);
+
+        g.append("g")
+            .attr("transform", "translate(0," + height/3 + ")")
+            .call(d3.axisBottom(xScale));
+
+        g.append("g")
+            .call(d3.axisLeft(yScale).tickFormat(function(d){
+                return d + "%";
+            }).ticks(10))
+            .append("text")
+            // .attr("y", 6)
+            // .attr("dy", "0.71em")
+            .attr("text-anchor", "end")
+            // .text("value");
+
+
+
+        // Cap color bar
+        let percentage = d3.sum(shroom_data, function(d){
+            // console.log(d.cap_color, filters.spec_cap_color)
+            if (d.cap_color == filters.spec_cap_color) {
+                // console.log('data cap color', d.cap_color, 'spec cap color', filters.spec_cap_color)
+                return 1
             }
-        }
+            else {return 0}
+        }) / data_length * 100
+
+        console.log('percentage', percentage)
+
+        console.log('x', xScale("Cap Color"))
+        console.log('y', yScale(percentage))
+        console.log('width', xScale.bandwidth())
+        console.log('height', height/3 - yScale(percentage))
+
+        g.selectAll(".bar")
+            .data(data)
+            .enter().append("rect")
+            .attr("class", "bar")
+            .attr('fill', filters.spec_cap_color)
+            .attr("x", xScale("Cap Color"))
+            .attr("y", yScale(percentage))
+            .attr("width", xScale.bandwidth())
+            .attr("height", function(d) { return height/3 - yScale(percentage); });
+    
+        
     }
 })

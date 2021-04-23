@@ -1,2 +1,3 @@
 - interactive buttons https://www.d3-graph-gallery.com/graph/interactivity_button.html
 - basic pie chart https://www.geeksforgeeks.org/d3-js-pie-function/
+- basic bar chart https://www.tutorialsteacher.com/d3js/create-bar-chart-using-d3js
