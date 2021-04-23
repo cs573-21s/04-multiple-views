@@ -1,4 +1,4 @@
-HAGRID,Kingdom,Phylum,Class,Order,Family,Genus,Species,class,Common name,Female maturity (days),Male maturity (days),diff male/female maturity,Gestation/Incubation (days),Weaning (days),Litter/Clutch size,Litters/Clutches per year,Inter-litter/Interbirth interval,Birth weight (g),Weaning weight (g),Adult weight (g),Growth rate (1/days),Maximum longevity (yrs),Source,Specimen origin,Sample size,Data quality,IMR (per yr),MRDT (yrs),Metabolic rate (W),Body mass (g),Temperature (K),References
+HAGRID,Kingdom,Phylum,Class,Order,Family,Genus,Species,class,CommonName,Female maturity (days),Male maturity (days),diff male/female maturity,Gestation/Incubation (days),Weaning (days),Litter/Clutch size,Litters/Clutches per year,Inter-litter/Interbirth interval,Birth weight (g),Weaning weight (g),Adult weight (g),Growth rate (1/days),Maximum longevity (yrs),Source,Specimen origin,Sample size,Data quality,IMR (per yr),MRDT (yrs),Metabolic rate (W),Body mass (g),Temperature (K),References
 9999,,,,,,,,Animalia,,,,,,,,,,,,,,,,,,,,,,,,
 9999,,,,,,,,Animalia.Arthropoda,,,,,,,,,,,,,,,,,,,,,,,,
 9999,,,,,,,,Animalia.Arthropoda.Branchiopoda,,,,,,,,,,,,,,,,,,,,,,,,

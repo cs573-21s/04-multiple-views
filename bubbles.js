@@ -13,7 +13,7 @@ var color = d3.scaleSequential(d3.interpolateMagma)
 
 var stratify = d3.stratify()
     .parentId(function (d) {
-        console.log(d.value)
+        console.log(d.fmat)
         console.log(d)
         return d.class.substring(0, d.class.lastIndexOf("."));
     });
@@ -58,30 +58,32 @@ d3.csv("https://raw.githubusercontent.com/imogencs/04-multiple-views/main/simple
     // console.log(data.columns)
 
 
-    var root = d3.hierarchy({ values: nest.entries(data) }, function (d) { return d.values; })
-        .sum(function (d) { return d.value; })
-        .sort(function (a, b) { return b.value - a.value; });
+    var root = d3.hierarchy({ fmats: nest.entries(data) }, function (d) { return d.fmats; })
+        .sum(function (d) { return d.fmat; })
+        .sort(function (a, b) { return b.fmat - a.fmat; });
 
     // treemap(root);
 
     // var root = stratify(data)
-    //     .sum(function (d) { return d.value; })
-    //     .sort(function (a, b) { return b.value - a.value; });
+    //     .sum(function (d) { return d.fmat; })
+    //     .sort(function (a, b) { return b.fmat - a.fmat; });
 
     pack(root);
 
 
     // console.log(data)
-    // // console.log(data.value)
+    // // console.log(data.fmat)
     // var root = stratify(data)
     //     .sum(function (d) {
-    //         console.log(d.value)
-    //         return d.value;
+    //         console.log(d.fmat)
+    //         return d.fmat;
     //     })
-    //     .sort(function (a, b) { return b.value - a.value; });
+    //     .sort(function (a, b) { return b.fmat - a.fmat; });
     // console.log(root)
 
     // pack(root);
+
+    console.log('here :) 1')
 
     var node = svg.select("g")
         .selectAll("g")
@@ -92,34 +94,37 @@ d3.csv("https://raw.githubusercontent.com/imogencs/04-multiple-views/main/simple
         .each(function (d) { d.node = this; })
         .on("mouseover", hovered(true))
         .on("mouseout", hovered(false));
+    console.log('here :) 2')
 
     node.append("circle")
         .attr("id", function (d) { return "node-" + d.class; })
         // .attr("r", function (d) { return d.r; })
         .attr("r", 20)
         .style("fill", function (d) { return color(d.depth); });
-
+    console.log('here :) 3')
     var leaf = node.filter(function (d) { return !d.children; });
 
     leaf.append("clipPath")
         .attr("id", function (d) { return "clip-" + d.class; })
         .append("use")
         .attr("xlink:href", function (d) { return "#node-" + d.class + ""; });
-
+    console.log('here :) 4')
     leaf.append("text")
         .attr("clip-path", function (d) { return "url(#clip-" + d.class + ")"; })
         .selectAll("tspan")
         .data(function (d) {
-            console.log(d.class)
-            return d.class.substring(d.class.lastIndexOf(".") + 1).split(/(?=[A-Z][^A-Z])/g);
+            return d.Species;
         })
         .enter().append("tspan")
         .attr("x", 0)
-        .attr("y", function (d, i, nodes) { return 13 + (i - nodes.length / 2 - 0.5) * 10; })
+        .attr("y", function (d, i, nodes) { 
+            return 50
+            return 13 + (i - nodes.length / 2 - 0.5) * 10; })
         .text(function (d) { return d; });
 
+    console.log('here :) 5')
     node.append("title")
-        .text(function (d) { return d.class + "\n" + format(d.value); });
+        .text(function (d) { return d.class + "\n" + format(d.fmat); });
 
     svg.append('circle')
         .attr('r', 10)
