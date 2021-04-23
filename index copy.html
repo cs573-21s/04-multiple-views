@@ -231,6 +231,15 @@
             .attr("y", function(d) { return yScale(d); })
             .attr("width", xScale.bandwidth())
             .attr("height", function(d) { return height - yScale(d); })
+            .attr("stroke", '#00FF85')
+            .attr("stroke-width", function(d, i) {
+              if (i+1 == selectedFilterIndex) {
+                selectedFilter = d3.select(this)
+                return 3;
+              } else {
+                return 0;
+              }
+            })
             .attr("fill", (d,i) => colors[i])
             .on("click", clickBarHandler)
           
@@ -238,8 +247,6 @@
 
         async function clickBarHandler(d,i) {
           console.log(types[i])
-          
-          
           console.log('d: ' + d)
           console.log('i: ' + i)
 
@@ -249,7 +256,6 @@
             selectedFilterIndex = i+1
             document.getElementById("barchart-text").innerHTML = types[i]
             d3.select(this).attr('stroke-width', 3)
-            d3.select(this).attr('stroke', '#00FF85')
           } else {
             // select another filter
             if (selectedFilterIndex != i+1) {
@@ -258,7 +264,6 @@
               selectedFilterIndex = i+1
               document.getElementById("barchart-text").innerHTML = types[i]
               d3.select(this).attr('stroke-width', 3)
-              d3.select(this).attr('stroke', '#00FF85')
             // select same filter
             } else {
               selectedFilter.attr('stroke-width', 0)
@@ -269,7 +274,6 @@
           } 
 
           drawMap(errorData, topoData)
-
         }
 
         function getBardata() {
