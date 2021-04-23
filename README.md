@@ -1,59 +1,62 @@
-Assignment 4 - Visualizations and Multiple Views  
-===
+# Assignment 4 - Visualizations and Multiple Views
 
-One of the most powerful techniques for mitigating the shortcomings of a given visualization is to link it with other views.
-Linking a map to a bar or scatterplot, for instance, may allow you to overcome the shortcomings of a map.
-In general, linking visualizations allows you to explore different parts of the data between views, and mitigates the shortcomings of a given view by pairing it with other views.
-This technique, called coordinated multiple views, is the focus of this assignment.
+GitHub Page Link:
 
-Your task is to choose an interesting dataset and visualize it in *at least two* **linked** views, where interactions in any given view updates the others.
-Each view should use a different visualization type, and interaction in one of the views should impact what's shown in the other views.
+Data source: [garments worker productivity](https://archive.ics.uci.edu/ml/datasets/Productivity+Prediction+of+Garment+Employees) Abdullah Al Imran (abdalimran@gmail.com)
 
-You should choose data and visualizations that are sufficiently complex and interesting to ensure a user can discover interesting patterns and trends on their own.
+## Concise description 
 
-For this assignment you should write everything from scratch.
-You may *reference and adapt* code from books or the web, and if you do please provide a References section with links at the end of your Readme.
+The Garment Industry is one of the key examples of the industrial globalization of this modern 
+era. It is a highly labour-intensive industry with lots of manual processes. Satisfying the huge
+ global demand for garment products is mostly dependent on the production and delivery 
+ performance of the employees in the garment manufacturing companies. So, it is highly desirable 
+ among the decision makers in the garment's industry to track, analyse and predict the 
+ productivity performance. 
+ 
+ I choose 4 kinds of visualizations to help users analyze workers workload. To show the workload
+  of all workers over time, I made use of time series chart. To show the workload of all workers in 
+  different quarters, I made use of bar chart. I use pie chart to show performance of departments, 
+  and lollipop chart to show workload in different weekdays.
+  
+The four charts above are linked, when we create a brush window on time series chart and move it
+ horizontally, the other three charts will change to show the filtered data. In addition, when we
+  mouse over bar chart and lollipop chart, the other three charts will change too.
+  
+## Result analysis
 
-Resources
----
+According to the visualizations I've made, it indicates that workers did more work in Quarter 1 than
+the other 4 quarters from January 1st 2015 to March 11th 2015. For weekdays, workers did the least 
+work in Saturdays, and did the most work in Wednesdays. Which confirms the same result of a research
+made by Alex Bryson and John Forth in 2007, employees do the most work on Wednesdays[1].
+ As for the departments, the department of sweing* always did more work than the department of 
+ finishing. In quarter 2, department of finishing has the highest percentage of workload.
+ 
+*In the dataset, this department's name is sweing. I'm not sure if it's a typo, so I just keep it.
+  
+## Screenshots
 
-Data is Plural has a list of interesting datasets, many of which require processing.
+![scr1](img/scrshot1.PNG)
 
-These three examples are intended to show you what multiple views visualizations might look like. 
-I wouldn't recommend using them as a your starting point, but you may find some inspiration:
+*figure 1 - initial look*
 
-1. This [scatterplot matrix](http://bl.ocks.org/mbostock/4063663) has code that explains brushing and linking. But remember you'll be doing this with different types of views.
+![scr2](img/scrshot2.PNG)
 
-2. The example visualization for [Crossfilter](http://square.github.io/crossfilter/) uses coordinated multiple views. The interaction and brushing technique is well-executed.
+*figure 2 - with brush*
 
-3. The [dispatching events](https://github.com/d3/d3-dispatch) page is a good example of using events, rather than explicit functions, for controlling behavior. Views can listen for events in other views and respond accordingly.
+## Technical achievements
 
-*If you aren't familiar with event-based programming you should experiment with d3.dispatch and other approaches to coordinating views well before the deadline (it's tricky.)*
+- Link charts by Crossfilter and d3 Brush 
 
-Don't forget to run a local webserver when you're coding and debugging.
+## Design achievements
 
-Requirements
----
+- Design a lollipop chart. 
 
-0. Your code should be forked from the GitHub repo and linked using GitHub pages.
-1. Your project should load a dataset you found on the web. Put this file in your repo.
-2. Your project should use d3 to build a visualization of the dataset. 
-3. Your writeup (readme.md in the repo) should contain the following:
+Since the dataset is about the garment industry, I designed a lollipop chart which looks like sewing pins.
 
-- Working link to the visualization hosted on gh-pages.
-- Concise description and screenshot of your visualization.
-- Description of the technical achievements you attempted with this visualization.
-- Description of the design achievements you attempted with this visualization.
+![lollipop](img/lollipop.PNG)
 
-GitHub Details
----
+![sweing pin](img/Best-Sewing-Pins.jpg)
 
-- Fork the GitHub Repository. You now have a copy associated with your username.
-- Make changes to index.html to fulfill the project requirements. 
-- Make sure your "master" branch matches your "gh-pages" branch, if using gh-pages for hosting. See the GitHub Guides referenced above if you need help.
-- Edit the README.md with a link to your site, for example http://YourUsernameGoesHere.github.io/04-MapsAndViews/index.html
-- To submit, make a [Pull Request](https://help.github.com/articles/using-pull-requests/) on the original repository. Name it: 
-```
-a4-username-firstName-lastName
-```
+## References
 
+[1] Bryson, A. and Forth, J. ORCID: 0000-0001-7963-2817 (2007). Productivity and Days of the Week. London, UK: RSA.
