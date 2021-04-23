@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8d">
+
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="https://unpkg.com/topojson@3"></script>
+<script src="https://unpkg.com/d3-simple-slider"></script>
+</head>
+
+<style>
+
+.element {
+  display: inline-block;
+}
+.center {
+margin: auto;
+width: 600px;
+padding: 20px;
+}
+
+.h1 {
+  font-family: Arial, Helvetica, sans-serif;
+}
+  
+//  .states:hover {
+//   stroke: #000000;
+//  }
+</style>
+
+<h1 id="slider-year" style="text-align:center">USDA SNAP Policy Index for Year 1999</h1>
+<div id = "legend"></div>
+<div class = "element" id="map"></div>
+<div class = "element" id="parallel"></div>
+<div class = "center" id = "slider"></div>
+
+<script>
+
+console.log( d3 ) 
+
+// set the dimensions and margins of the graph
+var margin = {top: 30, right: 10, bottom: 10, left: 0},
+  width = 600 - margin.left - margin.right,
+  height = 400 - margin.top - margin.bottom;
+
+var svg = d3.select("#map")
+  .append("svg")
+  .attr("width", 720)
+  .attr("height", 458);
+const g = svg.append("g");
+var path = d3.geoPath();
+
+var svg2 = d3.select("#parallel")
+  .append("svg")
+    .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+.append("g")
+  .attr("transform",
+        "translate(" + margin.left + "," + margin.top + ")");
+
+d3.json('states-albers-10m.json').then(function(us) {
+d3.csv('snappolicyindexdata.csv').then(function(snap) {
+
+var slider = d3
+    .sliderHorizontal()
+    .min(1996)
+    .max(2014)
+    .step(1)
+    .width(500)
+    .displayValue(false)
+    .default(1999)
+    .ticks(10)
+    .tickFormat(d3.format('.0f'))
+    .tickPadding(2)
+    .on('onchange', (val) => {
+      d3.select('h1#slider-year').text(`USDA SNAP Policy Index for Year ${val}`)
+      d3.selectAll('.plines').remove()
+      buildMap(val)
+      buildPar(val);
+    });
+
+  d3.select('#slider')
+    .append('svg')
+    .attr('width', 600)
+    .attr('height', 100)
+    .append('g')
+    .attr('transform', 'translate(30,30)')
+    .call(slider);
+buildMap(slider.value());
+
+
+function buildMap(year) {
+
+  var snaps = snap.filter(function(d) { return d.Year == year; })
+
+  var snapmap = d3.map(snaps, function(d) {
+    return d.name;
+  })
+
+  var quantize = d3.scaleQuantize([2, 9], d3.schemeBlues[9])
+  var format = d3.format(".2f");
+  console.log(us);
+  console.log(snaps);
+  console.log(snapmap);
+
+const states =  g.append('g')
+      .attr("fill", "#444")
+      .attr("cursor", "pointer")
+    .selectAll('path')
+    .data( topojson.feature(us, us.objects.states).features )
+    .join('path')
+      .attr("fill", d => quantize(snapmap.get(d.properties.name).snapP))
+      .on("click", clicked)
+      .attr("d", path)
+      .attr("id", d =>d.properties.name.split(" ").join("_"));
+
+    states.append("title")
+      .text(d => `${d.properties.name}
+Index ${format(snapmap.get(d.properties.name).snapP)}`);
+
+//   states.append("mapid")
+ //    .text(d =>d.properties.name);
+
+  svg.append('path')
+      .datum(topojson.mesh(us, us.objects.states, (a, b) => a !== b))
+      .attr("fill", "none")
+      .attr("stroke", "white")
+      .attr("stroke-linejoin", "round")
+      .attr("d", path);
+
+  return svg.node();
+
+function clicked(event, d) {
+    states.style("fill", d => quantize(snapmap.get(d.properties.name).snapP));
+    d3.select(this).style("fill", "#ffff7a")
+    var title = d3.select(this)
+    console.log(this.id)
+    highlight(this.id);
+  }
+
+function reset() {
+    states.style("fill", "orange");
+  }
+
+}
+
+ // Extract the list of dimensions we want to keep in the plot.
+  dimensions = d3.keys(snap[1]).filter(function(d) { return d.includes("index"); })
+
+console.log(dimensions);
+
+  // For each dimension, I build a linear scale. I store all in a y object
+var y = {}
+  for (i in dimensions) {
+    name = dimensions[i]
+    y[name] = d3.scaleLinear()
+      .domain( d3.extent(snap, function(d) { return +d[name]; }) )
+      .range([height, 0])
+  }
+
+  // Build the X scale -> it find the best position for each Y axis
+  x = d3.scalePoint()
+    .range([0, width])
+    .padding(1)
+    .domain(dimensions);
+ 
+ // Draw the axis:
+var axis =  svg2.selectAll("myAxis")
+    // For each dimension of the dataset I add a 'g' element:
+    .data(dimensions).enter()
+    .append("g")
+    .attr('class', 'axis')
+    // I translate this element to its right position on the x axis
+    .attr("transform", function(d) { return "translate(" + x(d) + ")"; })
+    // And I build the axis with the call function
+    .each(function(d) { d3.select(this).call(d3.axisLeft().scale(y[d])); })
+    // Add axis title
+    .append("text")
+      .style("text-anchor", "middle")
+      .attr("y", -9)
+      .text(function(d) { return d; })
+      .style("fill", "black")
+
+buildPar(slider.value());
+
+var highlight = function(state){
+
+    selected_state = state
+    console.log(state);
+    path = "path#" + state + ".plines"; 
+
+    // first every group turns grey
+    d3.selectAll(".plines")
+      .transition().duration(200)
+      .style("stroke", "#6baed6")
+      .style("opacity", "0.5")
+      .style("stroke-width", "1")
+    // Second the hovered specie takes its color
+    //d3.selectAll("." + selected_state) 
+	d3.select(path).raise()
+      .transition().duration(200)
+      .style("opacity", "1")
+      .style("stroke-width", "3")
+      .style("stroke", "#08519c")
+  }
+
+function buildPar(year) {
+var filtered = snap.filter(function(d) { return d.Year == year; })
+   
+// The path function take a row of the csv as input, and return x and y coordinates of the line to draw for this raw.
+  function path(d) {
+      return d3.line()(dimensions.map(function(p) { return [x(p), y[p](d[p])]; }));
+  }
+
+  // Draw the lines
+  var par = svg2
+    .selectAll("myPath");
+
+  par
+    .data(filtered)
+    .enter().append("path")
+    .attr("id", d =>d.name.split(" ").join("_"))
+    .attr('class', 'plines')
+    .attr("d",  path)
+    .style("fill", "none")
+    .style("stroke", "#6baed6")
+    .style("opacity", 0.5)
+    ;
+
+}
+
+function legend({
+  color,
+  title,
+  tickSize = 6,
+  width = 320, 
+  height = 44 + tickSize,
+  marginTop = 18,
+  marginRight = 0,
+  marginBottom = 16 + tickSize,
+  marginLeft = 0,
+  ticks = width / 64,
+  tickFormat = d3.format('.0f'),
+  tickValues
+} = {}) {
+
+  const svg3 = d3.select("#legend")
+      .attr("width", width)
+      .attr("height", height)
+      .attr("viewBox", [100, 0, width, height])
+      .style("overflow", "visible")
+      .style("display", "block");
+
+  let tickAdjust = g => g.selectAll(".tick line").attr("y1", marginTop + marginBottom - height);
+  let x;
+
+  
+
+  // Threshold
+
+    const thresholds
+        = color.thresholds ? color.thresholds() // scaleQuantize
+        : color.quantiles ? color.quantiles() // scaleQuantile
+        : color.domain(); // scaleThreshold
+
+    const thresholdFormat
+        = tickFormat === undefined ? d => d
+        : typeof tickFormat === "string" ? d3.format(tickFormat)
+        : tickFormat;
+
+    x = d3.scaleLinear()
+        .domain([-1, color.range().length - 1])
+        .rangeRound([marginLeft, width - marginRight]);
+
+    svg.append("g")
+      .selectAll("rect")
+      .data(color.range())
+      .join("rect")
+        .attr("x", (d, i) => x(i - 1)+200)
+        .attr("y", marginTop)
+        .attr("width", (d, i) => x(i) - x(i - 1))
+        .attr("height", height - marginTop - marginBottom)
+        .attr("fill", d => d);
+
+    tickValues = d3.range(thresholds.length);
+    tickFormat = i => thresholdFormat(thresholds[i], i);
+ 
+  svg.append("g")
+      .attr("transform", `translate(200,${height - marginBottom})`)
+      .call(d3.axisBottom(x)
+        .ticks(ticks, typeof tickFormat === "string" ? tickFormat : undefined)
+        .tickFormat(typeof tickFormat === "function" ? tickFormat : undefined)
+        .tickSize(tickSize)
+        .tickValues(tickValues))
+      .call(tickAdjust)
+      .call(g => g.select(".domain").remove())
+      .call(g => g.append("text")
+        .attr("x", marginLeft)
+        .attr("y", marginTop + marginBottom - height - 6)
+        .attr("fill", "currentColor")
+        .attr("text-anchor", "start")
+        .attr("font-weight", "bold")
+        .attr("class", "title")
+        .text(title));
+
+  return svg.node();
+}
+
+legend({
+  color: d3.scaleQuantize([2, 9], d3.schemeBlues[7]),
+  title: "Snap Policy Index"
+})
+
+})
+})
+
+
+</script>
+
+</html>
