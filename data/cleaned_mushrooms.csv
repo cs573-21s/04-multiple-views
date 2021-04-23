@@ -1,4 +1,4 @@
-﻿class-binary,class,cap-shape,cap-surface,cap-color,odor,gill-color,stalk-shape,stalk-surface-above-ring,stalk-surface-below-ring,stalk-color-above-ring,stalk-color-below-ring,ring-number,habitat
+﻿class_binary,class,cap-shape,cap-surface,cap-color,odor,gill-color,stalk-shape,stalk-surface-above-ring,stalk-surface-below-ring,stalk-color-above-ring,stalk-color-below-ring,ring-number,habitat
 0,poisonous,convex,smooth,brown,pungent,black,enlarging,smooth,smooth,white,white,1,urban
 1,edible,convex,smooth,yellow,almond,black,enlarging,smooth,smooth,white,white,1,grasses
 1,edible,bell,smooth,white,anise,brown,enlarging,smooth,smooth,white,white,1,meadows

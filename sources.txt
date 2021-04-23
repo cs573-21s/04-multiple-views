@@ -1,0 +1,2 @@
+- interactive buttons https://www.d3-graph-gallery.com/graph/interactivity_button.html
+- basic pie chart https://www.geeksforgeeks.org/d3-js-pie-function/
