@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <title>CS573 a4</title>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+  <style>
+    body {
+      margin: 0px; 
+      width: 100vw; 
+      height: 100vh;
+    }
+
+    .svg-container {
+      display: inline-block;
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      vertical-align: top;
+      overflow: hidden;
+    }
+
+    .svg-content {
+      display: inline-block;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    text {
+        font-family: sans-serif;
+        font-weight: bold;
+    }
+
+  </style>
+</head>
+<body>
+    <div id="container" class="svg-container"></div>
+    <h1 id="barchart-text"></h1>
+
+    <script>
+        console.log(d3);
+
+        var data = d3.map();
+
+        var state = '0400000US06'
+        var filter = 'Total'
+
+        var types = ['Brewpubs', 'Microbreweries', 'Regional', 'Contract', 'Multitap', 'Brew on Premise']
+        var colors = ['#003f5c', '#444e86', '#955196', '#dd5182', '#ff6e54', '#ffa600']
+
+        // how to load 2 datasets
+        d3.queue()
+          .defer(d3.json, "states.json")
+          .defer(d3.csv, "state_data_revised.csv", function(d) { data.set(d.GEO_ID, [+d.state_breweries, +d.state_Brewpub, +d.state_Microbrewery, +d.state_RegionalBrewery, +d.state_ContractBrewery, +d.state_MultitapBar, +d.state_BOP_BrewOnPremise]); })
+          .await(createBargraph);
+        
+        function createBargraph(error, topo) {
+
+            var width = 800;
+            var height = 500;
+
+            document.getElementById("barchart-text").innerHTML = filter
+
+            var xScale = d3.scaleBand().range ([0, width]).padding(0.4),
+                yScale = d3.scaleLinear().range ([height, 0]);
+
+            var g = svg.append('g')
+                .attr('transform', "translate(" + 100 + "," + 100 + ")");
+
+            xScale.domain(types);
+            yScale.domain([0, d3.max(data.get(state).slice(1,7), function(d) { return d; })]);
+
+            g.append("g")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(xScale))
+
+            g.append("g")
+            .call(d3.axisLeft(yScale).tickFormat(function(d){
+                return d;
+            }).ticks(7))
+            
+            g.selectAll(".bar")
+              .data(data.get(state).slice(1,7))
+              .enter().append("rect")
+              .attr("class", "bar")
+              .attr("x", (d, i) => xScale(types[i]))
+              .attr("y", function(d) { return yScale(d); })
+              .attr("width", xScale.bandwidth())
+              .attr("height", function(d) { return height - yScale(d); })
+              .attr("fill", (d,i) => colors[i])
+              .on("click", clickHandler)
+        }
+        
+        async function clickHandler(d,i) {
+          console.log(types[i])
+          document.getElementById("barchart-text").innerHTML = types[i]
+        }
+
+        var svg = d3.select('div#container').append('svg')
+            .attr('viewBox', '0 0 1920 1080')
+            .attr('preserveAspectRatio', 'xMinYMin meet')
+            .classed('svg-content', true)
+
+        
+        
+    </script>
+</body>
+</html>

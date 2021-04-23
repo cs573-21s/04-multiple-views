@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <title>CS573 a4</title>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+  <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+  <style>
+    body {
+      margin: 0px; 
+      width: 100vw; 
+      height: 100vh;
+    }
+
+    text {
+        font-family: sans-serif;
+        font-weight: bold;
+    }
+
+  </style>
+</head>
+<body>
+
+    <svg id="map" width="1200" height="800"></svg>
+    <h1 id='map-selected-text'>United States</h1>
+
+    <script>
+        console.log(d3);
+        
+        // selection variables
+        var selectedState = null;
+        var selectedStateData = null;
+        var selectedCategory = 0;
+        var selectedFilter = 0; // use as index for accessing data
+
+        // filter code
+        // 0 - state_breweries - total
+        // 1 - state_Brewpub
+        // 2 - state_Microbrewery
+        // 3 - state_RegionalBrewery
+        // 4 - state_ContractBrewery
+        // 5 - state_MultitapBar
+        // 6 - state_BOP-BrewOnPremise 
+
+        const SELECTED_COLOR = "#d36f80"
+
+        var svg = d3.select("svg"),
+        width = +svg.attr("width"),
+        height = +svg.attr("height");
+
+        // Map and projection
+        var projection = d3.geoMercator()
+          .scale(1100)
+          .center([0,0])
+          .translate([2.05*width,height*1.45]);
+        var path = d3.geoPath().projection(projection)
+
+        // Data and color scale
+        var data = d3.map();
+        var colorScale = d3.scaleThreshold()
+          .domain([0, 30, 60, 90, 120, 150, 180, 210, 240])
+          .range(d3.schemeBlues[9]);
+
+        // Load external data and boot
+        d3.queue()
+          .defer(d3.json, "states.json")
+          .defer(d3.csv, "state_data_revised.csv", function(d) { data.set(d.GEO_ID, [+d.state_breweries, +d.state_Brewpub, +d.state_Microbrewery, +d.state_RegionalBrewery, +d.state_ContractBrewery, +d.state_MultitapBar, +d.state_BOP_BrewOnPremise]); })
+          .await(draw);
+
+        function draw(error, topo) {
+          drawMap(error, topo)
+          // drawChart(error, topo)
+        }
+
+        function drawMap(error, topo) {
+
+          // Draw the map
+          svg.append("g")
+            .selectAll("path")
+            .data(topo.features)
+            .enter()
+            .append("path")
+              // draw each country
+              .attr("d", path)
+              // set the color of each country
+              .attr("fill", (d,i) => colorScale(data.get(d.properties.GEO_ID)[selectedFilter]))
+              .attr("stroke", "#FFF")
+              .attr("stroke-width", 1)
+              .on("click", clickHandler)
+
+            svg.append("g")
+              .selectAll("text")
+              .data(topo.features)
+              .enter()
+              .append("text")
+              .attr("transform", d => `translate(${path.centroid(d)})`)
+              .attr("text-anchor", "middle")
+              .attr("font-size", 10)
+              .attr("dx", d => data.get(d, "offset[0]", null))
+              .attr("dy", d => data.get(d, "offset[1]", null))
+              .text(d => d.properties.NAME);
+        }
+
+        async function clickHandler(d,i) {
+
+          console.log("clicked: " + d.properties.NAME)
+          console.log("clicked: " + data.get(d.properties.GEO_ID)[selectedFilter])
+
+          // first state to select
+          if (selectedState == null) {
+              console.log("selected first state")
+              selectedState = d3.select(this)
+              selectedStateData = d
+              selectedState.attr("fill", SELECTED_COLOR)
+              document.getElementById("map-selected-text").innerHTML = d.properties.NAME
+          // existing selected state
+          } else {
+            // select another state
+              if (d.properties.GEO_ID != selectedStateData.properties.GEO_ID) {
+                console.log("selected different state")
+                selectedState.attr("fill", colorScale(data.get(selectedStateData.properties.GEO_ID)[selectedFilter]))
+                d3.select(this).attr("fill", SELECTED_COLOR)
+                selectedState = d3.select(this)
+                selectedStateData = d
+                document.getElementById("map-selected-text").innerHTML = d.properties.NAME
+              // select same state
+              } else  {
+                console.log("selected selected state")
+                selectedState.attr("fill", colorScale(data.get(selectedStateData.properties.GEO_ID)[selectedFilter]))
+                selectedState = null
+                selectedStateData = null
+                document.getElementById("map-selected-text").innerHTML = "United States"
+              }
+                
+          }
+        }
+
+
+    </script>
+</body>
+</html>
