@@ -20,6 +20,7 @@ var pack = d3.pack()
 
 d3.csv("https://raw.githubusercontent.com/imogencs/04-multiple-views/main/reptiles.csv", function (data) {
     // console.log(data.columns)
+    console.log(data)
     var root = stratify(data)
         .sum(function (d) { return d.value; })
         .sort(function (a, b) { return b.value - a.value; });
