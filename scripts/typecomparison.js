@@ -25,7 +25,7 @@ function typeComparison() {
     pokedexData = [];
 
     // Read the pokedex csv
-    d3.csv("../pokedex.csv").then(function (data) {
+    d3.csv("http://acnolan.tech/04-multiple-views/pokedex.csv").then(function (data) {
         pokedexData = data;
         buildBoxPlot(data, "hp", 0, "9");
         readPokemonTypes();
@@ -177,7 +177,7 @@ function typeComparison() {
     }
 
     function readPokemonTypes() {
-        d3.csv("../typeadvantage.csv").then(function (data) {
+        d3.csv("http://acnolan.tech/04-multiple-views/typeadvantage.csv").then(function (data) {
             buildHeatMap(data);
         });
     }

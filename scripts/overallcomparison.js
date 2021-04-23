@@ -13,7 +13,7 @@ function generateSplom(legend, generation) {
 
     let columns = [];
 
-    d3.csv("../pokedex.csv").then(function (data) {
+    d3.csv("http://acnolan.tech/04-multiple-views/pokedex.csv").then(function (data) {
         pokemonData = data;
         columns = data.columns.filter(d => filterStats(d));
         size = (width - (columns.length + 1) * padding) / columns.length + padding;
@@ -126,13 +126,7 @@ function generateSplom(legend, generation) {
             .extent([[padding / 2, padding / 2], [size - padding / 2, size - padding / 2]])
             .on("start", brushstarted)
             .on("brush", brushed)
-            .on("end", brushend)
-            
-
-        brush.addEventListener("mouseover", function(){
-            console.log("test");
-            return true;
-        })
+            .on("end", brushend);
 
         cell.call(brush);
 
@@ -220,7 +214,7 @@ function filterStats(d) {
 
 generateParallelAxis(0, "9");
 function generateParallelAxis(legend, generation) {
-    d3.csv("../pokedex.csv").then(function (data) {
+    d3.csv("http://acnolan.tech/04-multiple-views/pokedex.csv").then(function (data) {
 
         // Set up the SVG properties
         let margin = ({ top: 25, right: 30, bottom: 20, left: 20 });

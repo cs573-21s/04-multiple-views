@@ -39,7 +39,7 @@ svg{
     display: none !important;
 }
 
-#statcomparezone, #typecomparepage{
+#statcomparezone, #typecomparepage, #dataset{
     display: flex;
     flex-direction: column;
     align-items: center;

@@ -16,3 +16,7 @@ td{
     padding-left: 20px;
     padding-right: 20px;
 }
+
+.text-block a{
+    color: lightcoral;
+}

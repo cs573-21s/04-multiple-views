@@ -5,8 +5,8 @@
         <link rel="stylesheet" href="./styles/styles.css">
         <link rel="stylesheet" href="./styles/table.css">
         <link rel="stylesheet" href="./styles/heatmap.css">
-        <link rel="stylesheet" href="./styles/splom.css">
         <link rel="stylesheet" href="./styles/boxPlot.css">
+        <link rel="stylesheet" href="./styles/modal.css">
         <link rel="icon" href="./images/favicon.ico" type="image/x-icon" />
         <script src="https://d3js.org/d3.v6.min.js"></script>
         <script defer src="./scripts/typecomparison.js"></script>
@@ -27,7 +27,7 @@
         <div class="row">
             <div id="typecomparepage">
                 <div class="text-block">
-                    <p>This page provides a multiform overview of the Pokemon type data by showing encodings of different subsets of data. The box and whisker plot shows summary statistics (range, max, min, Q1, Q3) of a stat for each Pokemon type. It has drop downs to change the stat, or to filter the data to a specific generation of Pokemon or to remove legendary Pokemon. The heatmap shows the relative effectiveness of the type in the row with respect to the type in the column. Clicking on a cell will highlight the types in the box and whisker plot. Clicking on the rectangles in the box and whisker will highlight the type in the heatmap.</p>
+                    <p></p>
                 </div>
                 <div class="row">
                     <div id="boxplotzone">
@@ -68,7 +68,7 @@
             
             <div class="disabled" id="statcomparezone">
                 <div class="text-block">
-                    <p>This page includes a brushable scatter plot matrix and a brushable parallel axes graph. Both depict the stats of each individual Pokemon (represented as a dot or line respectively) and colored by the Pokemon's type. Showing all of the data in two different visualizations provides a multiform view of the dataset. Brushing either visualization will highlight the selected Pokemon in both visualizations.</p>
+                    <p></p>
                     <div class="filterRow">
                         <p>Legendary Filter:</p>
                         <select id="legendlist2">
@@ -96,14 +96,86 @@
             </div>
             <div class="disabled" id="dataset">
                 <div class="text-block">
-                    <p>Test Test test test</p>
+                    <p>Here is the dataset used for the visualizations. Like the other graphs, the rows of the data are colored by type_1. The source of this data is from <a href="https://www.kaggle.com/mariotormo/complete-pokemon-dataset-updated-090420?select=pokedex_%28Update_05.20%29.csv" target="_blank" rel="noopener noreferrer" >this Kaggle page</a>. I did feature reduction to make it more readable and useful for my comparison tool.</p>
                 </div>
             </div>
         </div>
+        <button id="infoButton">MORE INFO</button>
+
         <div class="navbar">
             <button onclick="CompareTypes()">Type Comparison</button>
             <button onclick="CompareStats()">Stat Comparison</button>
             <button onclick="showData()">Dataset</button>
+        </div>
+
+        <div id="helpModal" class="modal">
+            <div class="modal-content">
+                <span class="close">
+                    &times;
+                </span>
+                <h2>More Info</h2>
+                <p>This tool includes three pages to help users explore and analyze Pokemon data. </p>
+                <p><strong>Type Comparison:</strong> This page provides a multiform overview of the Pokemon type data by showing encodings of different subsets of data. The box and whisker plot shows summary statistics (range, max, min, Q1, Q3) of a stat for each Pokemon type. It has drop downs to change the stat, or to filter the data to a specific generation of Pokemon or to remove legendary Pokemon. The heatmap shows the relative effectiveness of the type in the row with respect to the type in the column. Clicking on a cell will highlight the types in the box and whisker plot. Clicking on the rectangles in the box and whisker will highlight the type in the heatmap.</p>
+                <p><strong>Stat Comparison: </strong>This page includes a brushable scatter plot matrix and a brushable parallel axes graph. Both depict the stats of each individual Pokemon (represented as a dot or line respectively) and colored by the Pokemon's type. Showing all of the data in two different visualizations provides a multiform view of the dataset. Brushing either visualization will highlight the selected Pokemon in both visualizations.</p>
+                <p><strong>Dataset: </strong>This page includes the dataset used for the visualizations. Like the other graphs, the rows of the data are colored by type_1. The source of this data is from <a href="https://www.kaggle.com/mariotormo/complete-pokemon-dataset-updated-090420?select=pokedex_%28Update_05.20%29.csv" target="_blank" rel="noopener noreferrer" >this Kaggle page</a>. I did feature reduction to make it more readable and useful for my comparison tool</p>
+                <p><strong>Color Key:</strong></p>
+                <div class="type-list">
+                    <span>
+                        Grass
+                    </span>
+                    <span>
+                        Fire
+                    </span>
+                    <span>
+                        Water
+                    </span>
+                    <span>
+                        Bug
+                    </span>
+                    <span>
+                        Normal
+                    </span>
+                    <span>
+                        Dark
+                    </span>
+                    <span>
+                        Poison
+                    </span>
+                    <span>
+                        Electric
+                    </span>
+                    <span>
+                        Ground
+                    </span>
+                    <span>
+                        Ice
+                    </span>
+                    <span>
+                        Fairy
+                    </span>
+                    <span>
+                        Steel
+                    </span>
+                    <span>
+                        Fighting
+                    </span>
+                    <span>
+                        Psychic
+                    </span>
+                    <span>
+                        Rock
+                    </span>
+                    <span>
+                        Ghost
+                    </span>
+                    <span>
+                        Dragon
+                    </span>
+                    <span>
+                        Flying
+                    </span>
+                </div>
+            </div>
         </div>
 
         <br><br><br><br>
@@ -127,6 +199,24 @@
             document.getElementById("typecomparepage").classList.add("disabled");
             document.getElementById("statcomparezone").classList.add("disabled");
             document.getElementById("dataset").classList.remove("disabled");
+        }
+
+        let modal = document.getElementById("helpModal");
+        let info = document.getElementById("infoButton");
+        let close = document.getElementsByClassName("close")[0];
+
+        info.onclick = function(){
+            modal.style.display = "block";
+        }
+
+        close.onclick = function(){
+            modal.style.display = "none";
+        }
+
+        window.onclick = function(e){
+            if(e.target == modal){
+                modal.style.display = "none";
+            }
         }
     </script> 
 </html>
