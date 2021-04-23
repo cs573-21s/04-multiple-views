@@ -6,19 +6,60 @@
         text-anchor: middle;
     }
 
+
+
+    body {
+        font-family: Sans-serif;
+        font-size: 11px;
+    }
+
+    .slice {
+        cursor: pointer;
+    }
+
+    .slice .main-arc {
+        stroke: #fff;
+        stroke-width: 1px;
+    }
+
+    .slice .hidden-arc {
+        fill: none;
+    }
+
+    .slice text {
+        pointer-events: none;
+        dominant-baseline: middle;
+        text-anchor: middle;
+    }
+
     .node--hover circle {
         stroke: #000;
         stroke-width: 1.2px;
+    }
+
+
+    table {
+        border-collapse: collapse;
+        border: 2px black solid;
+        font: 8px sans-serif;
+    }
+
+    td {
+        border: 1px black solid;
+        padding: 5px;
     }
 </style>
 
 <body>
     <h1> a4 </h1>
-</body>
+
+    <select id="selectButton"></select>
+
 
 <!-- <div id="svgrect"> </div> -->
-<svg width="960" height="960">
+<!-- <svg width="960" height="960">
     <g transform="translate(1,1)"></g>
-</svg>
+</svg> -->
+</body>
 
 <script defer src="./bubbles.js"></script>
