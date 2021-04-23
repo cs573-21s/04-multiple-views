@@ -22,8 +22,34 @@ var pack = d3.pack()
     .size([width - 2, height - 2])
     .padding(3);
 
-d3.csv("https://raw.githubusercontent.com/imogencs/04-multiple-views/main/gators.csv", function (data) {
+
+
+
+var nest = d3.nest()
+    .key(function (d) { return d.Kingdom; })
+    .key(function (d) { return d.Phylum; })
+    .key(function (d) { return d.Class; })
+    .key(function (d) { return d.Over; })
+    .key(function (d) { return d.Family; })
+    .key(function (d) { return d.Genus; })
+    .key(function (d) { return d.Species; })
+    .rollup(function (d) { return d3.sum(d, function (d) { return d.Species; }); });
+
+var treemap = d3.treemap()
+    .size([width, height])
+    .padding(1)
+    .round(true);
+
+d3.csv("https://raw.githubusercontent.com/imogencs/04-multiple-views/main/animals.csv", function (data) {
     // console.log(data.columns)
+
+
+    var root = d3.hierarchy({ values: nest.entries(data) }, function (d) { return d.values; })
+        .sum(function (d) { return d.value; })
+        .sort(function (a, b) { return b.value - a.value; });
+
+    treemap(root);
+
     console.log(data)
     // console.log(data.value)
     var root = stratify(data)
