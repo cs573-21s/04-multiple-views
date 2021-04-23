@@ -2,12 +2,16 @@ var cmap = d3.schemeDark2
     console.log(cmap)
 
     var shroom_data
+    var current_data
 
     // set the dimensions and margins of the page
     var margin = 50
     var title_margin = 150
     var width = window.innerWidth - margin
     var height = window.innerHeight - title_margin
+
+    // shroom filters
+    var spec_cap_color = ""
 
     // append the svg object to the body of the page
     // var svg = d3.select("#svgcontainer")
@@ -21,12 +25,23 @@ var cmap = d3.schemeDark2
     //Read the data
     d3.csv("https://raw.githubusercontent.com/jwu2018/04-multiple-views/main/data/cleaned_mushrooms.csv")
         .then(function(data) {
+
+            build_shroom_filters();
             shroom_data = data
+            current_data = data
             console.log('got data', shroom_data) 
+
+            build_poisonous_predictor();
     })
 
-    build_shroom_filters();
-    build_poisonous_predictor();
+
+    /**----------------------------------------------------------------------------------------
+     *                                       RESET DATA
+     *----------------------------------------------------------------------------------------**/
+    function reset_data(cap_color) {
+        current_data = shroom_data
+    }
+    
     
     /**----------------------------------------------------------------------------------------
      *                                     SHROOM FILTERS
@@ -64,7 +79,8 @@ var cmap = d3.schemeDark2
 
 
         /*-------------------------------- Initialize Shroom Graphics ------------------------------*/
-        
+        cap_color = "brown"
+
         var cap = d3.select("#svgcontainer")
             .append("svg")
             .append("circle")
@@ -83,10 +99,13 @@ var cmap = d3.schemeDark2
                 .style("fill", mycolor)
         }
 
+        /*-------------------------------- Button Changed ------------------------------*/
         // When the button is changed, run the update_shroom_color function
         cap_color_button.on("change", function(d) {
+            spec_cap_color = get_color(selectedOption)
             var selectedOption = d3.select(this).property("value")
-            update_shroom_color(get_color(selectedOption), "#cap")
+            update_shroom_color(spec_cap_color, "#cap")
+            
         })
     }
 
@@ -95,61 +114,12 @@ var cmap = d3.schemeDark2
      *                                 POISONOUS PREDICTOR
      *----------------------------------------------------------------------------------------**/
     function build_poisonous_predictor() {
-        // // set the dimensions and margins of the graph
-        // var width = 450
-        // height = 450
-        // margin = 40
+        // Get fraction that is edible
+        let fraction_edible = d3.sum(current_data, function(d){return parseFloat(d.class_binary)}) / 
+            current_data.length
 
-        // // The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
-        // var radius = Math.min(width, height) / 2 - margin
-
-        // var svg = d3.select("#piecontainer")
-        //     .append("svg")
-        //     .attr("width", width)
-        //     .attr("height", height)
-        //     .append("g")
-        //     .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
-        // // Create dummy data
-        // var data = {a: 9, b: 20, c:30, d:8, e:12}
-
-        // // console.log(Object.keys(data))
-
-        // // set the color scale
-        // var color = d3.scaleOrdinal()
-        //     .domain(Object.keys(data))
-        //     .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56"])
-
-        // // Compute the position of each group on the pie:
-        // var pie = d3.pie()
-        //     .value(function(d) {return d.value; })
-
-        // // console.log(pie)
-
-        // data_ready = pie(Object.entries(data))
-
-        // console.log(data_ready)
-
-        // // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
-        // svg
-        //     .selectAll('whatever')
-        //     .data(data_ready)
-        //     .enter()
-        //     .append('path')
-        //     .attr('d', d3.arc()
-        //         .innerRadius(0)
-        //         .outerRadius(radius)
-        //     )
-        //     .attr('fill', function(d){ return(color(d.data.key)) })
-        //     .attr("stroke", "black")
-        //     .style("stroke-width", "2px")
-        //     .style("opacity", 0.7)
-
-
-        var data = [1.1,2.2,4.46,2.12,1.36,5.002445,4.1242];
-
-        
-        console.log(d3.sum(shroom_data, function(d){return parseFloat(d.class_binary)}))
+        // Generate data for pie chart
+        var data = [fraction_edible, 1 - fraction_edible]
   
         // Selecting SVG using d3.select()
         var svg = d3.select("#piecontainer")
@@ -169,7 +139,9 @@ var cmap = d3.schemeDark2
   
         // Grouping different arcs
         var arcs = g.selectAll("arc")
-                    .data(pie(data))
+                    .data(pie(data.filter(function(d){ 
+                        return d.cap_color == cap_color 
+                    })))
                     .enter()
                     .append("g");
   
@@ -177,7 +149,7 @@ var cmap = d3.schemeDark2
         arcs.append("path")
             .attr("fill", (data, i)=>{
                 let value=data.data;
-                return d3.schemeSet3[i];
+                return d3.schemeTableau10[i];
             })
             .attr("d", arc);
     }
