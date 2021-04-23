@@ -12,10 +12,10 @@ let data,
 const numFormat = new Intl.NumberFormat();
 
 const config = {
-	stroke: '#000',
+	stroke: '#ececec',
 	map: {
 		fill: '#fff',
-		stroke: '#000'
+		stroke: '#ececec'
 	}
 };
 
@@ -38,20 +38,23 @@ function repaintMap(grow = false) {
 	if (grow) {
 		mapSvgDataPaths.sort((a, b) => a.isHidden ? 1 : -1);
 		mapSvgDataPaths.classed('grow', c => c.properties.ADMIN in data && !data[c.properties.ADMIN].isHidden);
-		// setTimeout(function() {
-		// 	mapSvgDataPaths.classed('grow', false);
-		// }, 1500);
 	}
 }
 
 function drawMap() {
 	// const outlierCountries = ['Iraq', 'Pakistan', 'Afghanistan'];
-	const outlierCountries = Object.values(data).filter(c => c.total >= 1000).map(c => c.Entity);
+	// const outlierCountries = Object.values(data).filter(c => c.total >= 1000).map(c => c.Entity);
+	const outlierCountries = [];
 	const outlierColorMappingScale = d3.scaleLinear().domain(d3.extent([
 		...outlierCountries.map(oc => data[oc]).map(a => Math.min(...Object.entries(a).filter(([key, value]) => categories.includes(key)).map(([key, value]) => value))),
 		...outlierCountries.map(oc => data[oc]).map(a => Math.max(...Object.entries(a).filter(([key, value]) => categories.includes(key)).map(([key, value]) => value)))
 	])).range(["pink", "red"]);
-	const colorMappingScale = d3.scaleLinear().domain(d3.extent([0, ...Object.values(data).filter(c => !outlierCountries.includes(c.Entity)).map(a => Math.max(...Object.entries(a).filter(([key, value]) => categories.includes(key)).map(([key, value]) => value)))])).range(["#edf5ff", "#001d6c"]);
+	// const colorMappingScale = d3.scaleLinear().domain(d3.extent([0, ...Object.values(data).filter(c => !outlierCountries.includes(c.Entity)).map(a => Math.max(...Object.entries(a).filter(([key, value]) => categories.includes(key)).map(([key, value]) => value)))])).range(["#edf5ff", "#001d6c"]);
+	const colorMappingScale = d3.scaleSequential(d =>
+		d3.interpolateReds(
+			d3.scaleLog().domain(d3.extent(Object.values(data).map(a => a.total)))(d)
+		)
+	);
 	
 	svgMap.selectAll('*').remove();
 
@@ -65,7 +68,7 @@ function drawMap() {
 		.style('transform-origin', c => c.properties.ADMIN in data ? `${countryCentroids[c.properties.ADMIN][0]}px ${countryCentroids[c.properties.ADMIN][1]}px` : null)
 		.attr('fill', c => {
 			if (!(c.properties.ADMIN in data)) {
-				return 'white';
+				return 'black';
 			}
 			return outlierCountries.includes(c.properties.ADMIN)
 				? outlierColorMappingScale(Math.max(...Object.entries(data[c.properties.ADMIN]).filter(([key, value]) => categories.includes(key)).map(([key, value]) => value)))
@@ -204,7 +207,24 @@ function drawTable() {
 	}
 }
 
+function help(event) {
+	const modalElts = document.querySelectorAll('.modal, .overlay');
+	for (const elt of modalElts) {
+		elt.classList.add('open');
+	}
+}
+
+function unhelp(event) {
+	const modalElts = document.querySelectorAll('.modal, .overlay');
+	for (const elt of modalElts) {
+		elt.classList.remove('open');
+	}
+}
+
 window.addEventListener('load', async function() {
+	document.querySelector('.help').addEventListener('click', help);
+	document.querySelector('.overlay').addEventListener('click', unhelp);
+	document.querySelector('.unhelp').addEventListener('click', unhelp);
 
 	svgMap = d3.select('#map');
 	svgBar = d3.select('#bar');

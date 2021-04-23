@@ -6,9 +6,18 @@
 	<title>04 Multiple Views | Ryan LaMarche</title>
 	<script async src='https://cdnjs.cloudflare.com/ajax/libs/d3/6.5.0/d3.min.js' integrity='sha512-0XfwGD1nxplHpehcSVI7lY+m/5L37PNHDt+DOc7aLFckwPXjnjeA1oeNbru7YeI4VLs9i+ADnnHEhP69C9CqTA==' crossorigin='anonymous'></script>
 	<script defer src='/index.js'></script>
+	<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css' integrity='sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==' crossorigin='anonymous'/>
+	<link rel="stylesheet" href="/normalize.css">
 	<link rel="stylesheet" href="/index.css">
 </head>
 <body>
+	<div class="header">
+		<h1>World Map of Terrorist Attacks (2008-2017)</h1>
+	</div>
+	<button class="help">
+		<i class="fas fa-question-circle"></i>
+		How do I use this page?
+	</button>
 	<svg id="map"></svg>
 	<svg id="bar"></svg>
 	<table id="table">
@@ -22,5 +31,16 @@
 			
 		</tbody>
 	</table>
+	<div class="overlay"></div>
+	<div class="modal">
+		<h2>What am I looking at?</h2>
+		<p>This map shows terrorist attacks by country spanning 10 years (2008-2017). On the left you'll find a bar chart that shows which categories the different terrorist attacks fall into.</p>
+		<p>The countries are colored on a logarithmic scale based on the total number of terrorist attacks in that country.</p>
+		<p>Countries on the map which are colored black are missing data.</p>
+		<h2>What do I do with it?</h2>
+		<p>Click and drag on the map to filter the data. You'll see the bar chart and table change as you go.</p>
+		<p>To see the data for just 1 country, click the country's name in the table below</p>
+		<button class="unhelp"><i class="fas fa-times"></i></button>
+	</div>
 </body>
 </html>
