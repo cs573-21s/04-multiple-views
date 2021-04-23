@@ -13,17 +13,31 @@
     }
 
     text {
-        font-family: sans-serif;
-        font-weight: bold;
+      font-family: sans-serif;
+      font-weight: bold;
+    }
+
+    .vis {
+      display: flex;
+    }
+
+    .filter-text {
+      margin-left: 80px;
     }
 
   </style>
 </head>
 <body>
 
-    <svg id="map" width="1200" height="800"></svg>
-    <h1 id='map-selected-text'>United States</h1>
-
+    <div class="vis">
+      <svg id="map" width="1200" height="700"></svg>
+      <svg id="bargraph" width="600" height="700"></svg>
+    </div>
+    <div class="filter-text">
+      <h1 id='map-selected-text'>United States</h1>
+      <h1 id="barchart-text"></h1>
+    </div>
+    
     <script>
         console.log(d3);
         
@@ -42,17 +56,26 @@
         // 5 - state_MultitapBar
         // 6 - state_BOP-BrewOnPremise 
 
+        // Bargraph variables
+        var state = '0400000US06'
+        var filter = 'Total'
+
+        var types = ['Brewpubs', 'Microbreweries', 'Regional', 'Contract', 'Multitap', 'Brew on Premise']
+        var colors = ['#003f5c', '#444e86', '#955196', '#dd5182', '#ff6e54', '#ffa600']
+
         const SELECTED_COLOR = "#d36f80"
 
-        var svg = d3.select("svg"),
-        width = +svg.attr("width"),
-        height = +svg.attr("height");
+        var map_svg = d3.select("#map"),
+        width = +map_svg.attr("width"),
+        height = +map_svg.attr("height");
+
+        var bargraph_svg = d3.select("#bargraph")
 
         // Map and projection
         var projection = d3.geoMercator()
-          .scale(1100)
+          .scale(1050)
           .center([0,0])
-          .translate([2.05*width,height*1.45]);
+          .translate([1.93*width,height*1.60]);
         var path = d3.geoPath().projection(projection)
 
         // Data and color scale
@@ -69,13 +92,13 @@
 
         function draw(error, topo) {
           drawMap(error, topo)
-          // drawChart(error, topo)
+          createBargraph(error, topo)
         }
 
         function drawMap(error, topo) {
 
           // Draw the map
-          svg.append("g")
+          map_svg.append("g")
             .selectAll("path")
             .data(topo.features)
             .enter()
@@ -86,9 +109,9 @@
               .attr("fill", (d,i) => colorScale(data.get(d.properties.GEO_ID)[selectedFilter]))
               .attr("stroke", "#FFF")
               .attr("stroke-width", 1)
-              .on("click", clickHandler)
+              .on("click", clickMapHandler)
 
-            svg.append("g")
+              map_svg.append("g")
               .selectAll("text")
               .data(topo.features)
               .enter()
@@ -101,7 +124,7 @@
               .text(d => d.properties.NAME);
         }
 
-        async function clickHandler(d,i) {
+        async function clickMapHandler(d,i) {
 
           console.log("clicked: " + d.properties.NAME)
           console.log("clicked: " + data.get(d.properties.GEO_ID)[selectedFilter])
@@ -130,9 +153,50 @@
                 selectedState = null
                 selectedStateData = null
                 document.getElementById("map-selected-text").innerHTML = "United States"
-              }
-                
+              }         
           }
+        }
+
+        function createBargraph(error, topo) {
+
+          var width = 450;
+          var height = 250;
+
+          document.getElementById("barchart-text").innerHTML = filter
+
+          var xScale = d3.scaleBand().range ([0, width]).padding(0.4),
+              yScale = d3.scaleLinear().range ([height, 0]);
+
+          var g = bargraph_svg.append('g')
+              .attr('transform', "translate(" + 0 + "," + 400 + ")");
+
+          xScale.domain(types);
+          yScale.domain([0, d3.max(data.get(state).slice(1,7), function(d) { return d; })]);
+
+          g.append("g")
+          .attr("transform", "translate(0," + height + ")")
+          .call(d3.axisBottom(xScale))
+
+          g.append("g")
+          .call(d3.axisLeft(yScale).tickFormat(function(d){
+              return d;
+          }).ticks(7))
+
+          g.selectAll(".bar")
+            .data(data.get(state).slice(1,7))
+            .enter().append("rect")
+            .attr("class", "bar")
+            .attr("x", (d, i) => xScale(types[i]))
+            .attr("y", function(d) { return yScale(d); })
+            .attr("width", xScale.bandwidth())
+            .attr("height", function(d) { return height - yScale(d); })
+            .attr("fill", (d,i) => colors[i])
+            .on("click", clickBarHandler)
+          }
+
+        async function clickBarHandler(d,i) {
+          console.log(types[i])
+          document.getElementById("barchart-text").innerHTML = types[i]
         }
 
 
