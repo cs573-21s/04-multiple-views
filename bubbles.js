@@ -18,18 +18,8 @@ var pack = d3.pack()
     .size([width - 2, height - 2])
     .padding(3);
 
-d3.csv("https://raw.githubusercontent.com/imogencs/04-multiple-views/main/animals.csv").then(function (data) {
-
-    // var nest = d3.nest() // allows elements in an array to be grouped into a hierarchical tree structure
-    //     .key() // levels in the tree are specified by key functions. can have multiple keys
-    //     .rollup() // Specifies a rollup function to be applied on each group of leaf elements. The return value of the rollup function will replace the array of leaf values in either the associative array returned by nest.map or nest.object; for nest.entries, it replaces the leaf entry.values with entry.value.
-    // var root = d3.hierarchy({ data: nest.entries(data) }, function (d) { return d.data; })
-    //     .sum(function (d) { return d.value; })
-
-    // treemap(root)
-
-    console.log(data.class)
-    console.log(data.columns)
+d3.csv("https://raw.githubusercontent.com/imogencs/04-multiple-views/main/animals.csv", function (data) {
+    // console.log(data.columns)
     var root = stratify(data)
         .sum(function (d) { return d.value; })
         .sort(function (a, b) { return b.value - a.value; });
