@@ -45,7 +45,7 @@ d3.csv("https://raw.githubusercontent.com/jwu2018/04-multiple-views/main/data/cl
         current_data = shroom_data
         
         data_length = current_data.length
-        console.log('data length', data_length)
+        // console.log('data length', data_length)
         
         console.log('got data', current_data) 
         // console.log('data type', typeof current_data)
@@ -69,7 +69,8 @@ d3.csv("https://raw.githubusercontent.com/jwu2018/04-multiple-views/main/data/cl
     }
 
     function remove_charts() {
-        d3.select("#piesvg").remove();
+        d3.select("#piesvg").remove()
+        d3.select('#barsvg').remove()
     }
 
     function reset_data() {
@@ -81,7 +82,7 @@ d3.csv("https://raw.githubusercontent.com/jwu2018/04-multiple-views/main/data/cl
         //   return s[key] == t[key]
         // }));
 
-        console.log('new cap color', filters.spec_cap_color)
+        // console.log('new cap color', filters.spec_cap_color)
 
         current_data=data.filter(function(row){return row.cap_color != filters.spec_cap_color;});
 
@@ -90,7 +91,7 @@ d3.csv("https://raw.githubusercontent.com/jwu2018/04-multiple-views/main/data/cl
         //     return d.cap_color != filters.spec_cap_color 
         // })
 
-        console.log('new data', current_data)
+        // console.log('new data', current_data)
     }
 
 
@@ -149,15 +150,15 @@ d3.csv("https://raw.githubusercontent.com/jwu2018/04-multiple-views/main/data/cl
                 .style("fill", mycolor)
         }
 
-        /*-------------------------------- Button Changed ------------------------------*/
+        /*-------------------------------- Buttons Changed ------------------------------*/
         // When the button is changed, run the update_shroom_color function
         cap_color_button.on("change", function(d) {
             var selectedOption = d3.select(this).property("value")
 
-            filters.spec_cap_color = get_color(selectedOption)
-            console.log('just changed color to', filters.spec_cap_color)
+            filters.spec_cap_color = selectedOption
+            console.log('just changed cap color to', filters.spec_cap_color)
             
-            update_shroom_color(filters.spec_cap_color, "#cap")
+            update_shroom_color(get_color(filters.spec_cap_color), "#cap")
             update_charts()
         })
     }
@@ -263,6 +264,8 @@ d3.csv("https://raw.githubusercontent.com/jwu2018/04-multiple-views/main/data/cl
 
 
         // Cap color bar
+        // console.log('length of shroom data', shroom_data.length)
+        // console.log(filters.spec_cap_color)
         let percentage = d3.sum(shroom_data, function(d){
             // console.log(d.cap_color, filters.spec_cap_color)
             if (d.cap_color == filters.spec_cap_color) {
@@ -270,25 +273,46 @@ d3.csv("https://raw.githubusercontent.com/jwu2018/04-multiple-views/main/data/cl
                 return 1
             }
             else {return 0}
-        }) / data_length * 100
+        }) 
 
-        console.log('percentage', percentage)
+        // console.log('sum', percentage)
+        
+        percentage = percentage / data_length * 100
 
-        console.log('x', xScale("Cap Color"))
-        console.log('y', yScale(percentage))
-        console.log('width', xScale.bandwidth())
-        console.log('height', height/3 - yScale(percentage))
+        // console.log('percentage', percentage)
+
+        // console.log('x', xScale("Cap Color"))
+        // console.log('y', yScale(percentage))
+        // console.log('width', xScale.bandwidth())
+        // console.log('height', height/3 - yScale(percentage))
 
         g.selectAll(".bar")
             .data(data)
             .enter().append("rect")
             .attr("class", "bar")
-            .attr('fill', filters.spec_cap_color)
+            .attr('fill', get_color(filters.spec_cap_color))
             .attr("x", xScale("Cap Color"))
             .attr("y", yScale(percentage))
             .attr("width", xScale.bandwidth())
             .attr("height", function(d) { return height/3 - yScale(percentage); });
     
-        
+        svg.append("text")
+            // .attr("transform", "translate(100,0)")
+            .attr("x", width/2)
+            .attr("y", 50)
+            .attr("font-size", "24px")
+            .style("text-anchor", "middle")
+            .text("Percentage of Mushrooms with Each Characteristic")
+
+
+        g.append("g")
+            // .attr("transform", "translate(0," + height + ")")
+            // .call(d3.axisBottom(xScale))
+            .append("text")
+            .attr("y", height/2 - 50)
+            .attr("x", width/2)
+            .attr("text-anchor", "end")
+            // .attr("stroke", "black")
+            .text("Characteristic");
     }
 })
