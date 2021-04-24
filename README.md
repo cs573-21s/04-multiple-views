@@ -1,59 +1,51 @@
 Assignment 4 - Visualizations and Multiple Views  
 ===
+Khulood Alkhudaidi
 
-One of the most powerful techniques for mitigating the shortcomings of a given visualization is to link it with other views.
-Linking a map to a bar or scatterplot, for instance, may allow you to overcome the shortcomings of a map.
-In general, linking visualizations allows you to explore different parts of the data between views, and mitigates the shortcomings of a given view by pairing it with other views.
-This technique, called coordinated multiple views, is the focus of this assignment.
+Introduction
+---
+The goal of this assignment is to create multiple views and link them where interactions in any given view updates the others. 
+That allows the user to explore different parts of the data between views.
 
-Your task is to choose an interesting dataset and visualize it in *at least two* **linked** views, where interactions in any given view updates the others.
-Each view should use a different visualization type, and interaction in one of the views should impact what's shown in the other views.
+Github Pages Link
+---
+https://khulood20.github.io/04-multiple-views/index.html
 
-You should choose data and visualizations that are sufficiently complex and interesting to ensure a user can discover interesting patterns and trends on their own.
+Description
+---
+<p>I chose to visualize data for Suicide Rates Overview 1985 to 2016 [1]. It has 27821 items, so I visualized the average of the first five years, namely (1985 -1990). 
+I started with a code [2] from bl.ocks.org. The code has a bar chart, so I created a scatter plot, linked them together, and added interaction between them. </p>
 
-For this assignment you should write everything from scratch.
-You may *reference and adapt* code from books or the web, and if you do please provide a References section with links at the end of your Readme.
+- For the scatterplot side: A brush was created so that when the user brushes the scatterplot, the bar chart gets filtered. </br>
+
+![screenshot1](https://github.com/Khulood20/04-multiple-views/blob/main/img/screen1.png)
+
+- For the bar chart side: a hover event was added so that when the user hovers over a bar, the corresponding circle in the scatterplot is colored in red. </br> </br>
+
+![screenshot2](https://github.com/Khulood20/04-multiple-views/blob/main/img/screen2.png)
+
+
+Technical Achievements
+---
+- Linking and Filtering through brushing technique
+- Coloring scatterplot circle when hovering on a bar
+
+Design Achievements
+---
+- A blue gradient color for the bar chart from light to dark to indicate the high to low suicides rate
+- Animating the bars when filtering
+- Using google fonts
+
+<p> A sketch and a color palette: </p>
+
+![pa](https://github.com/Khulood20/04-multiple-views/blob/main/img/pa.png)
+
+![sketch](https://github.com/Khulood20/04-multiple-views/blob/main/img/screen.jpeg)
+
 
 Resources
 ---
 
-Data is Plural has a list of interesting datasets, many of which require processing.
-
-These three examples are intended to show you what multiple views visualizations might look like. 
-I wouldn't recommend using them as a your starting point, but you may find some inspiration:
-
-1. This [scatterplot matrix](http://bl.ocks.org/mbostock/4063663) has code that explains brushing and linking. But remember you'll be doing this with different types of views.
-
-2. The example visualization for [Crossfilter](http://square.github.io/crossfilter/) uses coordinated multiple views. The interaction and brushing technique is well-executed.
-
-3. The [dispatching events](https://github.com/d3/d3-dispatch) page is a good example of using events, rather than explicit functions, for controlling behavior. Views can listen for events in other views and respond accordingly.
-
-*If you aren't familiar with event-based programming you should experiment with d3.dispatch and other approaches to coordinating views well before the deadline (it's tricky.)*
-
-Don't forget to run a local webserver when you're coding and debugging.
-
-Requirements
----
-
-0. Your code should be forked from the GitHub repo and linked using GitHub pages.
-1. Your project should load a dataset you found on the web. Put this file in your repo.
-2. Your project should use d3 to build a visualization of the dataset. 
-3. Your writeup (readme.md in the repo) should contain the following:
-
-- Working link to the visualization hosted on gh-pages.
-- Concise description and screenshot of your visualization.
-- Description of the technical achievements you attempted with this visualization.
-- Description of the design achievements you attempted with this visualization.
-
-GitHub Details
----
-
-- Fork the GitHub Repository. You now have a copy associated with your username.
-- Make changes to index.html to fulfill the project requirements. 
-- Make sure your "master" branch matches your "gh-pages" branch, if using gh-pages for hosting. See the GitHub Guides referenced above if you need help.
-- Edit the README.md with a link to your site, for example http://YourUsernameGoesHere.github.io/04-MapsAndViews/index.html
-- To submit, make a [Pull Request](https://help.github.com/articles/using-pull-requests/) on the original repository. Name it: 
-```
-a4-username-firstName-lastName
-```
-
+1. https://www.kaggle.com/russellyates88/suicide-rates-overview-1985-to-2016
+2. http://bl.ocks.org/San-dra/9400b1bbc5c34cec4b96b67072aab4cc
+3. https://fonts.google.com/specimen/Roboto+Mono?preview.text=Suicides%20Rate&preview.text_type=custom&vfonly=true#standard-styles
