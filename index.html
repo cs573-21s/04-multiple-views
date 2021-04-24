@@ -1,12 +1,14 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="">
   <title>Assignment-4</title>
- 
-  <link rel="stylesheet" href="/stylesheet.css">
+
+  <link rel="stylesheet" href="./stylesheet.css">
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 
 </head>
@@ -35,278 +37,113 @@
   <script src="https://d3js.org/d3.v6.min.js"></script>
 
   <script>
-    
-  //declare a variabe to store selction information by brush
-  let brushSelection = [[0, 0], [0, 0]];
 
-  // Bar Char
-  var margin = { top: 20, right: 20, bottom: 60, left: 43 }
-  var graphwidth = 600 - margin.left - margin.right
-  var graphheight = 600 - margin.top - margin.bottom
+    //declare a variabe to store selction information by brush
+    let brushSelection = [[0, 0], [0, 0]];
 
-  // Add an svg elemnet
-  const canvas = d3.select("#section1");
-  const svg = canvas.append("svg")
-    .attr("width", "100%")
-    .attr("height", "100%")
-    .append("g")
-    .attr("transform", `translate(${margin.left + 40}, ${margin.top + 60})`);
+    // Bar Char
+    var margin = { top: 20, right: 20, bottom: 60, left: 43 }
+    var graphwidth = 600 - margin.left - margin.right
+    var graphheight = 600 - margin.top - margin.bottom
 
-
-  // Scatterplot
-  const MARGIN = { LEFT: 150, RIGHT: 90, TOP: 100, BOTTOM: 90 }
-  const WIDTH = 600 - MARGIN.LEFT - MARGIN.RIGHT
-  const HEIGHT = 400 - MARGIN.TOP - MARGIN.BOTTOM
-  const radiusScale = d3.scaleSqrt()
-
-  // Creating svg
-  const canvas2 = d3.select("#section2");
-  const svg2 = canvas2.append("svg")
-    .attr("width", "100%")
-    .attr("height", "100%");
-
-  //Vis group
-  const g2 = svg2.append("g")
-    .attr("transform", `translate(${MARGIN.LEFT + 85}, ${MARGIN.TOP + 215})`);
+    // Add an svg elemnet
+    const canvas = d3.select("#section1");
+    const svg = canvas.append("svg")
+      .attr("width", "100%")
+      .attr("height", "100%")
+      .append("g")
+      .attr("transform", `translate(${margin.left + 40}, ${margin.top + 60})`);
 
 
-  // Tooltip
-  var tt = d3.select(".tooltip-container")
-    .append("div")
-    .attr("class", "toolTip_head")
-  var tt2 = d3.select(".tooltip-container")
-    .append("div")
-    .attr("class", "toolTip_subhead")
-  var tt3 = d3.select(".tooltip-container")
-    .append("div")
-    .attr("class", "toolTip_body_bold")
-  var tt4 = d3.select(".tooltip-container")
-    .append("div")
-    .attr("class", "toolTip_body")
-  var tt5 = d3.select(".tooltip-container")
-    .append("div")
-    .attr("class", "toolTip_caption")
+    // Scatterplot
+    const MARGIN = { LEFT: 150, RIGHT: 90, TOP: 100, BOTTOM: 90 }
+    const WIDTH = 600 - MARGIN.LEFT - MARGIN.RIGHT
+    const HEIGHT = 400 - MARGIN.TOP - MARGIN.BOTTOM
+    const radiusScale = d3.scaleSqrt()
 
-  var isClicked = false;
+    // Creating svg
+    const canvas2 = d3.select("#section2");
+    const svg2 = canvas2.append("svg")
+      .attr("width", "100%")
+      .attr("height", "100%");
 
-  var currency = d3.format(".2s")
-  var round = d3.format(",d")
-  var isClicked = false;
+    //Vis group
+    const g2 = svg2.append("g")
+      .attr("transform", `translate(${MARGIN.LEFT + 85}, ${MARGIN.TOP + 215})`);
 
 
+    // Tooltip
+    var tt = d3.select(".tooltip-container")
+      .append("div")
+      .attr("class", "toolTip_head")
+    var tt2 = d3.select(".tooltip-container")
+      .append("div")
+      .attr("class", "toolTip_subhead")
+    var tt3 = d3.select(".tooltip-container")
+      .append("div")
+      .attr("class", "toolTip_body_bold")
+    var tt4 = d3.select(".tooltip-container")
+      .append("div")
+      .attr("class", "toolTip_body")
+    var tt5 = d3.select(".tooltip-container")
+      .append("div")
+      .attr("class", "toolTip_caption")
 
-  // -- 1985 - 1990 -- //
-  d3.csv("/1985-1990.csv").then(data => {
-    data.forEach(d => {
-      d.suicides_per100k = Number(d.suicides_per100k)
-      d.gdp_per_capita = Number(d.gdp_per_capita) / 100
-    })
+    var isClicked = false;
 
-    // the highest 25 countries 
-    data.sort((b, a) => a.suicides_per100k - b.suicides_per100k)
-    data = data.slice(0, 25)
-
-    console.log(data)
-
-    // ..................... Bar Chart  ............. //
-
-    // scales
-    var color = d3.scaleLinear()
-      .domain(d3.extent(data, d => d.suicides_per100k))
-      .range(["#DAE9EF", "#31738E"]);
-
-    //X scale
-    var x = d3.scaleLinear()
-      .domain([0, d3.max(data, d => d.suicides_per100k)])
-      .range([0, graphwidth])
-
-    //Y scale
-    var y = d3.scaleBand()
-      .domain(data.map(d => d.countrycode))
-      .rangeRound([0, graphheight])
-      .paddingInner(0.5)
-
-    //Y axis: define
-    var yAxis = d3.axisLeft()
-      .scale(y)
-
-    //Call Y-axis
-    svg.append("g")
-      .attr("class", "y-axis")
-      .call(yAxis)
-
-
-    //the plotting area
-    var bar = svg.append('g')
-      .attr('class', 'svgBar');
-
-    bar.selectAll(".bar")
-      .data(data)
-      .enter()
-      .append("rect")
-      .attr("class", "bar")
-      .attr("y", d => y(d.countrycode))
-      .on("mouseover", hovering)
-      .on("mouseout", function (d) {
-        if (!isClicked) {
-          tt.style("display", "none")
-          tt2.style("display", "none")
-          tt3.style("display", "none")
-          tt4.style("display", "none")
-          tt5.style("display", "none")
-          circle.style("fill", "#31738E")
-        }
-      })
-      .transition()
-      .duration(1000)
-      .delay((d, i) => i * 25)
-      .attr("height", y.bandwidth())
-      .attr("width", d => x(d.suicides_per100k))
-      .attr("fill", d => color(d.suicides_per100k))
+    var currency = d3.format(".2s")
+    var round = d3.format(",d")
+    var isClicked = false;
 
 
 
-
-    // ........... Scatter plot ........... //
-
-    //Lables
-    g2.append("text")
-      .attr("x", WIDTH / 2)
-      .attr("y", HEIGHT + 70)
-      .attr("font-size", "14px")
-      .attr("font-family", "sans-serif")
-      .attr("text-anchor", "middle")
-      .attr("fill", "#444444")
-      .text("GDP per Capita");
-
-    g2.append("text")
-      .attr("x", -(HEIGHT / 2))
-      .attr("y", -60)
-      .attr("transform", "rotate(-90)")
-      .attr("font-size", "14px")
-      .attr("font-weight", "500")
-      .attr("font-family", "sans-serif")
-      .attr("text-anchor", "middle")
-      .attr("fill", "#444444")
-      .text("Suicides Rate");
-
-
-    //Axis   (1.Scaler - 2.Build axis - 3.Call axis)
-
-    const xScaler = d3.scaleLinear()
-      .domain(d3.extent(data, d => d.gdp_per_capita))
-      .range([0, WIDTH]);
-
-    const xAxisPlot = d3.axisBottom(xScaler)
-      .tickFormat(d3.format("d"))
-      .tickValues([20, 40, 60, 80, 100, 120, 140, 160, 180, 200, 220, 240, 260, 280])
-
-    g2.append("g")
-      .attr("transform", `translate(0, ${HEIGHT + 30})`)
-      .attr("class", "y-axis")
-      .call(xAxisPlot)
-      .call(g2 => g2.select(".domain").remove())
-      .selectAll("text")
-      .style("fill", "#444444")
-
-
-    const yScaler = d3.scaleLinear()
-      .domain(d3.extent(data, d => d.suicides_per100k))
-      .range([HEIGHT, 0]);
-
-    const yAxisPlot = d3.axisLeft(yScaler)
-      .tickValues([600, 800, 1000, 1200, 1400, 1600, 1800, 2000, 2200, 2400])
-
-    g2.append("g")
-      .attr("transform", `translate(-10, 0)`)
-      .attr("class", "y-axis")
-      .call(yAxisPlot)
-      .call(g2 => g2.select(".domain").remove())
-      .selectAll("text")
-      .style("fill", "#444444")
-
-    const circle = g2.selectAll("circle")
-      .data(data).enter()
-      .append("circle")
-      .attr("cx", d => xScaler(d.gdp_per_capita))
-      .attr("cy", d => yScaler(d.suicides_per100k))
-      .attr("r", 8)
-      .on("mouseover", hovering)
-      .on("mouseout", function (d) {
-        if (!isClicked) {
-          tt.style("display", "none")
-          tt2.style("display", "none")
-          tt3.style("display", "none")
-          tt4.style("display", "none")
-          tt5.style("display", "none")
-          circle.style("fill", "#31738E")
-        }
-      })
-      .attr("fill", "#31738E")
-      .style("opacity", 0.6)
-
-
-    // Function to color the  Scatter circles on hover
-    function hovering(event, d) {
-      tt.style("display", "block")
-        .html(d.country)
-      tt2.style("display", "block")
-        .html(d.period)
-      tt3.style("display", "inline-block")
-        .html("Suicides"
-          + "<br/>" + "Suicides per 100k*"
-          + "<br/>" + "GDP*"
-          + "<br/>" + "GDP per capita*")
-      tt4.style("display", "inline-block")
-        .html(round(d.suicides_no)
-          + "<br/>" + round(d.suicides_per100k)
-          + "<br/>" + "$" + currency(d.gdp_for_year)
-          + "<br/>" + "$" + currency(d.gdp_per_capita))
-      tt5.style("display", "block")
-        .html("*Average during period")
-
-      var selected_x = xScaler(d.gdp_per_capita)
-      var selected_y = yScaler(d.suicides_per100k)
-
-      circle.style("fill", d => {
-        if (
-          selected_x == xScaler(d.gdp_per_capita) &&
-          selected_y == yScaler(d.suicides_per100k)
-        ) {
-          return "#FF0000";
-        }
-        else {
-          return "#31738E";
-        }
-      })
-    }
-
-
-    //////////////
-    ////Brushing //// 
-    ////////////
-
-    //..................................dispatch event...................................
-    const dispatch = d3.dispatch('brushScatter');
-
-    dispatch.on('brushScatter.bar', function (extentSelection) {
-      
-      var barSvg = document.querySelector('.svgBar')
-      barSvg.innerHTML = '';
-
-      var newdata = data.filter(function (d) {
-        console.log(yScaler(d.suicides_per100k), brushSelection[0][1], brushSelection[1][1])
-
-        return xScaler(d.gdp_per_capita) > brushSelection[0][0] && xScaler(d.gdp_per_capita) < brushSelection[1][0]
-          && yScaler(d.suicides_per100k) > brushSelection[0][1] && yScaler(d.suicides_per100k) < brushSelection[1][1]
+    // -- 1985 - 1990 -- //
+    d3.csv("/1985-1990.csv").then(data => {
+      data.forEach(d => {
+        d.suicides_per100k = Number(d.suicides_per100k)
+        d.gdp_per_capita = Number(d.gdp_per_capita) / 100
       })
 
+      // the highest 25 countries 
+      data.sort((b, a) => a.suicides_per100k - b.suicides_per100k)
+      data = data.slice(0, 25)
 
-      //Animate the barcharts 
+      console.log(data)
 
+      // ..................... Bar Chart  ............. //
+
+      // scales
+      var color = d3.scaleLinear()
+        .domain(d3.extent(data, d => d.suicides_per100k))
+        .range(["#DAE9EF", "#31738E"]);
+
+      //X scale
+      var x = d3.scaleLinear()
+        .domain([0, d3.max(data, d => d.suicides_per100k)])
+        .range([0, graphwidth])
+
+      //Y scale
+      var y = d3.scaleBand()
+        .domain(data.map(d => d.countrycode))
+        .rangeRound([0, graphheight])
+        .paddingInner(0.5)
+
+      //Y axis: define
+      var yAxis = d3.axisLeft()
+        .scale(y)
+
+      //Call Y-axis
+      svg.append("g")
+        .attr("class", "y-axis")
+        .call(yAxis)
+
+
+      //the plotting area
+      var bar = svg.append('g')
+        .attr('class', 'svgBar');
 
       bar.selectAll(".bar")
-        .data(newdata)
+        .data(data)
         .enter()
         .append("rect")
         .attr("class", "bar")
@@ -328,44 +165,209 @@
         .attr("height", y.bandwidth())
         .attr("width", d => x(d.suicides_per100k))
         .attr("fill", d => color(d.suicides_per100k))
-    })
-    //.................................dispatch event end.................................
 
 
-    //append g element
-    const g3 = svg2
-      .append("g")
-      .attr("class", "g")
-      .attr("transform", `translate( ${MARGIN.LEFT + 85}, ${MARGIN.TOP + 215})`)
 
-    //declare brush
-    const brush = d3
-      .brush()
-      .on("brush", brushed)
-      .on("end", brushend)
-      .extent([[-10, -10], [WIDTH + 10, HEIGHT + 10]])
 
-    // create svg group element for brush
-    const gBrush = g3.append("g").attr("class", "gBrush")
+      // ........... Scatter plot ........... //
 
-    // call brush on brush group element
-    gBrush.call(brush)
+      //Lables
+      g2.append("text")
+        .attr("x", WIDTH / 2)
+        .attr("y", HEIGHT + 70)
+        .attr("font-size", "14px")
+        .attr("font-family", "sans-serif")
+        .attr("text-anchor", "middle")
+        .attr("fill", "#444444")
+        .text("GDP per Capita");
 
-    // style brushed circles
-    function brushed() {
-      // use d3.brushSelection to get bounds of the brush
-      const ext = d3.brushSelection(this);
-      // what happen with the bounds of the brush:
-      brushSelection = ext;
-    }
+      g2.append("text")
+        .attr("x", -(HEIGHT / 2))
+        .attr("y", -60)
+        .attr("transform", "rotate(-90)")
+        .attr("font-size", "14px")
+        .attr("font-weight", "500")
+        .attr("font-family", "sans-serif")
+        .attr("text-anchor", "middle")
+        .attr("fill", "#444444")
+        .text("Suicides Rate");
 
-    function brushend() {
-      dispatch.call('brushScatter', this, brushSelection)
-    }
+
+      //Axis   (1.Scaler - 2.Build axis - 3.Call axis)
+
+      const xScaler = d3.scaleLinear()
+        .domain(d3.extent(data, d => d.gdp_per_capita))
+        .range([0, WIDTH]);
+
+      const xAxisPlot = d3.axisBottom(xScaler)
+        .tickFormat(d3.format("d"))
+        .tickValues([20, 40, 60, 80, 100, 120, 140, 160, 180, 200, 220, 240, 260, 280])
+
+      g2.append("g")
+        .attr("transform", `translate(0, ${HEIGHT + 30})`)
+        .attr("class", "y-axis")
+        .call(xAxisPlot)
+        .call(g2 => g2.select(".domain").remove())
+        .selectAll("text")
+        .style("fill", "#444444")
+
+
+      const yScaler = d3.scaleLinear()
+        .domain(d3.extent(data, d => d.suicides_per100k))
+        .range([HEIGHT, 0]);
+
+      const yAxisPlot = d3.axisLeft(yScaler)
+        .tickValues([600, 800, 1000, 1200, 1400, 1600, 1800, 2000, 2200, 2400])
+
+      g2.append("g")
+        .attr("transform", `translate(-10, 0)`)
+        .attr("class", "y-axis")
+        .call(yAxisPlot)
+        .call(g2 => g2.select(".domain").remove())
+        .selectAll("text")
+        .style("fill", "#444444")
+
+      const circle = g2.selectAll("circle")
+        .data(data).enter()
+        .append("circle")
+        .attr("cx", d => xScaler(d.gdp_per_capita))
+        .attr("cy", d => yScaler(d.suicides_per100k))
+        .attr("r", 8)
+        .on("mouseover", hovering)
+        .on("mouseout", function (d) {
+          if (!isClicked) {
+            tt.style("display", "none")
+            tt2.style("display", "none")
+            tt3.style("display", "none")
+            tt4.style("display", "none")
+            tt5.style("display", "none")
+            circle.style("fill", "#31738E")
+          }
+        })
+        .attr("fill", "#31738E")
+        .style("opacity", 0.6)
+
+
+      // Function to color the  Scatter circles on hover
+      function hovering(event, d) {
+        tt.style("display", "block")
+          .html(d.country)
+        tt2.style("display", "block")
+          .html(d.period)
+        tt3.style("display", "inline-block")
+          .html("Suicides"
+            + "<br/>" + "Suicides per 100k*"
+            + "<br/>" + "GDP*"
+            + "<br/>" + "GDP per capita*")
+        tt4.style("display", "inline-block")
+          .html(round(d.suicides_no)
+            + "<br/>" + round(d.suicides_per100k)
+            + "<br/>" + "$" + currency(d.gdp_for_year)
+            + "<br/>" + "$" + currency(d.gdp_per_capita))
+        tt5.style("display", "block")
+          .html("*Average during period")
+
+        var selected_x = xScaler(d.gdp_per_capita)
+        var selected_y = yScaler(d.suicides_per100k)
+
+        circle.style("fill", d => {
+          if (
+            selected_x == xScaler(d.gdp_per_capita) &&
+            selected_y == yScaler(d.suicides_per100k)
+          ) {
+            return "#FF0000";
+          }
+          else {
+            return "#31738E";
+          }
+        })
+      }
+
+
+      //////////////
+      ////Brushing //// 
+      ////////////
+
+      //..................................dispatch event...................................
+      const dispatch = d3.dispatch('brushScatter');
+
+      dispatch.on('brushScatter.bar', function (extentSelection) {
+
+        var barSvg = document.querySelector('.svgBar')
+        barSvg.innerHTML = '';
+
+        var newdata = data.filter(function (d) {
+          console.log(yScaler(d.suicides_per100k), brushSelection[0][1], brushSelection[1][1])
+
+          return xScaler(d.gdp_per_capita) > brushSelection[0][0] && xScaler(d.gdp_per_capita) < brushSelection[1][0]
+            && yScaler(d.suicides_per100k) > brushSelection[0][1] && yScaler(d.suicides_per100k) < brushSelection[1][1]
+        })
+
+
+        //Animate the barcharts 
+
+
+        bar.selectAll(".bar")
+          .data(newdata)
+          .enter()
+          .append("rect")
+          .attr("class", "bar")
+          .attr("y", d => y(d.countrycode))
+          .on("mouseover", hovering)
+          .on("mouseout", function (d) {
+            if (!isClicked) {
+              tt.style("display", "none")
+              tt2.style("display", "none")
+              tt3.style("display", "none")
+              tt4.style("display", "none")
+              tt5.style("display", "none")
+              circle.style("fill", "#31738E")
+            }
+          })
+          .transition()
+          .duration(1000)
+          .delay((d, i) => i * 25)
+          .attr("height", y.bandwidth())
+          .attr("width", d => x(d.suicides_per100k))
+          .attr("fill", d => color(d.suicides_per100k))
+      })
+      //.................................dispatch event end.................................
+
+
+      //append g element
+      const g3 = svg2
+        .append("g")
+        .attr("class", "g")
+        .attr("transform", `translate( ${MARGIN.LEFT + 85}, ${MARGIN.TOP + 215})`)
+
+      //declare brush
+      const brush = d3
+        .brush()
+        .on("brush", brushed)
+        .on("end", brushend)
+        .extent([[-10, -10], [WIDTH + 10, HEIGHT + 10]])
+
+      // create svg group element for brush
+      const gBrush = g3.append("g").attr("class", "gBrush")
+
+      // call brush on brush group element
+      gBrush.call(brush)
+
+      // style brushed circles
+      function brushed() {
+        // use d3.brushSelection to get bounds of the brush
+        const ext = d3.brushSelection(this);
+        // what happen with the bounds of the brush:
+        brushSelection = ext;
+      }
+
+      function brushend() {
+        dispatch.call('brushScatter', this, brushSelection)
+      }
 
     });
 
-    </script>
+  </script>
 
 
 </body>
