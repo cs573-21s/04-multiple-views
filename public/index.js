@@ -42,19 +42,14 @@ function repaintMap(grow = false) {
 }
 
 function drawMap() {
-	// const outlierCountries = ['Iraq', 'Pakistan', 'Afghanistan'];
-	// const outlierCountries = Object.values(data).filter(c => c.total >= 1000).map(c => c.Entity);
-	const outlierCountries = [];
-	const outlierColorMappingScale = d3.scaleLinear().domain(d3.extent([
-		...outlierCountries.map(oc => data[oc]).map(a => Math.min(...Object.entries(a).filter(([key, value]) => categories.includes(key)).map(([key, value]) => value))),
-		...outlierCountries.map(oc => data[oc]).map(a => Math.max(...Object.entries(a).filter(([key, value]) => categories.includes(key)).map(([key, value]) => value)))
-	])).range(["pink", "red"]);
-	// const colorMappingScale = d3.scaleLinear().domain(d3.extent([0, ...Object.values(data).filter(c => !outlierCountries.includes(c.Entity)).map(a => Math.max(...Object.entries(a).filter(([key, value]) => categories.includes(key)).map(([key, value]) => value)))])).range(["#edf5ff", "#001d6c"]);
+	const extent = d3.extent(Object.values(data).map(a => a.total));
 	const colorMappingScale = d3.scaleSequential(d =>
 		d3.interpolateReds(
-			d3.scaleLog().domain(d3.extent(Object.values(data).map(a => a.total)))(d)
+			d3.scaleLog().domain(extent)(d)
 		)
 	);
+
+	buildLegend(extent, colorMappingScale);
 	
 	svgMap.selectAll('*').remove();
 
@@ -70,9 +65,7 @@ function drawMap() {
 			if (!(c.properties.ADMIN in data)) {
 				return 'black';
 			}
-			return outlierCountries.includes(c.properties.ADMIN)
-				? outlierColorMappingScale(Math.max(...Object.entries(data[c.properties.ADMIN]).filter(([key, value]) => categories.includes(key)).map(([key, value]) => value)))
-				: colorMappingScale(Math.max(...Object.entries(data[c.properties.ADMIN]).filter(([key, value]) => categories.includes(key)).map(([key, value]) => value)));
+			return colorMappingScale(Math.max(...Object.entries(data[c.properties.ADMIN]).filter(([key, value]) => categories.includes(key)).map(([key, value]) => value)));
 		})
 		.classed('hidden', c => c.properties.ADMIN in data && data[c.properties.ADMIN].isHidden);
 
@@ -207,23 +200,65 @@ function drawTable() {
 	}
 }
 
+function buildLegend(extent, scale) {
+	const [lo, hi] = extent;
+	const interval = parseInt((hi - lo) / 200);
+	const legendData = d3.range(1, 201);
+	const legend = d3.select('#legend');
+	const w = 1
+	legend.selectAll('rect')
+		.data(legendData)
+		.enter()
+		.append('rect')
+		.attr('x', d => d * w)
+		.attr('y', 50)
+		.attr('height', 20)
+		.attr('width', w)
+		.attr('fill', d => scale(lo + d * interval))
+		.attr('stroke', 'none');
+
+	const loText = numFormat.format(extent[0]);
+	const hiText = numFormat.format(extent[1]);
+
+	legend.append('text')
+		.text('# Attacks (Log)')
+		.attr('fill', config.stroke)
+		.attr('x', 100)
+		.attr('width', 200)
+		.attr('y', 30)
+		.attr('font-size', '1.25em')
+		.attr('font-weight', 'bold')
+		.attr('text-anchor', 'middle');
+	legend.append('text')
+		.text(loText)
+		.attr('fill', config.stroke)
+		.attr('x', 0)
+		.attr('y', 90);
+	legend.append('text')
+		.text(hiText)
+		.attr('fill', config.stroke)
+		.attr('x', 200)
+		.attr('y', 90)
+		.attr('text-anchor', 'end');
+}
+
 function help(event) {
-	const modalElts = document.querySelectorAll('.modal, .overlay');
+	const modalElts = document.querySelectorAll('.modal, .modal-overlay');
 	for (const elt of modalElts) {
 		elt.classList.add('open');
 	}
 }
 
 function unhelp(event) {
-	const modalElts = document.querySelectorAll('.modal, .overlay');
+	const modalElts = document.querySelectorAll('.modal, .modal-overlay');
 	for (const elt of modalElts) {
 		elt.classList.remove('open');
 	}
 }
 
 window.addEventListener('load', async function() {
-	document.querySelector('.help').addEventListener('click', help);
-	document.querySelector('.overlay').addEventListener('click', unhelp);
+	document.querySelector('.button-help').addEventListener('click', help);
+	document.querySelector('.modal-overlay').addEventListener('click', unhelp);
 	document.querySelector('.unhelp').addEventListener('click', unhelp);
 
 	svgMap = d3.select('#map');

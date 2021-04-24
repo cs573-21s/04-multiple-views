@@ -21,7 +21,7 @@ body {
 	z-index: 999;
 }
 
-.help {
+.button-help {
 	position: absolute;
 	top: 6em;
 	right: 2em;
@@ -34,7 +34,7 @@ body {
 	border-radius: 0.375em;
 	transition: all 300ms ease;
 }
-.help:hover {
+.button-help:hover {
 	box-shadow: 1px 1px 1px 0px rgb(245 245 245 / 30%);
 	margin-top: -1px;
 	margin-right: 1px;
@@ -67,6 +67,12 @@ body {
 	color: var(--text);
 }
 
+#legend {
+	position: absolute;
+	top: 25%;
+	right: 3rem;
+}
+
 #table {
 	width: 80%;
 	margin: 0 10%;
@@ -97,7 +103,7 @@ body {
 	background: var(--bg-l);
 }
 
-.overlay {
+.modal-overlay {
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -131,7 +137,7 @@ body {
 .unhelp:hover {
 	background: lightgray;
 }
-.overlay.open, .modal.open {
+.modal-overlay.open, .modal.open {
 	display: block;
 }
 

@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>04 Multiple Views | Ryan LaMarche</title>
-	<script async src='https://cdnjs.cloudflare.com/ajax/libs/d3/6.5.0/d3.min.js' integrity='sha512-0XfwGD1nxplHpehcSVI7lY+m/5L37PNHDt+DOc7aLFckwPXjnjeA1oeNbru7YeI4VLs9i+ADnnHEhP69C9CqTA==' crossorigin='anonymous'></script>
+	<script async src='https://cdnjs.cloudflare.com/ajax/libs/d3/6.7.0/d3.min.js' integrity='sha512-cd6CHE+XWDQ33ElJqsi0MdNte3S+bQY819f7p3NUHgwQQLXSKjE4cPZTeGNI+vaxZynk1wVU3hoHmow3m089wA==' crossorigin='anonymous'></script>
 	<script defer src='/index.js'></script>
 	<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css' integrity='sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==' crossorigin='anonymous'/>
 	<link rel="stylesheet" href="/normalize.css">
@@ -14,12 +14,13 @@
 	<div class="header">
 		<h1>World Map of Terrorist Attacks (2008-2017)</h1>
 	</div>
-	<button class="help">
+	<button class="button-help">
 		<i class="fas fa-question-circle"></i>
 		How do I use this page?
 	</button>
 	<svg id="map"></svg>
 	<svg id="bar"></svg>
+	<svg id="legend"></svg>
 	<table id="table">
 		<thead>
 			<tr>
@@ -31,7 +32,7 @@
 			
 		</tbody>
 	</table>
-	<div class="overlay"></div>
+	<div class="modal-overlay"></div>
 	<div class="modal">
 		<h2>What am I looking at?</h2>
 		<p>This map shows terrorist attacks by country spanning 10 years (2008-2017). On the left you'll find a bar chart that shows which categories the different terrorist attacks fall into.</p>
