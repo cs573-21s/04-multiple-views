@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="author" content="Jyalu Wu">
+	<title>Multiple Views</title>
+    <script src = "https://d3js.org/d3.v6.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css" media="screen"/>
+    
+</head>
+
+<body>
+	<h1 id='title' style='text-align:center; font-family:Geneva, Arial, Serif'>Is This Mushroom Poisonous?*</h1>
+	<p id='author' style='text-align:center; font-family:Geneva, Arial, Serif; font-size: 12px'>
+        *based on <a href="https://www.kaggle.com/uciml/mushroom-classification">this dataset </a> of
+        mushrooms from the Agaricus and Lepiota families
+    </p>
+    <br>
+
+	<div id = "customizingcontainer" class='svg-container' 
+        style="width= window.innerWidth;">
+        <div id = 'filtercontainer' class='svg-container' style='float:left'>
+            <br><br>
+        </div>
+        <div id = 'shroomcontainer' class='svg-container' style='float:left'></div>
+    </div>
+    
+    <div id = "chartscontainer" class="svg-container"></div>
+    
+</body>
+
+<script src="shrooms.js"></script>
+
+</html>

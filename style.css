@@ -1,0 +1,18 @@
+/* @import url(https://www.dafont.com/mushroom.font); */
+
+@font-face { font-family: Mushroom; src: url('Mushroom.ttf'); } 
+
+#chartscontainer {
+    border-top: 1px solid black;
+}
+
+html *
+{
+   color: black !important;
+   font-family: Geneva !important;
+}
+
+h1 {
+    font-family: Mushroom !important;
+    /* font-size: 36px; */
+}
