@@ -1,0 +1,59 @@
+<!-- Learn and start from John Alexis Guerra Gomez's tutorial https://www.youtube.com/watch?v=Oz3U38oOcNg -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>a4 - Junying Li</title>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link rel="stylesheet" href="css/main.css">
+
+
+</head>
+<body>
+<div class="container-fluid">
+	<h1>a4 - multiple views <small>Junying Li</small></h1>
+  <div class="row">
+		<div class="col-sm-6">
+			<h2>Timeline</h2>
+			<div class="timeSeriesChart" id="timeline"></div>
+		</div>
+
+
+<div class="viz">
+		<div class="col-xs-12 col-md-3">
+			<h3>Quarter</h3>
+			<div class="barChart" id="quarter"></div>
+		</div>
+
+	  <div class="col-xs-12 col-md-3">
+		  <h3>Department</h3>
+		  <div class="pieChart" id="department"></div>
+	  </div>
+
+	  <div class="col-xs-12 col-md-6">
+		  <h3>Weekday</h3>
+		  <div class="lollipopPlot" id="day"></div>
+	  </div>
+</div>
+
+  </div>
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crossfilter/1.3.12/crossfilter.min.js"></script>
+<script src="https://d3js.org/d3.v4.js"></script>
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+
+<script src="viz/timeSeriesChart.js"></script>
+<script src="viz/barChart.js"></script>
+<script src="viz/pieChart.js"></script>
+<script src="viz/lollipopPlot.js"></script>
+<script src="viz/main.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,55 @@
+body {
+    background-color: #d6ecfa;
+}
+
+#timeline .line {
+  fill: none;
+  stroke: #6a60a9;
+  stroke-width: 1.5px;
+}
+
+#timeline .area {
+  /*fill: #969696;*/
+  fill: #6a60a9;
+    opacity: 0.5;
+}
+
+#timeline .attention {
+  background: yellow;
+  margin: -4px;
+  padding: 4px;
+}
+
+
+#gates .x.axis text {
+	text-anchor: end;
+}
+
+#gates svg {
+	overflow: visible;
+}
+
+.col-sm-6 {
+    text-align: center;
+    border-radius: 20px;
+    height: 650px;
+    margin: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.viz {
+    text-align: center;
+    border-radius: 20px;
+    height: 250px;
+    margin: auto;
+    position: absolute;
+    top: 0;
+    left: 50px;
+    right: 0;
+    bottom: 0; 
+}
+
