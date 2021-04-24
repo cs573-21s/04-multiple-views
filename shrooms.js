@@ -124,6 +124,8 @@ d3.csv('https://raw.githubusercontent.com/jwu2018/04-multiple-views/main/data/cl
 
         var cap_color_button = d3.select('#filtercontainer')
             .append('select')
+            .attr('background-color', 'black')
+            .attr('id', 'cap_color_button')
             // .append("tspan")
             // .attr('dy', '5em')
             // .attr('height', height/3)
@@ -157,6 +159,7 @@ d3.csv('https://raw.githubusercontent.com/jwu2018/04-multiple-views/main/data/cl
         var gill_color_button = d3.select('#filtercontainer')
             .append('select')
             .attr("dy", "4em")
+            .attr('id', 'gill_color_button')
             // .attr('height', height / 3)
 
         gill_color_button // Add a button
@@ -183,6 +186,7 @@ d3.csv('https://raw.githubusercontent.com/jwu2018/04-multiple-views/main/data/cl
         
         var stalk_a_ring_color_button = d3.select('#filtercontainer')
             .append('select')
+            .attr('id', 'stalk_a_ring_color_button')
             // .attr('height', height / 3)
 
         stalk_a_ring_color_button // Add a button
@@ -210,6 +214,7 @@ d3.csv('https://raw.githubusercontent.com/jwu2018/04-multiple-views/main/data/cl
 
         var stalk_b_ring_color_button = d3.select('#filtercontainer')
             .append('select')
+            .attr('id', 'stalk_b_ring_color_button')
             // .attr('height', height / 3)
 
         stalk_b_ring_color_button // Add a button
@@ -338,6 +343,14 @@ d3.csv('https://raw.githubusercontent.com/jwu2018/04-multiple-views/main/data/cl
                 .transition()
                 .duration(700)
                 .style('fill', mycolor)
+                
+        }
+
+        function update_select_color(mycolor, element_tag) {
+            d3.select(element_tag)
+                .transition()
+                .duration(700)
+                .style('color', mycolor)
         }
 
 
@@ -366,6 +379,7 @@ d3.csv('https://raw.githubusercontent.com/jwu2018/04-multiple-views/main/data/cl
             console.log('just changed cap color to', filters.cap_color)
             
             update_shroom_color(get_color(filters.cap_color), '#cap')
+            update_select_color(get_color(filters.cap_color), '#cap_button')
             update_charts()
         })
 
@@ -376,6 +390,7 @@ d3.csv('https://raw.githubusercontent.com/jwu2018/04-multiple-views/main/data/cl
             console.log('just changed gill color to', filters.gill_color)
             
             update_shroom_color(get_color(filters.gill_color), '#gill')
+            update_select_color(get_color(filters.gill_color), '#gill_button')
             update_charts()
         })
 
@@ -386,6 +401,7 @@ d3.csv('https://raw.githubusercontent.com/jwu2018/04-multiple-views/main/data/cl
             console.log('just changed stalk above ring color to', filters.stalk_color_above_ring)
             
             update_shroom_color(get_color(filters.stalk_color_above_ring), '#stalk_a_ring')
+            update_select_color(get_color(filters.stalk_color_above_ring), '#stalk_a_ring_button')
             update_charts()
         })
 
@@ -396,6 +412,7 @@ d3.csv('https://raw.githubusercontent.com/jwu2018/04-multiple-views/main/data/cl
             console.log('just changed stalk below ring color to', filters.stalk_color_below_ring)
             
             update_shroom_color(get_color(filters.stalk_color_below_ring), '#stalk_b_ring')
+            update_select_color(get_color(filters.stalk_color_above_ring), '#stalk_b_ring_button')
             update_shroom_color(get_color(filters.stalk_color_below_ring), '#ring')
             update_charts()
         })
