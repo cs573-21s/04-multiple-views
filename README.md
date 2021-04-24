@@ -1,49 +1,34 @@
-Assignment 4 - Visualizations and Multiple Views  
+Assignment 4 - Dinosaurs 
 ===
 
-One of the most powerful techniques for mitigating the shortcomings of a given visualization is to link it with other views.
-Linking a map to a bar or scatterplot, for instance, may allow you to overcome the shortcomings of a map.
-In general, linking visualizations allows you to explore different parts of the data between views, and mitigates the shortcomings of a given view by pairing it with other views.
-This technique, called coordinated multiple views, is the focus of this assignment.
+![alt text](screenshot.PNG)
 
-Your task is to choose an interesting dataset and visualize it in *at least two* **linked** views, where interactions in any given view updates the others.
-Each view should use a different visualization type, and interaction in one of the views should impact what's shown in the other views.
 
-You should choose data and visualizations that are sufficiently complex and interesting to ensure a user can discover interesting patterns and trends on their own.
+For Assignment 4, I decided to tap into my childhood dream of becoming a paleontologist. I figured there was a dataset out there containing enough interesting information on dinosaurs for me to put together a visualization with multiple views. I found two datasets, one containing dinosaur's country and fossil location, and the other containing the dinosaur's diet and "clade". I merged these datasets together and set out to make an exploratory dashboard where users could look at dinosaurs through a variety of dimensions.
 
-For this assignment you should write everything from scratch.
-You may *reference and adapt* code from books or the web, and if you do please provide a References section with links at the end of your Readme.
-
-Resources
+Github Pages Link
 ---
 
-Data is Plural has a list of interesting datasets, many of which require processing.
+https://jpking19.github.io/04-multiple-views/index.html
 
-These three examples are intended to show you what multiple views visualizations might look like. 
-I wouldn't recommend using them as a your starting point, but you may find some inspiration:
-
-1. This [scatterplot matrix](http://bl.ocks.org/mbostock/4063663) has code that explains brushing and linking. But remember you'll be doing this with different types of views.
-
-2. The example visualization for [Crossfilter](http://square.github.io/crossfilter/) uses coordinated multiple views. The interaction and brushing technique is well-executed.
-
-3. The [dispatching events](https://github.com/d3/d3-dispatch) page is a good example of using events, rather than explicit functions, for controlling behavior. Views can listen for events in other views and respond accordingly.
-
-*If you aren't familiar with event-based programming you should experiment with d3.dispatch and other approaches to coordinating views well before the deadline (it's tricky.)*
-
-Don't forget to run a local webserver when you're coding and debugging.
-
-Requirements
+Technical Achievements
 ---
 
-0. Your code should be forked from the GitHub repo and linked using GitHub pages.
-1. Your project should load a dataset you found on the web. Put this file in your repo.
-2. Your project should use d3 to build a visualization of the dataset. 
-3. Your writeup (readme.md in the repo) should contain the following:
+1. Data Gathering/Manipulation - I found two different datasets of dinosaur species and decided both had interesting information. However, the datasets were not set up to be used together initially, so I had to edit the source and parse it intelligently to make it work.
+2. Five Views - With the many aspects of dinosaurs, I thought showing more than two views would be worthwhile. Seeing how dinosaur size varies by combinations of location/diet/clade yields a deeper experience for the viewer than just two views.  
+3. Map View - One of the views is a geographical map view of the countries of the world, which required finding and loading a Geojson file. I also had to programmatically modify the country data to align with the Geojson features.
 
-- Working link to the visualization hosted on gh-pages.
-- Concise description and screenshot of your visualization.
-- Description of the technical achievements you attempted with this visualization.
-- Description of the design achievements you attempted with this visualization.
+Design Achievements
+---
+
+1. Color Scheme - I tried to pick nice colors for diet and the map view (ex. carnivore = red, harbivore = green).
+
+References
+---
+
+https://dc-js.github.io/dc.js/ - great tutorial on how to use dc.js / crossfilter
+https://datadryad.org/stash/dataset/doi:10.5061/dryad.1t3r4 - clade/mass dataset
+https://www.kaggle.com/kumazaki98/dinosaur-list - country/diet dataset
 
 GitHub Details
 ---

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>DinoVis</title>
+	<link rel="stylesheet" type="text/css" href="https://unpkg.com/dc@4/dist/style/dc.css" />
+	<script src="https://unpkg.com/d3@5/dist/d3.js"></script>
+	<script src="https://unpkg.com/crossfilter2@1.5/crossfilter.js"></script>
+	<script src="https://unpkg.com/dc@4/dist/dc.js"></script>
+	<script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+	<script src="https://rawgit.com/crossfilter/reductio/master/reductio.js"></script>
+	<script src="https://npmcdn.com/universe@latest/universe.js"></script>
+</head>
+<body>
+<div class="row">
+	<div>Dinosaurs</div>
+	<div class="map-column">
+		<div id="country-chart" style="display: flex"></div>
+	</div>
+	<div class="other-column">
+		<div id="mass-chart" style="display: flex"></div>
+	</div>
+</div>
+<div class="row">
+	<div class="container">
+		<div id="clade-chart">
+			<strong>Clade (common ancestor)</strong>
+		</div>
+		<div id="subclade-chart">
+			<strong>Subclade</strong>
+		</div>
+		<div id="diet-chart">
+			<strong>Primary Diet</strong>
+		</div>
+	</div>
+</div>
+<div id="time-chart"></div>
+</body>
+<style>
+	.row {
+		width: 1920px;
+		margin: auto;
+		text-align: center;
+	}
+
+	.map-column {
+		float: left;
+		width: 1000px;
+	}
+
+	.other-column {
+		float: right;
+		width: 800px;
+	}
+
+	.container {
+		margin-top: 650px;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-evenly;
+		mso-padding-between: 50px;
+	}
+</style>
+
+<script>
+	// var createIntervalTree = require("interval-tree-1d");
+
+	// interval tree
+	// var intervals = [ [1, 2], [-1, 0], [0.5, 1], [-10, 10] ];
+	//
+	// //Build tree
+	// var tree = createIntervalTree(intervals);
+
+	d3.csv("continents_countries.csv").then(continents => {
+		const northAmerica = [];
+		const southAmerica = [];
+		continents.map(c => {
+			if (c.Continent === "North America") {
+				northAmerica.push(c.Country);
+			} else if (c.Continent === "South America") {
+				southAmerica.push(c.Country);
+			}
+		})
+
+		d3.csv("dinosaur.csv").then(data => {
+			const dinosaurs1 = data.map(d => {
+				let additionalCountries = [];
+				const d2 =  {
+					name: d.Name,
+					diet: d.Diet.split(',').map(c => c.trim()),
+					country: d.Country.split(',').map(c => {
+						c = c.trim();
+						if (c === "USA") {
+							c = "United States of America";
+						} else if (c === "England") {
+							c = "United Kingdom"
+						} else if (c === "North America") {
+							additionalCountries = additionalCountries.concat(northAmerica);
+						} else if (c === "South America") {
+							additionalCountries = additionalCountries.concat(southAmerica);
+						}
+						return c;
+					}),
+				}
+				if (additionalCountries.length > 0) {
+					d2.country = d2.country.concat(additionalCountries);
+				}
+				return d2;
+			});
+			d3.csv("dinosaur2.csv").then(data2 => {
+				data2 = data2.filter(d => d.Mass !== "NA");
+				const dinosaurs2 = data2.map(d => {
+					return {
+						name: d.Taxon.split('_')[0],
+						clade: d.Clade,
+						subclade: d.Subclade,
+						mass: +d.Mass,
+						min_age: d.Min_age,
+						max_age: d.Max_age,
+					}
+				});
+
+				// combine data to get final dino list
+				let mergedDinosaurs = [];
+				for (let i = 0; i < dinosaurs2.length; i++) {
+					let dino = dinosaurs1.find((d) => d.name === dinosaurs2[i].name)
+					if (dino) {
+						mergedDinosaurs.push({
+							...dino,
+							...dinosaurs2[i],
+						});
+					}
+				}
+
+				displayVis(mergedDinosaurs);
+			});
+		});
+	});
+
+	function displayVis(dinosaur_datset) {
+		const ndx = crossfilter(dinosaur_datset);
+		const all = ndx.groupAll();
+
+		const cladeDimension = ndx.dimension(d => d.clade);
+		const cladeDimensionGroup = cladeDimension.group();
+		const cladeChart = dc.pieChart('#clade-chart')
+				.width(320)
+				.height(320)
+				.radius(160)
+				.dimension(cladeDimension)
+				.group(cladeDimensionGroup)
+				.renderLabel(true)
+				.label(p => p.key)
+				.innerRadius(40)
+				.transitionDuration(500);
+
+		const subcladeDimension = ndx.dimension(d => d.subclade);
+		const subcladeDimensionGroup = subcladeDimension.group();
+		const subcladeChart = dc.pieChart('#subclade-chart')
+				.width(320)
+				.height(320)
+				.radius(160)
+				.dimension(subcladeDimension)
+				.group(subcladeDimensionGroup)
+				.renderLabel(true)
+				.innerRadius(40)
+				.transitionDuration(500);
+
+		const dietDimension = ndx.dimension(d => d.diet, true);
+		const dietDimensionGroup = dietDimension.group()
+				.reduce(
+						(p, v) => {
+							v.country.forEach(x => p[x] = (p[x] || 0) + 1);
+							return p;
+						},
+						(p, v) => {
+							v.country.forEach(x => { if(--p[x] === 0) delete p[x] });
+							return p;
+						},
+						() => {
+							return {};
+						}
+				);
+		var colorScale = d3.scaleOrdinal()
+				.domain(["omnivore", "carnivore", "insectivore", "herbivore", "(unknown)"])
+				.range(["#FFD166", "#EF476F", "#118AB2", "#06D6A0", "#dad7cd"]);
+		const dietChart = dc.pieChart('#diet-chart')
+				.width(320)
+				.height(320)
+				.radius(160)
+				.dimension(dietDimension)
+				.group(dietDimensionGroup)
+				.valueAccessor(p => p.value ? Object.keys(p.value).length : 0)
+				.colors(colorScale)
+				.renderLabel(true)
+				.innerRadius(40)
+				.transitionDuration(500);
+
+
+		const binwidth = 1250;
+		const massDimension = ndx.dimension(d => Math.floor(d.mass / binwidth) * binwidth);
+		const massDimensionGroup = massDimension.group();
+		const massChart = dc.barChart('#mass-chart')
+				.width(800)
+				.height(600)
+				.margins({top: 10, right: 50, bottom: 30, left: 40})
+				.dimension(massDimension)
+				.group(massDimensionGroup)
+				.x(d3.scaleLinear().domain([0, 60000]))
+				.xUnits(dc.units.fp.precision(binwidth *.95))
+				.renderHorizontalGridLines(true)
+				.elasticY(true)
+				.elasticX(true)
+				.xAxisLabel('Estimated Mass (kg)')
+				.yAxisLabel('# of Dinosaurs')
+				.renderTitle(true)
+				.title(p => `${p.value.count}Dinosaurs by Estimated Mass`)
+				// .renderLabel(true)
+				.transitionDuration(500);
+
+		d3.json('countries.geojson').then(countries => {
+
+			const countryDimension = ndx.dimension(d => d.country, true);
+			const countryDimensionGroup = countryDimension.group()
+					.reduce(
+					(p, v) => {
+						v.country.forEach(x => p[x] = (p[x] || 0) + 1);
+						return p;
+					},
+					(p, v) => {
+						v.country.forEach(x => { if(--p[x] === 0) delete p[x] });
+						return p;
+					},
+					() => {
+						return {};
+					}
+			);
+
+			var colors = [
+				'#7DB22E',
+				'#D4A10F',
+				'#F97C20',
+				'#F35F40',
+				'#FF0000'
+			];
+			var colorScaleInternal = d3.scaleQuantile()
+					.domain([0, 50])
+					.range(colors);
+			var colorScale = function(value) {
+				return !!value ? colorScaleInternal(value) : '#dad7cd';
+			};
+			const countryChart = dc.geoChoroplethChart('#country-chart')
+					.width(1000)
+					.height(600)
+					.dimension(countryDimension)
+					.projection(d3.geoMercator()
+							.scale(170)
+							.translate([500, 300])
+							.precision(.1))
+					.group(countryDimensionGroup)
+					.valueAccessor(p => p.value ? Object.keys(p.value).length : 0)
+					.colors(colorScale)
+					.overlayGeoJson(countries.features, "country", function (d) {
+						return d.properties.ADMIN;
+					});
+
+			dc.renderAll();
+
+			// var cladeChartSvg = d3.select("clade-chart"); //document.getElementById('clade-chart').getElementsByTagName('svg')[0];
+			// console.log(cladeChartSvg);
+			// cladeChartSvg.append('image')
+			// 		.attr('xlink:href', "dino.png")
+			// 		.attr('height', 20)
+			// 		.attr('width', 20)
+			// 		.attr("x", function(d) {
+			// 			var bbox = this.parentNode.getBBox();
+			// 			return bbox.x;
+			// 		})
+			// 		.attr("y", function() {
+			// 			var bbox = this.parentNode.getBBox();
+			// 			return bbox.y;
+			// 		});
+		});
+	}
+
+</script>
+

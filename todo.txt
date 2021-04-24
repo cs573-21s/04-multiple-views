@@ -1,0 +1,10 @@
+- learn how to make a linkedView that updates based off of something
+- grab data and merge it into one csv with only certain rows
+- create html page with 4 sections
+- create charts for each section
+- load data and make a geographical heatmap
+- make two pie charts
+- make timeline somehow
+
+
+write readme
