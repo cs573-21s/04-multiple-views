@@ -163,10 +163,11 @@ var svg = d3.select("body").append("svg")
     .append("g")
     .attr("transform",
         "translate(" + margin.left + "," + margin.top + ")");
+let classToHighlight = 'Amphibia'
 
 d3.csv("https://raw.githubusercontent.com/imogencs/04-multiple-views/main/animals2.csv", function (data) {
 
-    let classToHighlight = 'Amphibia'
+    classToHighlight = 'Amphibia'
 
     let classes = ['Amphibia', 'Aves', 'Bivalvia', 'Cephalaspidomorphi',
         'Chondrichthyes', 'Chondrostei', 'Chromadorea', 'Echinoidea',
@@ -239,7 +240,10 @@ d3.csv("https://raw.githubusercontent.com/imogencs/04-multiple-views/main/animal
             return y(d.Malematurity);
         })
         .attr('fill', function (d) {
-            return colormapper(d.Class);
+            if (d.Class == classToHighlight) {
+                return 'black'
+            }
+            return colormapper(d.Class)
         })
         .style("opacity", function (d) {
             if (d.Class == classToHighlight) {
@@ -249,7 +253,7 @@ d3.csv("https://raw.githubusercontent.com/imogencs/04-multiple-views/main/animal
         })
         .style('stroke', function (d) {
             if (d.Class == classToHighlight) {
-                return 'green'
+                return colormapper(d.Class)
             }
             return 'none'
         })
@@ -261,10 +265,18 @@ d3.csv("https://raw.githubusercontent.com/imogencs/04-multiple-views/main/animal
             // d3.select()
         })
         .on("mouseout", function (d) {
-            d3.select(this)
-                .style("opacity", .4)
-                .style("stroke", 'none')
+            if (d.Class == classToHighlight) {
+                d3.select(this)
+                    .style("opacity", 1)
+                    .style("stroke", colormapper(d.Class))
+            }
+            else {
+                d3.select(this)
+                    .style("opacity", .4)
+                    .style("stroke", 'none')
+            }
         })
+        .style('stroke-width', 2)
     // .filter(function (d) { return d.Class == selectedGroup })  // <== This line
 
     console.log('here 1')
@@ -361,27 +373,27 @@ d3.csv("https://raw.githubusercontent.com/imogencs/04-multiple-views/main/animal
             })
             .style('stroke-width', 2)
 
-        d3.selectAll('table').remove()
+        // d3.selectAll('table').remove()
 
-        var container = d3.select("body")
-            .append("table")
+        // var container = d3.select("body")
+        //     .append("table")
 
-            .selectAll("tr")
-            .data(data).enter()
-            .append("tr")
+        //     .selectAll("tr")
+        //     .data(data).enter()
+        //     .append("tr")
 
-            .selectAll("td")
-            .data(function (d) {
-                if (d.Class == classToHighlight)
-                    return d;
-                return null
-            }).enter()
-            .append("td")
-            .text(function (d) {
-                if (d.Class == classToHighlight)
-                    return d;
-                return null
-            })
+        //     .selectAll("td")
+        //     .data(function (d) {
+        //         if (d.Class == classToHighlight)
+        //             return d;
+        //         return null
+        //     }).enter()
+        //     .append("td")
+        //     .text(function (d) {
+        //         if (d.Class == classToHighlight)
+        //             return d;
+        //         return null
+        //     })
 
     }
 
@@ -398,26 +410,6 @@ d3.csv("https://raw.githubusercontent.com/imogencs/04-multiple-views/main/animal
 
 
 
-
-    var longevityColorScale = d3.scaleLinear()
-        .domain([0, 550])
-        .range(["red", "yellow", "green"]);
-
-
-    var container = d3.select("body")
-        .append("table")
-
-        .selectAll("tr")
-        .data(data).enter()
-        .append("tr")
-
-        .selectAll("td")
-        .data(function (d) { return d; }).enter()
-        .append("td")
-        .text(function (d) { return d; })
-    // .style("background-color", function (d) {
-    //     return longevityColorScale(d);
-    // })
 });
 
 
@@ -428,249 +420,36 @@ d3.text("https://raw.githubusercontent.com/imogencs/04-multiple-views/main/anima
 
 
 
+    var longevityColorScale = d3.scaleLinear()
+        .domain([0, 550])
+        .range(["red", "yellow", "green"]);
+
+
+    var container = d3.select("body")
+        .append("table")
+
+        .selectAll("tr")
+        .data(parsedCSV).enter()
+
+        .append("tr")
+
+        .selectAll("td")
+        .data(function (d) {
+            return d
+        }).enter()
+        .append("td")
+        .text(function (d) {
+            return d
+        })
+        // .style("background-color", function (d) {
+        //     // console.log(d.Class)
+        //     if (d.Class == classToHighlight) {
+        //         return longevityColorScale(d);
+        //     }
+        //     return 'none'
+        // })
+
 });
 
 
 
-
-
-
-
-// // data = FileAttachment("flare-2.json").json()
-// // partition = data => {
-// //     const root = d3.hierarchy(data)
-// //         .sum(d => d.value)
-// //         .sort((a, b) => b.value - a.value);
-// //     return d3.partition()
-// //         .size([2 * Math.PI, root.height + 1])
-// //       (root);
-// //   }
-// // color = d3.scaleOrdinal(d3.quantize(d3.interpolateRainbow, data.children.length + 1))
-// // format = d3.format(",d")
-// // width = 932
-// // radius = width / 6
-
-// // d3 = require("d3@6")
-
-
-// // arc = d3.arc()
-// //     .startAngle(d => d.x0)
-// //     .endAngle(d => d.x1)
-// //     .padAngle(d => Math.min((d.x1 - d.x0) / 2, 0.005))
-// //     .padRadius(radius * 1.5)
-// //     .innerRadius(d => d.y0 * radius)
-// //     .outerRadius(d => Math.max(d.y0 * radius, d.y1 * radius - 1))
-
-
-
-
-// // chart = {
-// //     const root = partition(data);
-
-// //     const svg = d3.create("svg");
-
-// //     svg.append("g")
-// //         .attr("fill-opacity", 0.6)
-// //         .selectAll("path")
-// //         .data(root.descendants().filter(d => d.depth))
-// //         .join("path")
-// //         .attr("fill", d => { while (d.depth > 1) d = d.parent; return color(d.data.name); })
-// //         .attr("d", arc)
-// //         .append("title")
-// //         .text(d => `${d.ancestors().map(d => d.data.name).reverse().join("/")}\n${format(d.value)}`);
-
-// //     svg.append("g")
-// //         .attr("pointer-events", "none")
-// //         .attr("text-anchor", "middle")
-// //         .attr("font-size", 10)
-// //         .attr("font-family", "sans-serif")
-// //         .selectAll("text")
-// //         .data(root.descendants().filter(d => d.depth && (d.y0 + d.y1) / 2 * (d.x1 - d.x0) > 10))
-// //         .join("text")
-// //         .attr("transform", function (d) {
-// //             const x = (d.x0 + d.x1) / 2 * 180 / Math.PI;
-// //             const y = (d.y0 + d.y1) / 2;
-// //             return `rotate(${x - 90}) translate(${y},0) rotate(${x < 180 ? 0 : 180})`;
-// //         })
-// //         .attr("dy", "0.35em")
-// //         .text(d => d.data.name);
-
-// //     return svg.attr("viewBox", autoBox).node();
-// // }
-
-
-// // function autoBox() {
-// //     document.body.appendChild(this);
-// //     const { x, y, width, height } = this.getBBox();
-// //     document.body.removeChild(this);
-// //     return [x, y, width, height];
-// // }
-
-
-// // data = FileAttachment("flare-2.json").json()
-
-
-// // partition = data => d3.partition()
-// //     .size([2 * Math.PI, radius])
-// //     (d3.hierarchy(data)
-// //         .sum(d => d.value)
-// //         .sort((a, b) => b.value - a.value))
-
-
-// // color = d3.scaleOrdinal(d3.quantize(d3.interpolateRainbow, data.children.length + 1))
-
-// // format = d3.format(",d")
-
-// // width = 975
-
-// // radius = width / 2
-
-// // arc = d3.arc()
-// //     .startAngle(d => d.x0)
-// //     .endAngle(d => d.x1)
-// //     .padAngle(d => Math.min((d.x1 - d.x0) / 2, 0.005))
-// //     .padRadius(radius / 2)
-// //     .innerRadius(d => d.y0)
-// //     .outerRadius(d => d.y1 - 1)
-
-// // d3 = require("d3@6")
-
-
-
-
-
-// const width = window.innerWidth,
-// height = window.innerHeight,
-// maxRadius = (Math.min(width, height) / 2) - 5;
-
-// const formatNumber = d3.format(',d');
-
-// const x = d3.scaleLinear()
-// .range([0, 2 * Math.PI])
-// .clamp(true);
-
-// const y = d3.scaleSqrt()
-// .range([maxRadius*.1, maxRadius]);
-
-// const color = d3.scaleOrdinal(d3.schemeCategory20);
-
-// const partition = d3.partition();
-
-// const arc = d3.arc()
-// .startAngle(d => x(d.x0))
-// .endAngle(d => x(d.x1))
-// .innerRadius(d => Math.max(0, y(d.y0)))
-// .outerRadius(d => Math.max(0, y(d.y1)));
-
-// const middleArcLine = d => {
-// const halfPi = Math.PI/2;
-// const angles = [x(d.x0) - halfPi, x(d.x1) - halfPi];
-// const r = Math.max(0, (y(d.y0) + y(d.y1)) / 2);
-
-// const middleAngle = (angles[1] + angles[0]) / 2;
-// const invertDirection = middleAngle > 0 && middleAngle < Math.PI; // On lower quadrants write text ccw
-// if (invertDirection) { angles.reverse(); }
-
-// const path = d3.path();
-// path.arc(0, 0, r, angles[0], angles[1], invertDirection);
-// return path.toString();
-// };
-
-// const textFits = d => {
-// const CHAR_SPACE = 6;
-
-// const deltaAngle = x(d.x1) - x(d.x0);
-// const r = Math.max(0, (y(d.y0) + y(d.y1)) / 2);
-// const perimeter = r * deltaAngle;
-
-// return d.data.name.length * CHAR_SPACE < perimeter;
-// };
-
-// const svg = d3.select('body').append('svg')
-// .style('width', '100vw')
-// .style('height', '100vh')
-// .attr('viewBox', `${-width / 2} ${-height / 2} ${width} ${height}`)
-// .on('click', () => focusOn()); // Reset zoom on canvas click
-
-// d3.json('https://gist.githubusercontent.com/mbostock/4348373/raw/85f18ac90409caa5529b32156aa6e71cf985263f/flare.json', (error, root) => {
-// if (error) throw error;
-
-// root = d3.hierarchy(root);
-// root.sum(d => d.size);
-
-// const slice = svg.selectAll('g.slice')
-//     .data(partition(root).descendants());
-
-// slice.exit().remove();
-
-// const newSlice = slice.enter()
-//     .append('g').attr('class', 'slice')
-//     .on('click', d => {
-//         d3.event.stopPropagation();
-//         focusOn(d);
-//     });
-
-// newSlice.append('title')
-//     .text(d => d.data.name + '\n' + formatNumber(d.value));
-
-// newSlice.append('path')
-//     .attr('class', 'main-arc')
-//     .style('fill', d => color((d.children ? d : d.parent).data.name))
-//     .attr('d', arc);
-
-// newSlice.append('path')
-//     .attr('class', 'hidden-arc')
-//     .attr('id', (_, i) => `hiddenArc${i}`)
-//     .attr('d', middleArcLine);
-
-// const text = newSlice.append('text')
-//     .attr('display', d => textFits(d) ? null : 'none');
-
-// // Add white contour
-// text.append('textPath')
-//     .attr('startOffset','50%')
-//     .attr('xlink:href', (_, i) => `#hiddenArc${i}` )
-//     .text(d => d.data.name)
-//     .style('fill', 'none')
-//     .style('stroke', '#fff')
-//     .style('stroke-width', 5)
-//     .style('stroke-linejoin', 'round');
-
-// text.append('textPath')
-//     .attr('startOffset','50%')
-//     .attr('xlink:href', (_, i) => `#hiddenArc${i}` )
-//     .text(d => d.data.name);
-// });
-
-// function focusOn(d = { x0: 0, x1: 1, y0: 0, y1: 1 }) {
-// // Reset to top-level if no data point specified
-
-// const transition = svg.transition()
-//     .duration(750)
-//     .tween('scale', () => {
-//         const xd = d3.interpolate(x.domain(), [d.x0, d.x1]),
-//             yd = d3.interpolate(y.domain(), [d.y0, 1]);
-//         return t => { x.domain(xd(t)); y.domain(yd(t)); };
-//     });
-
-// transition.selectAll('path.main-arc')
-//     .attrTween('d', d => () => arc(d));
-
-// transition.selectAll('path.hidden-arc')
-//     .attrTween('d', d => () => middleArcLine(d));
-
-// transition.selectAll('text')
-//     .attrTween('display', d => () => textFits(d) ? null : 'none');
-
-// moveStackToFront(d);
-
-// //
-
-// function moveStackToFront(elD) {
-//     svg.selectAll('.slice').filter(d => d === elD)
-//         .each(function(d) {
-//             this.parentNode.appendChild(this);
-//             if (d.parent) { moveStackToFront(d.parent); }
-//         })
-// }
-// }
