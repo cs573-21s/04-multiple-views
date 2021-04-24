@@ -40,6 +40,19 @@
       align-items: flex-end;
     }
 
+    div.tooltip-point {
+        position: absolute;
+        text-align: left;
+        padding: .5rem;
+        background: #FFFFFF;
+        color: #000000;
+        border: 1px solid #000000;
+        border-radius: 8px;
+        pointer-events: none;
+        font-family: sans-serif;
+        font-size: 1rem;
+    }
+
   </style>
 </head>
 <body>
@@ -100,6 +113,11 @@
 
         var topoData = null
         var errorData = null
+
+        // tooltip
+        var tooltip = d3.select("body").append("div")
+            .attr("class", "tooltip-point")
+            .style("opacity", 0);
 
         // Data and color scale
         var data = d3.map();
@@ -192,7 +210,6 @@
             .attr("font-size", 20)
             .style('fill', 'black')
             .text("# of Breweries")
-
         }
 
         async function clickMapHandler(d,i) {
@@ -283,13 +300,23 @@
             })
             .attr("fill", (d,i) => colors[i])
             .on("click", clickBarHandler)
-            .on("mouseover", function (d) {
+            .on("mouseover", function (d,i) {
                 d3.select(this).style("cursor", "pointer")
+                tooltip.transition()
+                    .duration(50)
+                    .style('opacity', 1);
+
+                tooltip.html(d.toString())
+                    .style("left", (d3.event.pageX - 30) + "px")
+                    .style("top", (d3.event.pageY - 50) + "px");
             })
-            .on("mouseout", function(d) {
+            .on("mouseout", function(d,i) {
                 d3.select(this).style("cursor", "default")
-            })
-          
+                
+                tooltip.transition()
+                    .duration(50)
+                    .style('opacity', 0);
+            })          
         }
 
         async function clickBarHandler(d,i) {
