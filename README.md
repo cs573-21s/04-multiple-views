@@ -9,6 +9,7 @@ That allows the user to explore different parts of the data between views.
 
 Github Pages Link
 ---
+https://khulood20.github.io/04-multiple-views/index.html
 
 Description
 ---
