@@ -1,36 +1,29 @@
 Assignment 4 - Visualizations and Multiple Views  
 ===
 
-One of the most powerful techniques for mitigating the shortcomings of a given visualization is to link it with other views.
-Linking a map to a bar or scatterplot, for instance, may allow you to overcome the shortcomings of a map.
-In general, linking visualizations allows you to explore different parts of the data between views, and mitigates the shortcomings of a given view by pairing it with other views.
-This technique, called coordinated multiple views, is the focus of this assignment.
+## Link to Visualization
 
-Your task is to choose an interesting dataset and visualize it in *at least two* **linked** views, where interactions in any given view updates the others.
-Each view should use a different visualization type, and interaction in one of the views should impact what's shown in the other views.
+https://04-multiple-views.ryanlamarche.dev/
 
-You should choose data and visualizations that are sufficiently complex and interesting to ensure a user can discover interesting patterns and trends on their own.
+## The Data
 
-For this assignment you should write everything from scratch.
-You may *reference and adapt* code from books or the web, and if you do please provide a References section with links at the end of your Readme.
+Data can be found in `public/data/Terrorist attacks by weapon type - Global Terrorism Database (2018).csv`
 
-Resources
----
+Data Source: [Our World in Data github](https://github.com/owid/owid-datasets/tree/master/datasets/Terrorist%20attacks%20by%20weapon%20type%20-%20Global%20Terrorism%20Database%20(2018))
 
-Data is Plural has a list of interesting datasets, many of which require processing.
+## Description
 
-These three examples are intended to show you what multiple views visualizations might look like. 
-I wouldn't recommend using them as a your starting point, but you may find some inspiration:
+This visualization aggregates geoJSON data with a public terrorism dataset provided by Our World in Data. The goal was to create a visualization that users could use to explore the weapon types used in terrorist attacks in different regions of the world.
 
-1. This [scatterplot matrix](http://bl.ocks.org/mbostock/4063663) has code that explains brushing and linking. But remember you'll be doing this with different types of views.
+### The visualization consists of:
 
-2. The example visualization for [Crossfilter](http://square.github.io/crossfilter/) uses coordinated multiple views. The interaction and brushing technique is well-executed.
+* __A Bar Chart__ - showing the distribution of weapon type for the currently selected countries
+* __An Interactive World Map__ - a "brushable" world map using the `d3.brush()` API. The brush "selects" countries by comparing the user's current selection with the centroid of points for each country in the geoJSON dataset. This allows the user to select different regions of the world and explore geospatial trends.
+* __A Table__ - below is a table, which is also filtered when the user brushes over the world map. This lets the user see the individual data points to make precise comparisons and draw conclusions. The __country name__ is also clickable, which will filter the map to just that 1 country. This makes it possible to filter the bar chart to see just 1 country at a time.
 
-3. The [dispatching events](https://github.com/d3/d3-dispatch) page is a good example of using events, rather than explicit functions, for controlling behavior. Views can listen for events in other views and respond accordingly.
+## Screenshots
 
-*If you aren't familiar with event-based programming you should experiment with d3.dispatch and other approaches to coordinating views well before the deadline (it's tricky.)*
 
-Don't forget to run a local webserver when you're coding and debugging.
 
 Requirements
 ---
