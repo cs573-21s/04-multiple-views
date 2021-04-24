@@ -1,6 +1,6 @@
 # Assignment 4 - Visualizations and Multiple Views
 
-GitHub Page Link:
+GitHub Page Link: https://junying-li.github.io/04-multiple-views/
 
 Data source: [garments worker productivity](https://archive.ics.uci.edu/ml/datasets/Productivity+Prediction+of+Garment+Employees) Abdullah Al Imran (abdalimran@gmail.com)
 
