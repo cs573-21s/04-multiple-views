@@ -95,7 +95,7 @@
         var projection = d3.geoMercator()
           .scale(1050)
           .center([0,0])
-          .translate([1.95*width,height*1.70]);
+          .translate([1.95*width,height*1.73]);
         var path = d3.geoPath().projection(projection)
 
         var topoData = null
@@ -124,7 +124,7 @@
 
         async function drawMap(error, topo) {
 
-          d3.select('#map g').remove();
+          d3.select('#map').selectAll('*').remove();
 
           // Draw the map
           map_svg.append("g")
@@ -146,6 +146,12 @@
               .attr("stroke", "#FFF")
               .attr("stroke-width", 1)
               .on("click", clickMapHandler)
+              .on("mouseover", function (d) {
+                d3.select(this).style("cursor", "pointer")
+              })
+              .on("mouseout", function(d) {
+                d3.select(this).style("cursor", "default")
+              })
 
           map_svg.append("g")
             .selectAll("text")
@@ -158,6 +164,27 @@
             .attr("dx", d => data.get(d, "offset[0]", null))
             .attr("dy", d => data.get(d, "offset[1]", null))
             .text(d => d.properties.NAME);
+            
+          map_svg.append('g')
+            .selectAll('rect')
+            .data([0, 30, 60, 90, 120, 150, 180, 210, 240])
+            .enter()
+            .append('rect')
+            .attr('width',18)
+            .attr('height',18)
+            .attr('fill', function(d,i) { return colorScale(d); })
+            .attr('x', function(d,i) { return i%10 * 20 + 30; })
+            .attr('y', function(d,i) { return Math.floor(i/10) * 20 + 30; }) 
+            
+          map_svg.append('g')
+            .selectAll('text')
+            .data([0, 30, 60, 90, 120, 150, 180, 210, 240])
+            .enter()
+            .append('text')
+            .text(d => d)
+            .attr("font-size", 10)
+            .attr('x', function(d,i) { return i%10 * 20 + 30; })
+            .attr('y', function(d,i) { return Math.floor(i/10) * 20 + 60; }) 
         }
 
         async function clickMapHandler(d,i) {
@@ -209,7 +236,7 @@
               yScale = d3.scaleLinear().range ([height, 0]);
 
           var g = bargraph_svg.append('g')
-              .attr('transform', "translate(" + 45 + "," + 350 + ")");
+              .attr('transform', "translate(" + 45 + "," + 330 + ")");
 
           xScale.domain(types);
           yScale.domain([0, d3.max(data.get(state).slice(1,7), function(d) { return d; })]);
@@ -217,6 +244,12 @@
           g.append("g")
           .attr("transform", "translate(0," + height + ")")
           .call(d3.axisBottom(xScale))
+          .append("text")
+            .attr('x', 220)
+            .attr('y', 55)
+            .attr("font-size", 20)
+            .style('fill', 'black')
+            .text("Brewery Type")
 
           g.append("g")
           .call(d3.axisLeft(yScale).tickFormat(function(d){
@@ -242,6 +275,12 @@
             })
             .attr("fill", (d,i) => colors[i])
             .on("click", clickBarHandler)
+            .on("mouseover", function (d) {
+                d3.select(this).style("cursor", "pointer")
+            })
+            .on("mouseout", function(d) {
+                d3.select(this).style("cursor", "default")
+            })
           
         }
 
@@ -283,7 +322,6 @@
             return data.get(selectedStateData.properties.GEO_ID).slice(1,7)
           }
         }
-
 
     </script>
 </body>
