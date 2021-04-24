@@ -101,10 +101,12 @@ d3.csv('https://raw.githubusercontent.com/jwu2018/04-multiple-views/main/data/cl
         var stalk_colors = ['brown', 'buff', 'cinnamon', 'gray', 'orange', 'pink', 
             'red', 'white', 'yellow']
 
+
+        
         document.getElementById('filtercontainer').setAttribute("style",
-            "width:"+width/2+"px; background-color: grey; float=left");
+            "width:"+width/2+"px; height:"+height/2+"px; float:left");
         document.getElementById('shroomcontainer').setAttribute("style",
-            "width:"+width/2+"px; background-color: red; float=right")
+            "width:"+width/2+"px; height:"+height/2+"px;  float:left")
 
 
         /*-------------------------------- Initialize the Buttons ------------------------------*/
@@ -112,7 +114,10 @@ d3.csv('https://raw.githubusercontent.com/jwu2018/04-multiple-views/main/data/cl
         /*------- Cap color -------*/
         d3.select('#filtercontainer')
             .append('text')
-                .style('margin', margin+'px')
+                .style('margin-left', 4*margin+'px')
+                .style('margin-right', 7*margin+20+'px')
+                .style('margin-top', margin+'px')
+                .style('margin-bottom', margin+'px')
                 .style('text-anchor', 'middle')
                 .style('font-size', '15px')
                 .text("Cap Color")
@@ -134,12 +139,16 @@ d3.csv('https://raw.githubusercontent.com/jwu2018/04-multiple-views/main/data/cl
 
         d3.select('#filtercontainer')
             .append('br')
-
+        d3.select('#filtercontainer')
+            .append('br')
 
         /*------- Gill color -------*/
         d3.select('#filtercontainer')
             .append('text')
-                .style('margin', margin+'px')
+                .style('margin-left', 4*margin+'px')
+                .style('margin-right', 8*margin+2+'px')
+                .style('margin-top', margin+'px')
+                .style('margin-bottom', margin+'px')
                 .style('text-anchor', 'middle')
                 .style('font-size', '15px')
                 .text("Gill Color")
@@ -160,12 +169,14 @@ d3.csv('https://raw.githubusercontent.com/jwu2018/04-multiple-views/main/data/cl
 
         d3.select('#filtercontainer')
             .append('br')
+        d3.select('#filtercontainer')
+            .append('br')
 
 
         /*------- Stalk color above ring -------*/
         d3.select('#filtercontainer')
             .append('text')
-                .style('margin', margin+'px')
+                .style('margin', 4*margin+'px')
                 .style('text-anchor', 'middle')
                 .style('font-size', '15px')
                 .text("Stalk Color Above Ring")
@@ -184,12 +195,15 @@ d3.csv('https://raw.githubusercontent.com/jwu2018/04-multiple-views/main/data/cl
 
         d3.select('#filtercontainer')
             .append('br')
+        d3.select('#filtercontainer')
+            .append('br')
 
 
         /*------- Stalk color below ring -------*/
         d3.select('#filtercontainer')
             .append('text')
-                .style('margin', margin+'px')
+                .style('margin', 4*margin+'px')
+                .style('margin-right', 4*margin+4+'px')
                 .style('text-anchor', 'middle')
                 .style('font-size', '15px')
                 .text("Stalk Color Below Ring")
@@ -208,62 +222,140 @@ d3.csv('https://raw.githubusercontent.com/jwu2018/04-multiple-views/main/data/cl
 
         d3.select('#filtercontainer')
             .append('br')
+        d3.select('#filtercontainer')
+            .append('br')
 
 
         /*-------------------------------- Initialize Shroom Graphics ------------------------------*/
-        var shroom_svg = d3.select('#customizingcontainer')
+        
+        var shroom_svg = d3.select('#shroomcontainer')
             .append('svg')
             .attr('width', width / 2)
             .attr('x', width/2)
+            .attr('height', height/2)
             // .style('float', 'left')
 
-        var cap = shroom_svg
-            // .append('svg')
-            .append('circle')
-                .attr('cx', margin)
-                .attr('cy', margin)
-                .attr('stroke', 'black')
-                .style('fill', 'brown')
-                .attr('r', 20)
-                .attr('id', 'cap')
+        document.getElementById("shroomcontainer").setAttribute('x', width/2)
 
-        var gill = shroom_svg
-            // .append('svg')
-            .append('circle')
-                .attr('cx', 3*margin)
-                .attr('cy', margin)
-                .attr('stroke', 'black')
-                .style('fill', 'black')
-                .attr('r', 20)
-                .attr('id', 'gill')
+        let shrm_unit = (height/2 - 2*margin) / 10
+        let mid_w = width/4
+        let mid_h = height/4
 
-        var stalk_a_ring = shroom_svg
-            // .append('svg')
-            .append('circle')
-                .attr('cx', 5*margin)
-                .attr('cy', margin)
-                .attr('stroke', 'black')
-                .style('fill', 'brown')
-                .attr('r', 20)
-                .attr('id', 'stalk_a_ring')
+        /*------- Cap -------*/
+        let cap_points = [
+            {'x':mid_w, 		            'y':mid_h-2*shrm_unit},
+            {'x':mid_w-shrm_unit, 		'y':mid_h-1.75*shrm_unit},
+            {'x':mid_w-2*shrm_unit, 		'y':mid_h-1.5*shrm_unit},
+            {'x':mid_w-3*shrm_unit, 		'y':mid_h-shrm_unit},
+            {'x':mid_w-3*shrm_unit, 		'y':mid_h-2*shrm_unit},
+            {'x':mid_w-2.5*shrm_unit, 		'y':mid_h-3*shrm_unit},
+            {'x':mid_w-1.5*shrm_unit, 		'y':mid_h-4*shrm_unit},
+            {'x':mid_w-0.5*shrm_unit, 		'y':mid_h-4.5*shrm_unit},
+            {'x':mid_w+0.5*shrm_unit, 		'y':mid_h-4.5*shrm_unit},
+            {'x':mid_w+1.5*shrm_unit, 		'y':mid_h-4*shrm_unit},
+            {'x':mid_w+2.5*shrm_unit, 		'y':mid_h-3*shrm_unit},
+            {'x':mid_w+3*shrm_unit, 		'y':mid_h-2*shrm_unit},
+            {'x':mid_w+3*shrm_unit, 		'y':mid_h-shrm_unit},
+            {'x':mid_w+2*shrm_unit, 		'y':mid_h-1.5*shrm_unit},
+            {'x':mid_w+shrm_unit, 		'y':mid_h-1.75*shrm_unit},
+            {'x':mid_w, 		            'y':mid_h-2*shrm_unit}
+        ]
+        let cap = shroom_svg.append('polygon')
+            .attr('points', points_string(cap_points))
+            .attr('stroke', 'black')
+            //.attr('points', '233, 135 233, 216 349, 270 466, 216 466, 135 407, 54 291, 54 233, 135')
+            .attr('fill', 'brown')
+            .attr('id', 'cap')
 
-        var stalk_b_ring = shroom_svg
-            // .append('svg')
-            .append('circle')
-                .attr('cx', 7*margin)
-                .attr('cy', margin)
-                .attr('stroke', 'black')
-                .style('fill', 'brown')
-                .attr('r', 20)
-                .attr('id', 'stalk_b_ring')
+        /*------- Gill -------*/
+        let gill_points = [
+            {'x':mid_w, 		            'y':mid_h-2*shrm_unit},
+            {'x':mid_w+shrm_unit, 		'y':mid_h-1.75*shrm_unit},
+            {'x':mid_w+2*shrm_unit, 		'y':mid_h-1.5*shrm_unit},
+            {'x':mid_w+3*shrm_unit, 		'y':mid_h-shrm_unit},
+            {'x':mid_w+shrm_unit, 		'y':mid_h-0.5*shrm_unit},
+            {'x':mid_w-shrm_unit, 		'y':mid_h-0.5*shrm_unit},
+            {'x':mid_w-3*shrm_unit, 		'y':mid_h-shrm_unit},
+            {'x':mid_w-2*shrm_unit, 		'y':mid_h-1.5*shrm_unit},
+            {'x':mid_w-shrm_unit, 		'y':mid_h-1.75*shrm_unit},
+            {'x':mid_w, 		            'y':mid_h-2*shrm_unit}
+        ]
+        let gill = shroom_svg.append('polygon')
+            .attr('points', points_string(gill_points))
+            .attr('stroke', 'black')
+            .attr('fill', 'black')
+            .attr('id', 'gill')
+
+        /*------- Stalk Above Ring -------*/
+        let stalk_a_ring_points = [
+            {'x':mid_w, 		            'y':mid_h-2*shrm_unit},
+            {'x':mid_w+shrm_unit, 		'y':mid_h-1.75*shrm_unit},
+            {'x':mid_w+shrm_unit, 		'y':mid_h},
+            {'x':mid_w-shrm_unit, 		'y':mid_h},
+            {'x':mid_w-shrm_unit, 		'y':mid_h-1.75*shrm_unit},
+            {'x':mid_w, 		            'y':mid_h-2*shrm_unit}
+        ]
+        let stalk_a_ring = shroom_svg.append('polygon')
+            .attr('points', points_string(stalk_a_ring_points))
+            .attr('stroke', 'black')
+            .attr('fill', 'brown')
+            .attr('id', 'stalk_a_ring')
+        
+
+        /*------- Stalk below ring -------*/
+        let stalk_b_ring_points = [
+            {'x':mid_w+shrm_unit,      'y':mid_h},
+            {'x':mid_w+shrm_unit,      'y':mid_h+3*shrm_unit},
+            {'x':mid_w-shrm_unit,      'y':mid_h+3*shrm_unit},
+            {'x':mid_w-shrm_unit,      'y':mid_h}
+        ]
+        let stalk_b_ring = shroom_svg.append('polygon')
+            .attr('points', points_string(stalk_b_ring_points))
+            .attr('stroke', 'black')
+            .attr('fill', 'brown')
+            .attr('id', 'stalk_b_ring')
+
+
+
+        /*------- Ring -------*/
+        let ring_points = [
+            {'x':mid_w+1.5*shrm_unit,      'y':mid_h},
+            {'x':mid_w+1.5*shrm_unit,      'y':mid_h+0.5*shrm_unit},
+            {'x':mid_w-1.5*shrm_unit,      'y':mid_h+0.5*shrm_unit},
+            {'x':mid_w-1.5*shrm_unit,      'y':mid_h}
+        ]
+        let ring = shroom_svg.append('polygon')
+            .attr('points', points_string(ring_points))
+            .attr('stroke', 'black')
+            .attr('fill', 'brown')
+            .attr('id', 'ring')
+
+        
 
         // A function that update the color of the circle
         function update_shroom_color(mycolor, element_tag) {
             d3.select(element_tag)
                 .transition()
-                .duration(500)
+                .duration(700)
                 .style('fill', mycolor)
         }
+
+
+        /**
+		 * Helper function for turning point objects to a string of points
+		 * 
+		 */
+		function points_string(data) {
+			output = ''
+
+			for (i = 0; i < data.length; i++) {
+				output = output + Math.floor(data[i].x) + ', ' + Math.floor(data[i].y)
+				if (i != data.length - 1)
+					output = output + ' '
+			}
+			//console.log(output)
+			return output
+		}
 
         /*-------------------------------- Buttons Changed ------------------------------*/
         // When the button is changed, run the update_shroom_color function
@@ -304,6 +396,7 @@ d3.csv('https://raw.githubusercontent.com/jwu2018/04-multiple-views/main/data/cl
             console.log('just changed stalk below ring color to', filters.stalk_color_below_ring)
             
             update_shroom_color(get_color(filters.stalk_color_below_ring), '#stalk_b_ring')
+            update_shroom_color(get_color(filters.stalk_color_below_ring), '#ring')
             update_charts()
         })
     }
@@ -351,13 +444,16 @@ d3.csv('https://raw.githubusercontent.com/jwu2018/04-multiple-views/main/data/cl
 
         // Appending path 
         arcs.append('path')
+            .attr('stroke', 'black')
+            .attr('d', arc)
+            .attr('fill', 'white')
+            .transition()
+            .duration(700)
             .attr('fill', (data, i)=>{
                 let value=data.data
                 if (i == 0) {return 'white'}
                 else {return 'black'}
             })
-            .attr('stroke', 'black')
-            .attr('d', arc);
 
         // Appending Text
         svg.append('svg:text')
@@ -366,7 +462,9 @@ d3.csv('https://raw.githubusercontent.com/jwu2018/04-multiple-views/main/data/cl
             .style('text-anchor', 'middle')
             .style('font-size', '15px')
             .text(((1-fraction_edible) * 100).toFixed(2) + 
-                '% of mushrooms with these characteristics are poisonous.')
+                '% of mushrooms with these colors are poisonous.')
+
+        
     }
 
 
@@ -386,14 +484,16 @@ d3.csv('https://raw.githubusercontent.com/jwu2018/04-multiple-views/main/data/cl
             yScale = d3.scaleLinear().range ([height/3, 0]);
 
         let g = svg.append('g')
-            .attr('transform', 'translate(' + 2*margin + ',' + 2*margin + ')');
+            .attr('transform', 'translate(' + 2*margin + ',' + 2*margin + ')')
+            .attr('id', 'barchart')
 
         xScale.domain(filters_list);
         yScale.domain([0, 100]);
 
         g.append('g')
             .attr('transform', 'translate(0,' + height/3 + ')')
-            .call(d3.axisBottom(xScale));
+            .call(d3.axisBottom(xScale))
+            
 
         g.append('g')
             .call(d3.axisLeft(yScale).tickFormat(function(d){
@@ -438,27 +538,22 @@ d3.csv('https://raw.githubusercontent.com/jwu2018/04-multiple-views/main/data/cl
             .data(bar_data)
             .enter().append('rect')
             .attr('class', 'bar')
-            .attr('fill', function(d) {return get_color(d.color)})
             .attr('x', function(d) {return xScale(d.characteristic)})
-            .attr('y', function(d) {return yScale(d.percentage)})
             .attr('width', xScale.bandwidth())
+            .attr('y', height/3)
+            .transition()
+            .duration(700)
+            .attr('fill', function(d) {return get_color(d.color)})
             .attr('height', function(d) {return height/3 - yScale(d.percentage)})
+            .attr('y', function(d) {return yScale(d.percentage)})
+            
     
         /*-------------------------------- TITLE ------------------------------*/
         svg.append('text')
             .attr('x', width/4)
             .attr('y', margin)
-            // .attr('font-size', '15px')
+            .attr('font-size', '12px')
             .style('text-anchor', 'middle')
-            .text('Percentage of Mushrooms with Each Characteristic')
-
-
-        // g.append('g')
-        //     .append('text')
-        //     .attr('y', height/2 - 50)
-        //     .attr('x', width/4)
-        //     .attr('font-size', '12px')
-        //     .attr('text-anchor', 'end')
-        //     .text('Characteristic');
+            .text('Percentage of Mushrooms in the Dataset with These Colors')
     }
 })

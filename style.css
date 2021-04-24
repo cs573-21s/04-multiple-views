@@ -1,0 +1,9 @@
+#chartscontainer {
+    border-top: 1px solid black
+}
+
+html *
+{
+   color: black !important;
+   font-family: Geneva !important;
+}
