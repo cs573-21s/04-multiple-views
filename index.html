@@ -1,37 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <!-- Load Resources -->
-        <link rel="stylesheet" href="./styles/styles.css">
-        <link rel="stylesheet" href="./styles/table.css">
-        <link rel="stylesheet" href="./styles/heatmap.css">
-        <link rel="stylesheet" href="./styles/boxPlot.css">
-        <link rel="stylesheet" href="./styles/modal.css">
-        <link rel="icon" href="./images/favicon.ico" type="image/x-icon" />
-        <script src="https://d3js.org/d3.v6.min.js"></script>
-        <script defer src="./scripts/typecomparison.js"></script>
-        <script defer src="./scripts/overallcomparison.js"></script>
-        <script defer src="./scripts/datatable.js"></script>
 
-        <!-- Meta Data -->
-        <title>CS 573 - A4</title>
-        <meta charset="utf-8">
-        <meta name="description"
-            content="My submission for WPI CS 573 assignment 4, multiple views. I created a tool for comparing pokemon types.">
-        <meta name="keywords" content="Andrew Nolan, CS 573, Pokemon, A4, Linked Vis, Linked Visualization, d3, Brush">
+<head>
+    <!-- Load Resources -->
+    <link rel="stylesheet" href="./styles/styles.css">
+    <link rel="stylesheet" href="./styles/table.css">
+    <link rel="stylesheet" href="./styles/heatmap.css">
+    <link rel="stylesheet" href="./styles/boxPlot.css">
+    <link rel="stylesheet" href="./styles/modal.css">
+    <link rel="icon" href="./images/favicon.ico" type="image/x-icon" />
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script defer src="./scripts/typecomparison.js"></script>
+    <script defer src="./scripts/overallcomparison.js"></script>
+    <script defer src="./scripts/datatable.js"></script>
 
-    </head>
+    <!-- Meta Data -->
+    <title>CS 573 - A4</title>
+    <meta charset="utf-8">
+    <meta name="description"
+        content="My submission for WPI CS 573 assignment 4, multiple views. I created a tool for comparing pokemon types.">
+    <meta name="keywords" content="Andrew Nolan, CS 573, Pokemon, A4, Linked Vis, Linked Visualization, d3, Brush">
 
-    <body>
-        <h1 class="pokemon-font">Pokémon Comparison Tool Version 1.0</h2>
+</head>
+
+<body>
+    <!-- Title -->
+    <h1 class="pokemon-font">Pokémon Comparison Tool Version 1.0</h2>
         <div class="row">
+            <!-- Type Comparison Page -->
             <div id="typecomparepage">
                 <div class="text-block">
-                    <p></p>
+                    <p>This box and whisker plot shows the stat distributions for each Pokemon type. The heatmap shows
+                        the relative effectiveness of the Pokemon type in each row against each column. Clicking on a
+                        box in either visualization will highlight both visualizations.</p>
                 </div>
                 <div class="row">
                     <div id="boxplotzone">
+                        <!-- Empty div for d3 to put a box and whisker plot into -->
                         <div id="boxplot"></div>
+                        <!-- Filters -->
                         <div class="filterRow">
                             <p>Stat:</p>
                             <select id="statlist">
@@ -62,13 +69,17 @@
                             </select>
                         </div>
                     </div>
+                    <!-- Empty div for d3 to put a heatmap into -->
                     <div id="heatmap"></div>
                 </div>
             </div>
-            
+            <!-- The Type Comparison Page -->
             <div class="disabled" id="statcomparezone">
                 <div class="text-block">
-                    <p></p>
+                    <p>This page includes a scatter plot matrix and a parallel axes plot to show the stat distribution
+                        of each individual Pokemon. Brushing one graph will update both visualizations. The filters at
+                        the top can be used to select a specific Pokemon generation or exclude legendary Pokemon.</p>
+                    <!-- Filters -->
                     <div class="filterRow">
                         <p>Legendary Filter:</p>
                         <select id="legendlist2">
@@ -90,24 +101,35 @@
                         </select>
                     </div>
                 </div>
+                <!-- Empty div for d3 to put the scatterplot matrix -->
                 <div id="scattermatrix"></div>
                 <br>
+                <!-- Empty div for d3 to put the parallel axes into-->
                 <div id="parallelaxes"></div>
             </div>
+            <!-- The dataset view page -->
             <div class="disabled" id="dataset">
                 <div class="text-block">
-                    <p>Here is the dataset used for the visualizations. Like the other graphs, the rows of the data are colored by type_1. The source of this data is from <a href="https://www.kaggle.com/mariotormo/complete-pokemon-dataset-updated-090420?select=pokedex_%28Update_05.20%29.csv" target="_blank" rel="noopener noreferrer" >this Kaggle page</a>. I did feature reduction to make it more readable and useful for my comparison tool.</p>
+                    <p>Here is the dataset used for the visualizations. Like the other graphs, the rows of the data are
+                        colored by type_1. The source of this data is from <a
+                            href="https://www.kaggle.com/mariotormo/complete-pokemon-dataset-updated-090420?select=pokedex_%28Update_05.20%29.csv"
+                            target="_blank" rel="noopener noreferrer">this Kaggle page</a>. I did feature reduction to
+                        make it more readable and useful for my comparison tool.</p>
                 </div>
             </div>
         </div>
-        <button id="infoButton">MORE INFO</button>
 
+        <!-- The bottom navbar -->
         <div class="navbar">
             <button onclick="CompareTypes()">Type Comparison</button>
             <button onclick="CompareStats()">Stat Comparison</button>
             <button onclick="showData()">Dataset</button>
         </div>
 
+        <!-- The more info button -->
+        <button id="infoButton">MORE INFO</button>
+
+        <!-- The help modal -->
         <div id="helpModal" class="modal">
             <div class="modal-content">
                 <span class="close">
@@ -115,9 +137,23 @@
                 </span>
                 <h2>More Info</h2>
                 <p>This tool includes three pages to help users explore and analyze Pokemon data. </p>
-                <p><strong>Type Comparison:</strong> This page provides a multiform overview of the Pokemon type data by showing encodings of different subsets of data. The box and whisker plot shows summary statistics (range, max, min, Q1, Q3) of a stat for each Pokemon type. It has drop downs to change the stat, or to filter the data to a specific generation of Pokemon or to remove legendary Pokemon. The heatmap shows the relative effectiveness of the type in the row with respect to the type in the column. Clicking on a cell will highlight the types in the box and whisker plot. Clicking on the rectangles in the box and whisker will highlight the type in the heatmap.</p>
-                <p><strong>Stat Comparison: </strong>This page includes a brushable scatter plot matrix and a brushable parallel axes graph. Both depict the stats of each individual Pokemon (represented as a dot or line respectively) and colored by the Pokemon's type. Showing all of the data in two different visualizations provides a multiform view of the dataset. Brushing either visualization will highlight the selected Pokemon in both visualizations.</p>
-                <p><strong>Dataset: </strong>This page includes the dataset used for the visualizations. Like the other graphs, the rows of the data are colored by type_1. The source of this data is from <a href="https://www.kaggle.com/mariotormo/complete-pokemon-dataset-updated-090420?select=pokedex_%28Update_05.20%29.csv" target="_blank" rel="noopener noreferrer" >this Kaggle page</a>. I did feature reduction to make it more readable and useful for my comparison tool</p>
+                <p><strong>Type Comparison:</strong> This page provides a multiform overview of the Pokemon type data by
+                    showing encodings of different subsets of data. The box and whisker plot shows summary statistics
+                    (range, max, min, Q1, Q3) of a stat for each Pokemon type. It has drop downs to change the stat, or
+                    to filter the data to a specific generation of Pokemon or to remove legendary Pokemon. The heatmap
+                    shows the relative effectiveness of the type in the row with respect to the type in the column.
+                    Clicking on a cell will highlight the types in the box and whisker plot. Clicking on the rectangles
+                    in the box and whisker will highlight the type in the heatmap.</p>
+                <p><strong>Stat Comparison: </strong>This page includes a brushable scatter plot matrix and a brushable
+                    parallel axes graph. Both depict the stats of each individual Pokemon (represented as a dot or line
+                    respectively) and colored by the Pokemon's type. Showing all of the data in two different
+                    visualizations provides a multiform view of the dataset. Brushing either visualization will
+                    highlight the selected Pokemon in both visualizations.</p>
+                <p><strong>Dataset: </strong>This page includes the dataset used for the visualizations. Like the other
+                    graphs, the rows of the data are colored by type_1. The source of this data is from <a
+                        href="https://www.kaggle.com/mariotormo/complete-pokemon-dataset-updated-090420?select=pokedex_%28Update_05.20%29.csv"
+                        target="_blank" rel="noopener noreferrer">this Kaggle page</a>. I did feature reduction to make
+                    it more readable and useful for my comparison tool.</p>
                 <p><strong>Color Key:</strong></p>
                 <div class="type-list">
                     <span>
@@ -177,46 +213,54 @@
                 </div>
             </div>
         </div>
-
+        <!-- White space so the bottom bar doesn't cover the visualizations -->
         <br><br><br><br>
-    </body>
+</body>
 
 
-    <script>
-        function CompareTypes(){
-            document.getElementById("typecomparepage").classList.remove("disabled");
-            document.getElementById("statcomparezone").classList.add("disabled");
-            document.getElementById("dataset").classList.add("disabled");
-        }
+<script>
+    // Function to change to the type comparison page
+    function CompareTypes() {
+        document.getElementById("typecomparepage").classList.remove("disabled");
+        document.getElementById("statcomparezone").classList.add("disabled");
+        document.getElementById("dataset").classList.add("disabled");
+    }
 
-        function CompareStats(){
-            document.getElementById("typecomparepage").classList.add("disabled");
-            document.getElementById("statcomparezone").classList.remove("disabled");
-            document.getElementById("dataset").classList.add("disabled");
-        }
+    // Changes to the overall stat comparison page
+    function CompareStats() {
+        document.getElementById("typecomparepage").classList.add("disabled");
+        document.getElementById("statcomparezone").classList.remove("disabled");
+        document.getElementById("dataset").classList.add("disabled");
+    }
 
-        function showData(){
-            document.getElementById("typecomparepage").classList.add("disabled");
-            document.getElementById("statcomparezone").classList.add("disabled");
-            document.getElementById("dataset").classList.remove("disabled");
-        }
+    // Shows the dataset view
+    function showData() {
+        document.getElementById("typecomparepage").classList.add("disabled");
+        document.getElementById("statcomparezone").classList.add("disabled");
+        document.getElementById("dataset").classList.remove("disabled");
+    }
 
-        let modal = document.getElementById("helpModal");
-        let info = document.getElementById("infoButton");
-        let close = document.getElementsByClassName("close")[0];
+    // Variables to handle the modal
+    let modal = document.getElementById("helpModal");
+    let info = document.getElementById("infoButton");
+    let close = document.getElementsByClassName("close")[0];
 
-        info.onclick = function(){
-            modal.style.display = "block";
-        }
+    // Open the modal
+    info.onclick = function () {
+        modal.style.display = "block";
+    }
 
-        close.onclick = function(){
+    // Close the modal with the X button
+    close.onclick = function () {
+        modal.style.display = "none";
+    }
+
+    // Close the modal by clicking outside of it
+    window.onclick = function (e) {
+        if (e.target == modal) {
             modal.style.display = "none";
         }
+    }
+</script>
 
-        window.onclick = function(e){
-            if(e.target == modal){
-                modal.style.display = "none";
-            }
-        }
-    </script> 
 </html>

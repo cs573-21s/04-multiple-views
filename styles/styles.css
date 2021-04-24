@@ -1,5 +1,7 @@
+/* Import the pokemon font */
 @import url(https://db.onlinewebfonts.com/c/f4d1593471d222ddebd973210265762a?family=Pokemon);
 
+/* General styles */
 html, body{
     background-color: darkblue;
 }
@@ -52,6 +54,7 @@ svg{
     text-align: center;
 }
 
+/* Styles for filter rows*/
 .filterRow{
     display: flex;
     flex-direction: row;

@@ -1,7 +1,9 @@
+/* Make the axis font size bigger */
 #boxplot .tick{
     font-size: 11px;
 }
 
+/* Color the tick marks to the appropriate color for each type */
 #boxplot .xaxis .tick:nth-child(2){
     color: #78c850;
 }

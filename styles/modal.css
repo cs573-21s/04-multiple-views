@@ -1,4 +1,4 @@
-
+/* General styles for the modal */
 .modal{
     color: yellow;
     font-size: 20px;
@@ -15,10 +15,12 @@
     background-color: rgba(0,0,0,0.4)
 }
 
+/* set the color of the link */
 .modal a{
     color: lightcoral;
 }
 
+/* Styles for the body of the modal */
 .modal-content{
     background-color: grey;
     margin:auto;
@@ -27,6 +29,7 @@
     width: 80%;
 }
 
+/* Styles for the close button */
 .close{
     color: black;
     float: right;
@@ -41,24 +44,13 @@
   cursor: pointer;
 }
 
-#infoButton{
-    position:absolute;
-    top: 20px;
-    right: 20px;
-    text-align: center;
-    padding: 4px 10px;
-    border-radius: 15px;
-    font-size: 16px;
-    cursor: pointer;
-}
-
+/* Styles for the type legend */
 .type-list{
     display: flex;
     justify-content: space-evenly;
 }
 
 .type-list span{
-    /* font-size: 11px; */
     padding: 5px;
     margin: 5px;
     border-radius: 15px;
@@ -67,6 +59,7 @@
     width: 60px;
 }
 
+/* Color the types in the legend appropriately */
 .type-list span:nth-child(1){
     background-color: #78c850;
 }
@@ -120,4 +113,16 @@
 }
 .type-list span:nth-child(18){
     background-color: #a890f0;
+}
+
+/* Styles for the info button */
+#infoButton{
+    position:absolute;
+    top: 20px;
+    right: 20px;
+    text-align: center;
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 16px;
+    cursor: pointer;
 }

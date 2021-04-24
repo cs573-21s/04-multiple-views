@@ -1,7 +1,9 @@
+/* Make the heatmap axis labels bigger */
 #heatmap .tick{
     font-size: 11px;
 }
 
+/* Color the axis labels appropriately based on pokemon type */
 #heatmap .tick:nth-child(2){
     color: #78c850;
 }

@@ -1,11 +1,23 @@
-// This code generates a boxplot comparing the stat data of different pokemon types and a heatmap showing the effectiveness of each type
+/*
+* typecomparison.js
+* By: Andrew Nolan
+*
+* Handles generating the heatmap and the box and whisker plot, also handles their filters and linked interaction
+* This code generates a boxplot comparing the stat data of different pokemon types and a heatmap showing the effectiveness of each type
+*/
+
+// Generate the visualizations
 typeComparison();
+
+// Generate the visualizations
 function typeComparison() {
+    // General SVG settings
     let margins = { top: 10, right: 30, left: 50, bottom: 40 }
 
     let width = 500 - margins.left - margins.right;
     let height = 500 - margins.top - margins.bottom;
 
+    // Create the SVGs
     let svg = d3.select("#boxplot")
         .append("svg")
         .attr("width", width + margins.left + margins.right)
@@ -20,6 +32,7 @@ function typeComparison() {
         .append("g")
         .attr("transform", "translate(" + margins.left + "," + margins.top + ")");
 
+    // Store the data
     pokemonTypes = [];
 
     pokedexData = [];
@@ -34,12 +47,17 @@ function typeComparison() {
     // Colors
     let c = { Grass: "#78c850", Fire: "#F08030", Water: "#6890f0", Bug: "#a8b820", Normal: "#a8a878", Dark: "#000000", Poison: "#a040a0", Electric: "#f8d030", Ground: "#e0c068", Ice: "#98D8D8", Fairy: "#ee99ac", Steel: "#b8b8d0", Fighting: "#c03028", Psychic: "#f85888", Rock: "#b8a038", Ghost: "#705898", Dragon: "#7038f8", Flying: "#a890f0" }
 
+    // Variables that we'll need later
     let boxX;
     let boxY;
     let typeStats;
 
+    // Determine the stat to display based on the filters
     function determineTypeStats(pokemon, stat, legend, generation) {
-        // Compute the summary stats
+        // Update the text on the box and whisker plot to show which stat is selected
+        d3.selectAll("#boxLabel").text("Current Stat: " + document.getElementById("statlist").value);
+        
+        // Compute the summary stats, use the filters
         typeStats = d3.rollup(pokemon,
             function (d) {
                 let statList = d.map(function (g) {
@@ -66,10 +84,13 @@ function typeComparison() {
             function (d) { return d.type_1; });
     }
 
+    // Build the box plot
     function buildBoxPlot(pokemon, stat, legend, generation) {
 
+        // Determine the stats to display based on the selected stat and filters
         determineTypeStats(pokemon, stat, legend, generation);
 
+        // Get the pokemon types
         for (const t of typeStats.keys()) {
             pokemonTypes.push(t);
         }
@@ -94,9 +115,18 @@ function typeComparison() {
             .range([height, 0])
         svg.append("g").call(d3.axisLeft(boxY));
 
+        svg.append("text")
+            .attr("y", 10)
+            .attr("x", width -140)
+            .attr('text-anchor', 'left')
+            .attr("id", "boxLabel")
+            .text("Current Stat: HP");
+
         updateBoxes(typeStats, boxX, boxY)
     }
 
+    // Update the rectangles and lines when the filters change
+    // Do an animation
     function updateBoxes(typeStats, x, y) {
         // Draw the min/max range line
         // We draw it first so it's behind the rectangle
@@ -138,7 +168,6 @@ function typeComparison() {
                     }else if(e[0] === this.classList[0]){
                         active = true;
                     }
-                    //d3.select(this).style("fill", active ? c2[f[pokemonTypes[i]]] : "#eee");
                     d3.select(this).style("fill-opacity", active ? 1 : 0.1);
                 });
 
@@ -176,12 +205,14 @@ function typeComparison() {
 
     }
 
+    // Read the csv for the type advantage data
     function readPokemonTypes() {
         d3.csv("http://acnolan.tech/04-multiple-views/typeadvantage.csv").then(function (data) {
             buildHeatMap(data);
         });
     }
 
+    // Build the heatmap
     function buildHeatMap(data) {
         // Build the x axis
         let x = d3.scaleBand()
@@ -231,7 +262,6 @@ function typeComparison() {
                         }else if(d.target.classList[0] === this.classList[0]){
                             active = true;
                         }
-                        //d3.select(this).style("fill", active ? c[f[this.classList[0]]] : "#eee");
                         d3.select(this).style("fill-opacity", active ? 1 : 0.1);
                     });
 
@@ -246,7 +276,6 @@ function typeComparison() {
                             active = true;
                         }
                         d3.select(this).style("fill", active ? c2[f[0]] : "#eee");
-                        //d3.select(this).style("fill-opacity", active ? 1 : 0.1);
                     });
                 })
                 .on("mousemove", function (d, e) {
@@ -260,6 +289,7 @@ function typeComparison() {
         }
     }
 
+    // Generate the tooltip for the heatmap cells
     function determineHeatToolTip(t1, t2, number) {
         if (number === "1") {
             return "" + t1 + " is normal effective against " + t2 + " types.";
@@ -272,6 +302,7 @@ function typeComparison() {
         }
     }
 
+    // Generate the tooltip for the box and whisker plots
     function determineBoxToolTip(e) {
         let toolString = "<p><strong><u>" + e[0] + " Type</u></strong></p>";
         toolString += "<p>Min: " + e[1].min + "</p>";
@@ -282,10 +313,12 @@ function typeComparison() {
         return toolString;
     }
 
+    // Get the filter selects
     let statlist = document.getElementById("statlist");
     let legendlist = document.getElementById("legendlist");
     let generation = document.getElementById("generation");
 
+    // Add a function to update the vis if the stat filter changes
     statlist.addEventListener("change", function () {
         determineTypeStats(pokedexData, determineStat(statlist.value), determineLegendValue(legendlist.value),generation.value);
         let rects = heatmapsvg.selectAll("rect");
@@ -295,6 +328,7 @@ function typeComparison() {
         updateBoxes(typeStats, boxX, boxY);
     });
 
+    // Convert the selected stat string to a string that can be used to access the csv
     function determineStat(statLongName) {
         if (statlist.value === "HP") {
             return "hp";
@@ -311,7 +345,7 @@ function typeComparison() {
         }
     }
 
-
+    // Add a function to update the vis if the legend filter changes
     legendlist.addEventListener("change", function () {
         determineTypeStats(pokedexData, determineStat(statlist.value), determineLegendValue(legendlist.value),generation.value);
         let rects = heatmapsvg.selectAll("rect");
@@ -321,6 +355,7 @@ function typeComparison() {
         updateBoxes(typeStats, boxX, boxY);
     });
 
+    // Convert the selected string to a number    
     function determineLegendValue(legendLongName) {
         if (legendlist.value === "Include All") {
             return 0;
@@ -331,6 +366,7 @@ function typeComparison() {
         }
     }
 
+    // Add a function to update the vis if the stat filter changes
     generation.addEventListener("change", function(){
         determineTypeStats(pokedexData, determineStat(statlist.value), determineLegendValue(legendlist.value),generation.value);
         let rects = heatmapsvg.selectAll("rect");
@@ -341,11 +377,3 @@ function typeComparison() {
     });
 }
 
-
-function heatMapClick(e){
-    console.log(e)
-}
-
-function boxPlotClick(e){
-
-}

@@ -1,9 +1,19 @@
+/*
+* datatable.js
+* By: Andrew Nolan
+*
+* Handles generating the data table
+*/
+
+
 // Read the pokedex csv
 d3.csv("http://acnolan.tech/04-multiple-views/pokedex.csv").then(function (data) {
     buildBigTable(data);
 });
 
+// Builds the data table
 function buildBigTable(data) {
+    // Create a table
     let tablediv = document.getElementById("dataset");
 
     let table = document.createElement("table");
@@ -39,8 +49,6 @@ function buildBigTable(data) {
         }
     }
 
-
-
-
+    // Append the new table to the page
     tablediv.appendChild(table);
 }
