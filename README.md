@@ -1,59 +1,69 @@
 Assignment 4 - Visualizations and Multiple Views  
 ===
 
-One of the most powerful techniques for mitigating the shortcomings of a given visualization is to link it with other views.
-Linking a map to a bar or scatterplot, for instance, may allow you to overcome the shortcomings of a map.
-In general, linking visualizations allows you to explore different parts of the data between views, and mitigates the shortcomings of a given view by pairing it with other views.
-This technique, called coordinated multiple views, is the focus of this assignment.
+## Link to Visualization
 
-Your task is to choose an interesting dataset and visualize it in *at least two* **linked** views, where interactions in any given view updates the others.
-Each view should use a different visualization type, and interaction in one of the views should impact what's shown in the other views.
+https://04-multiple-views.ryanlamarche.dev/
 
-You should choose data and visualizations that are sufficiently complex and interesting to ensure a user can discover interesting patterns and trends on their own.
+## The Data
 
-For this assignment you should write everything from scratch.
-You may *reference and adapt* code from books or the web, and if you do please provide a References section with links at the end of your Readme.
+Data can be found in `public/data/Terrorist attacks by weapon type - Global Terrorism Database (2018).csv`
 
-Resources
----
+Data Source: [Our World in Data github](https://github.com/owid/owid-datasets/tree/master/datasets/Terrorist%20attacks%20by%20weapon%20type%20-%20Global%20Terrorism%20Database%20(2018))
 
-Data is Plural has a list of interesting datasets, many of which require processing.
+## Description
 
-These three examples are intended to show you what multiple views visualizations might look like. 
-I wouldn't recommend using them as a your starting point, but you may find some inspiration:
+This visualization aggregates geoJSON data with a public terrorism dataset provided by Our World in Data. The goal was to create a visualization that users could use to explore the weapon types used in terrorist attacks in different regions of the world. This can be helpful for identifying geospatial patterns to terrorist attack types.
 
-1. This [scatterplot matrix](http://bl.ocks.org/mbostock/4063663) has code that explains brushing and linking. But remember you'll be doing this with different types of views.
+One thing I noticed while brushing over the map in this visualization is the difference between countries in the Middle East (which have a higher percentage of Explosives attacks) and countries in Southern Africa (having a higher relative percentage of Firearms attacks). It was also interesting to click countries in the table and make comparisons, such as comparing the United States with countries like Canada and Australia which have stricter gun laws (resulting in a lower percentage of Firearms terrorist attacks).
 
-2. The example visualization for [Crossfilter](http://square.github.io/crossfilter/) uses coordinated multiple views. The interaction and brushing technique is well-executed.
+### The visualization consists of:
 
-3. The [dispatching events](https://github.com/d3/d3-dispatch) page is a good example of using events, rather than explicit functions, for controlling behavior. Views can listen for events in other views and respond accordingly.
+* __A Bar Chart__ - showing the distribution of weapon type for the currently selected countries
+* __An Interactive World Map__ - a "brushable" world map using the `d3.brush()` API. The brush "selects" countries by comparing the user's current selection with the centroid of points for each country in the geoJSON dataset. This allows the user to select different regions of the world and explore geospatial trends.
+* __A Table__ - below is a table, which is also filtered when the user brushes over the world map. This lets the user see the individual data points to make precise comparisons and draw conclusions. The __country name__ is also clickable, which will filter the map to just that 1 country. This makes it possible to filter the bar chart to see just 1 country at a time.
+* __A Help Button__ - A help button that opens a modal to help people get started using this visualization.
 
-*If you aren't familiar with event-based programming you should experiment with d3.dispatch and other approaches to coordinating views well before the deadline (it's tricky.)*
+## Screenshots
 
-Don't forget to run a local webserver when you're coding and debugging.
+### The help menu
 
-Requirements
----
+![help](screenshots/help.png)
 
-0. Your code should be forked from the GitHub repo and linked using GitHub pages.
-1. Your project should load a dataset you found on the web. Put this file in your repo.
-2. Your project should use d3 to build a visualization of the dataset. 
-3. Your writeup (readme.md in the repo) should contain the following:
+### The world map and bar chart with legend
 
-- Working link to the visualization hosted on gh-pages.
-- Concise description and screenshot of your visualization.
-- Description of the technical achievements you attempted with this visualization.
-- Description of the design achievements you attempted with this visualization.
+![default](screenshots/default.png)
 
-GitHub Details
----
+### The table below the map
 
-- Fork the GitHub Repository. You now have a copy associated with your username.
-- Make changes to index.html to fulfill the project requirements. 
-- Make sure your "master" branch matches your "gh-pages" branch, if using gh-pages for hosting. See the GitHub Guides referenced above if you need help.
-- Edit the README.md with a link to your site, for example http://YourUsernameGoesHere.github.io/04-MapsAndViews/index.html
-- To submit, make a [Pull Request](https://help.github.com/articles/using-pull-requests/) on the original repository. Name it: 
-```
-a4-username-firstName-lastName
-```
+![default_table](screenshots/default_table.png)
 
+### Brushing over Northern Africa
+
+![north_africa](screenshots/north_africa.png)
+
+### Clicking "United States of America" in the table
+
+![us](screenshots/us.png)
+
+# Technical Achievements
+
+* The countries are colored using a logarithmic scale
+
+* Brushing over countries using `d3.brush()` and computing the `centroid` of each country from a set of points in geoJSON data
+
+* Brushing over countries using `d3.brush()` and computing the `centroid` of each country from a set of points in geoJSON data
+
+# Design Achievements
+
+* "Pulse" Animation when you click a country in the table - this makes the country "grow and shrink" in an animated way to help the user find the country they clicked on and avoid "change blindness."
+
+* "Help Button & Modal" to help users who have not used this visualization before get started and better understand what they're looking at.
+
+* Dark Theme - Avoid eye strain at night when looking at this visualization; appeals to Computer Science majors.
+
+# Future Work
+
+After spending some time with this visualization, I think it would be helpful to allow users to select more than 1 country in the table for a "direct comparison" task. I found myself clicking the table, trying to remember the bar chart, then clicking a different country in the table and trying to make a memory-based comparison. The primary goal of this visualization was to allow users to explore geospatial patterns (by selecting regions of the world using the brush tool), but the comparison tasks were also interesting and helpful, so I think if I build a "Version 2" of this tool, I would explore a more robust direct comparison method.
+
+It's also worth mentioning that the brush might not be the "optimal" tool for world maps. I had to use the centroid for performance reasons, rather than testing every single point in the entire map, but filtering the countries based on the centroid of the geoJSON data for each country can become "clunky" in countries like the US, because Alaska and Hawaii skew the centroid. I wanted to use `d3.brush()` in this assignment to explore the API and see what works and what doesn't, but a "Version 2" of this tool might drop the brush tool in favor of simple "on click" event listeners to add/remove countries for comparison.
