@@ -460,9 +460,9 @@ d3.csv('https://raw.githubusercontent.com/jwu2018/04-multiple-views/main/data/cl
             .attr('x',width / 4)
             .attr('y',height/2 - margin)
             .style('text-anchor', 'middle')
-            .style('font-size', '15px')
+            .style('font-size', '12px')
             .text(((1-fraction_edible) * 100).toFixed(2) + 
-                '% of mushrooms with these colors are poisonous.')
+                '% of mushrooms with these colors are poisonous')
 
         
     }
@@ -541,6 +541,7 @@ d3.csv('https://raw.githubusercontent.com/jwu2018/04-multiple-views/main/data/cl
             .attr('x', function(d) {return xScale(d.characteristic)})
             .attr('width', xScale.bandwidth())
             .attr('y', height/3)
+            .attr('stroke', 'black')
             .transition()
             .duration(700)
             .attr('fill', function(d) {return get_color(d.color)})
