@@ -98,7 +98,7 @@
 
 
     // -- 1985 - 1990 -- //
-    d3.csv("/1985-1990.csv").then(data => {
+    d3.csv("./1985-1990.csv").then(data => {
       data.forEach(d => {
         d.suicides_per100k = Number(d.suicides_per100k)
         d.gdp_per_capita = Number(d.gdp_per_capita) / 100
