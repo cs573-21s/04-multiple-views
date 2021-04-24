@@ -185,6 +185,14 @@
             .attr("font-size", 10)
             .attr('x', function(d,i) { return i%10 * 20 + 30; })
             .attr('y', function(d,i) { return Math.floor(i/10) * 20 + 60; }) 
+
+          map_svg.append('text')
+            .attr('x', 230)
+            .attr('y', 48)
+            .attr("font-size", 20)
+            .style('fill', 'black')
+            .text("# of Breweries")
+
         }
 
         async function clickMapHandler(d,i) {
