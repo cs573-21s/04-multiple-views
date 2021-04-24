@@ -18,6 +18,8 @@ To visualize this data, I created an interactive map linked to a bargraph in d3.
 
 A user can click on a state and discover the distribution of breweries in that state in the bargraph to right. Each bar represents a brewery type and is shown next to the other types for easy comparison. A user can click on the bars for each type of brewery. Doing so will update the colors on the map. Once a type is selected, then the number of only that type of brewery is colored. In short, the map changes the distribution of the bargraph, and the bargraph changes the colors of each state.
 
+Note: Please in a full screen browser for an optimal experience
+
 ### Screenshots
 Default
 ![default](images/default.png)
