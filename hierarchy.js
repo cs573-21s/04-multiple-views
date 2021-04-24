@@ -134,10 +134,10 @@ const textFits = d => {
     const r = Math.max(0, (y(d.y0) + y(d.y1)) / 2);
     const perimeter = r * deltaAngle;
 
-    console.log(d)
-    console.log(d.data)
-    console.log(d.data.name)
-    console.log(d.name)
+    // console.log(d)
+    // console.log(d.data)
+    // console.log(d.data.name)
+    // console.log(d.name)
     return d.data.name.length * CHAR_SPACE < perimeter;
 };
 
@@ -147,9 +147,9 @@ const svg = d3.select('body').append('svg')
     .attr('viewBox', `${-width / 2} ${-height / 2} ${width} ${height}`)
     .on('click', () => focusOn()); // Reset zoom on canvas click
 
-d3.json('https://raw.githubusercontent.com/imogencs/04-multiple-views/main/animals2.json', (error, root) => {
+d3.json('https://raw.githubusercontent.com/imogencs/04-multiple-views/main/animale22.json', (error, root) => {
     if (error) throw error;
-    console.log(root)
+    // console.log(root)
 
     root = d3.hierarchy(root);
     root.sum(d => d.size);
@@ -171,7 +171,7 @@ d3.json('https://raw.githubusercontent.com/imogencs/04-multiple-views/main/anima
         .text(d => d.data.name + '\n' + formatNumber(d.value));
 
 
-    console.log("here 1")
+    // console.log("here 1")
     newSlice.append('path')
         .attr('class', 'main-arc')
         // .style('fill', d => color((d.children ? d : d.parent).name))
@@ -179,16 +179,16 @@ d3.json('https://raw.githubusercontent.com/imogencs/04-multiple-views/main/anima
             return "hsl(" + Math.random() * 360 + ",100%,50%)";
         })
         .attr('d', arc);
-    console.log("here 2")
+    // console.log("here 2")
 
     newSlice.append('path')
         .attr('class', 'hidden-arc')
         .attr('id', (_, i) => `hiddenArc${i}`)
         .attr('d', middleArcLine);
-    console.log("here 3")
+    // console.log("here 3")
     const text = newSlice.append('text')
         .attr('display', d => textFits(d) ? null : 'none');
-        console.log("here 4")
+    // console.log("here 4")
     // Add white contour
     text.append('textPath')
         .attr('startOffset', '50%')
@@ -199,7 +199,7 @@ d3.json('https://raw.githubusercontent.com/imogencs/04-multiple-views/main/anima
         .style('stroke-width', 5)
         .style('stroke-linejoin', 'round');
 
-        console.log("here 5")
+    console.log("here 5")
     text.append('textPath')
         .attr('startOffset', '50%')
         .attr('xlink:href', (_, i) => `#hiddenArc${i}`)
