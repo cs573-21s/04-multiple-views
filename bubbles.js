@@ -1,168 +1,30 @@
-// // // references
-// // // https://bl.ocks.org/mbostock/ca5b03a33affa4160321
-// // // https://medium.com/@mbostock/a-better-way-to-code-2b1d2876a3a0
+// references
+// https://bl.ocks.org/mbostock/ca5b03a33affa4160321
+// https://medium.com/@mbostock/a-better-way-to-code-2b1d2876a3a0
+// https://bl.ocks.org/vasturiano/12da9071095fbd4df434e60d52d2d58d
 
-// // var svg = d3.select("svg"),
-// //     width = +svg.attr("width"),
-// //     height = +svg.attr("height");
-
-// // var format = d3.format(",d");
-
-// // var color = d3.scaleSequential(d3.interpolateMagma)
-// //     .domain([-4, 4]);
-
-// // var stratify = d3.stratify()
-// //     .parentId(function (d) {
-// //         console.log(d.fmat)
-// //         console.log(d)
-// //         return d.class.substring(0, d.class.lastIndexOf("."));
-// //     });
-
-// // var pack = d3.pack()
-// //     .size([width - 2, height - 2])
-// //     .padding(3);
-
-
-
-
-// // var nest = d3.nest()
-// //     .key(function (d) {
-// //         return d.Kingdom;
-// //     })
-// //     .key(function (d) {
-// //         return d.Phylum;
-// //     })
-// //     .key(function (d) { return d.Class; })
-// //     .key(function (d) { return d.Over; })
-
-// //     .key(function (d) {
-// //         // console.log(d.Family)
-// //         return d.Family;
-// //     })
-// //     .key(function (d) {
-// //         // console.log(d.Genus)
-// //         return d.Genus;
-// //     })
-// //     .key(function (d, i) {
-// //         // console.log(d.Species, i)
-// //         return d.Species;
-// //     })
-// //     .rollup(function (d) { return d3.sum(d, function (d) { return d.Species; }); });
-
-// // // var treemap = d3.treemap()
-// // //     .size([width, height])
-// // //     .padding(1)
-// // //     .round(true);
-
-// // d3.csv("https://raw.githubusercontent.com/imogencs/04-multiple-views/main/simple_reptiles.csv", function (data) {
-// //     // console.log(data.columns)
-
-
-// //     var root = d3.hierarchy({ fmats: nest.entries(data) }, function (d) { return d.fmats; })
-// //         .sum(function (d) { return d.fmat; })
-// //         .sort(function (a, b) { return b.fmat - a.fmat; });
-
-// //     // treemap(root);
-
-// //     // var root = stratify(data)
-// //     //     .sum(function (d) { return d.fmat; })
-// //     //     .sort(function (a, b) { return b.fmat - a.fmat; });
-
-// //     pack(root);
-
-
-// //     // console.log(data)
-// //     // // console.log(data.fmat)
-// //     // var root = stratify(data)
-// //     //     .sum(function (d) {
-// //     //         console.log(d.fmat)
-// //     //         return d.fmat;
-// //     //     })
-// //     //     .sort(function (a, b) { return b.fmat - a.fmat; });
-// //     // console.log(root)
-
-// //     // pack(root);
-
-// //     console.log('here :) 1')
-
-// //     var node = svg.select("g")
-// //         .selectAll("g")
-// //         .data(root.descendants())
-// //         .enter().append("g")
-// //         // .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
-// //         .attr("class", function (d) { return "node" + (!d.children ? " node--leaf" : d.depth ? "" : " node--root"); })
-// //         .each(function (d) { d.node = this; })
-// //         .on("mouseover", hovered(true))
-// //         .on("mouseout", hovered(false));
-// //     console.log('here :) 2')
-
-// //     node.append("circle")
-// //         .attr("id", function (d) { return "node-" + d.class; })
-// //         // .attr("r", function (d) { return d.r; })
-// //         .attr("r", 20)
-// //         .style("fill", function (d) { return color(d.depth); })
-// //         .attr('opacity', .01)
-// //     console.log('here :) 3')
-// //     var leaf = node.filter(function (d) { return !d.children; });
-
-// //     leaf.append("clipPath")
-// //         .attr("id", function (d) { return "clip-" + d.class; })
-// //         .append("use")
-// //         .attr("xlink:href", function (d) { return "#node-" + d.class + ""; });
-
-
-
-
-// //     console.log('here :) 4')
-// //     console.log(data)
-// //     console.log(data.columns)
-// //     // leaf.append("text")
-// //     //     .attr("clip-path", function (d) { return "url(#clip-" + d.class + ")"; })
-// //     //     .selectAll("tspan")
-// //     //     .data(function (d) {
-// //     //         console.log(d)
-// //     //         console.log(d.class)
-// //     //         return d.class;
-// //     //     })
-// //     //     .enter().append("tspan")
-// //     //     .attr("x", 0)
-// //     //     .attr("y", function (d, i, nodes) { 
-// //     //         // return 50
-// //     //         return 13 + (i - nodes.length / 2 - 0.5) * 10; 
-// //     //     })
-// //     //     .text(function (d) { return d; });
-
-// //     console.log('here :) 5')
-// //     node.append("title")
-// //         .text(function (d) { return d.class + "\n" + format(d.fmat); });
-
-// //     svg.append('circle')
-// //         .attr('r', 10)
-// // });
-
-// // function hovered(hover) {
-// //     return function (d) {
-// //         d3.selectAll(d.ancestors().map(function (d) { return d.node; })).classed("node--hover", hover);
-// //     };
-// // }
-
-
-
-
-
-
-
-
-var margin = { top: 20, right: window.innerWidth / 10, bottom: 30, left: window.innerWidth / 10 },
-    width = window.innerWidth - margin.left - margin.right,
+var margin = { top: 20, right: window.innerWidth / 10, bottom: 30, left: window.innerWidth / 10 }
+width = window.innerWidth - margin.left - margin.right,
     height = 600 - margin.top - margin.bottom;
+// const width = window.innerWidth,
+//     height = window.innerHeight - 300
 
 var svg = d3.select("body").append("svg")
     .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
+    .attr("height", (3 * height + margin.top + margin.bottom))
     .append("g")
     .attr("transform",
-        "translate(" + margin.left + "," + margin.top + ")");
+        "translate(" + margin.left + "," + margin.top + ")")
+
+    .attr('viewBox', `${-width / 2} ${-height / 2} ${width} ${height}`)
+
+
+// const svg = d3.select('body').append('svg')
+//     .style('width', '100vw')
+//     .style('height', '100vh')
+//     .attr('viewBox', `${-width / 2} ${-height / 2} ${width} ${height}`)
+//     .on('click', () => focusOn()); // Reset zoom on canvas click
+
 let classToHighlight = 'Amphibia'
 
 d3.csv("https://raw.githubusercontent.com/imogencs/04-multiple-views/main/animals2.csv", function (data) {
@@ -186,10 +48,10 @@ d3.csv("https://raw.githubusercontent.com/imogencs/04-multiple-views/main/animal
         .style("mouse-events", "all")
         .attr('width', width)
         .attr('height', height)
-        .on('mousemove', function (event) {
-            console.log('here')
-            crosshairs(event)
-        })
+        // .on('mousemove', function (event) {
+        //     console.log('here')
+        //     crosshairs(event)
+        // })
         .attr('id', 'background')
 
     // axes
@@ -206,7 +68,7 @@ d3.csv("https://raw.githubusercontent.com/imogencs/04-multiple-views/main/animal
         .call(d3.axisLeft(y));
 
     svg.append('text')
-        .text('MPG')
+        .text('Days to Mature for Males')
         .attr('transform', 'rotate(-90)')
         .attr('x', -1 * height / 2)
         .attr('y', -50)
@@ -228,7 +90,7 @@ d3.csv("https://raw.githubusercontent.com/imogencs/04-multiple-views/main/animal
         .attr("r", function (d) {
             // console.log(d.Maximumlongevity)
             // console.log('r')
-            return (d.Maximumlongevity) / 10;
+            return (d.Maximumlongevity) / 5;
         })
         .attr("cx", function (d) {
             // console.log(d.Femalematurity)
@@ -410,46 +272,195 @@ d3.csv("https://raw.githubusercontent.com/imogencs/04-multiple-views/main/animal
 
 
 
-});
+    d3.text("https://raw.githubusercontent.com/imogencs/04-multiple-views/main/animals2.csv", function (data) {
+        var parsedCSV = d3.csvParseRows(data);
+
+        // let indeces = data[]
+
+        var longevityColorScale = d3.scaleLinear()
+            .domain([0, 550])
+            .range(["red", "yellow", "green"]);
+
+        var container = d3.select("body")
+            .append("table")
+
+            .selectAll("tr")
+            .data(parsedCSV).enter()
+
+            .append("tr")
+
+            .selectAll("td")
+            .data(function (d) {
+                return d
+            }).enter()
+            .append("td")
+            .text(function (d) {
+                return d
+            })
+            .style("background-color", function (d, i) {
+                // console.log(d.Class)
+                if (d.Class == classToHighlight) {
+                    return longevityColorScale(d);
+                }
+                return 'none'
+            })
 
 
+        // When the button is changed, run the updateChart function
+        d3.select("#selectButton").on("change", function (d) {
+            // recover the option that has been chosen
+            var selectedOption = d3.select(this).property("value")
+            // run the updateChart function with this selected option
+            classToHighlight = selectedOption
+            svg.selectAll("tr")
+                .style('background-color', 'cyan')
+            // d3.select(this).classed("highlight", true);
 
-
-d3.text("https://raw.githubusercontent.com/imogencs/04-multiple-views/main/animals2.csv", function (data) {
-    var parsedCSV = d3.csvParseRows(data);
-
-
-
-    var longevityColorScale = d3.scaleLinear()
-        .domain([0, 550])
-        .range(["red", "yellow", "green"]);
-
-
-    var container = d3.select("body")
-        .append("table")
-
-        .selectAll("tr")
-        .data(parsedCSV).enter()
-
-        .append("tr")
-
-        .selectAll("td")
-        .data(function (d) {
-            return d
-        }).enter()
-        .append("td")
-        .text(function (d) {
-            return d
+            console.log(selectedOption)
+            // update(selectedOption)
+            // selectedGroup = selectedOption
         })
-        // .style("background-color", function (d) {
-        //     // console.log(d.Class)
-        //     if (d.Class == classToHighlight) {
-        //         return longevityColorScale(d);
-        //     }
-        //     return 'none'
-        // })
+
+
+    });
 
 });
 
 
 
+
+
+
+// const width = window.innerWidth,
+// const height = window.innerHeight,
+const maxRadius = (Math.min(width, height) / 2) - 5;
+
+const formatNumber = d3.format(',d');
+
+const x = d3.scaleLinear()
+    .range([0, 2 * Math.PI])
+    .clamp(true);
+
+const y = d3.scaleSqrt()
+    .range([maxRadius * .1, maxRadius]);
+
+const color = d3.scaleOrdinal(d3.schemeCategory20);
+
+const partition = d3.partition();
+
+const arc = d3.arc()
+    .startAngle(d => x(d.x0))
+    .endAngle(d => x(d.x1))
+    .innerRadius(d => Math.max(0, y(d.y0)))
+    .outerRadius(d => Math.max(0, y(d.y1)));
+
+const middleArcLine = d => {
+    const halfPi = Math.PI / 2;
+    const angles = [x(d.x0) - halfPi, x(d.x1) - halfPi];
+    const r = Math.max(0, (y(d.y0) + y(d.y1)) / 2);
+
+    const middleAngle = (angles[1] + angles[0]) / 2;
+    const invertDirection = middleAngle > 0 && middleAngle < Math.PI; // On lower quadrants write text ccw
+    if (invertDirection) { angles.reverse(); }
+
+    const path = d3.path();
+    path.arc(0, 0, r, angles[0], angles[1], invertDirection);
+    return path.toString();
+};
+
+const textFits = d => {
+    const CHAR_SPACE = 6;
+
+    const deltaAngle = x(d.x1) - x(d.x0);
+    const r = Math.max(0, (y(d.y0) + y(d.y1)) / 2);
+    const perimeter = r * deltaAngle;
+    if (!d.data) { return false; }
+    return d.data.name.length * CHAR_SPACE < perimeter;
+};
+
+d3.json('https://raw.githubusercontent.com/imogencs/04-multiple-views/main/animale22.json', (error, root) => {
+    if (error) throw error;
+    console.log(root)
+
+    root = d3.hierarchy(root);
+    root.sum(d => d.size);
+
+    const slice = svg.selectAll('g.slice')
+        .data(partition(root).descendants());
+
+    slice.exit().remove();
+
+    const newSlice = slice.enter()
+        .append('g').attr('class', 'slice')
+        .on('click', d => {
+            d3.event.stopPropagation();
+            focusOn(d);
+        });
+
+    newSlice.append('title')
+        .text(d => d.data.name + '\n' + formatNumber(d.value));
+
+    newSlice.append('path')
+        .attr('class', 'main-arc')
+        .style('fill', d => color((d.children ? d : d.parent).data.name))
+        .attr('d', arc);
+
+    newSlice.append('path')
+        .attr('class', 'hidden-arc')
+        .attr('id', (_, i) => `hiddenArc${i}`)
+        .attr('d', middleArcLine);
+
+    const text = newSlice.append('text')
+        .attr('display', d => textFits(d) ? null : 'none');
+
+    // Add white contour
+    text.append('textPath')
+        .attr('startOffset', '50%')
+        .attr('xlink:href', (_, i) => `#hiddenArc${i}`)
+        .text(d => d.data.name)
+        .style('fill', 'none')
+        .style('stroke', '#fff')
+        .style('stroke-width', 5)
+        .style('stroke-linejoin', 'round');
+
+    text.append('textPath')
+        .attr('startOffset', '50%')
+        .attr('xlink:href', (_, i) => `#hiddenArc${i}`)
+        .text(d => d.data.name);
+
+    d3.selectAll('g.slice')
+        .attr("transform", "translate(" + width / 2 + "," + height * 1.8 + ")")
+
+});
+
+function focusOn(d = { x0: 0, x1: 1, y0: 0, y1: 1 }) {
+    // Reset to top-level if no data point specified
+
+    const transition = svg.transition()
+        .duration(750)
+        .tween('scale', () => {
+            const xd = d3.interpolate(x.domain(), [d.x0, d.x1]),
+                yd = d3.interpolate(y.domain(), [d.y0, 1]);
+            return t => { x.domain(xd(t)); y.domain(yd(t)); };
+        });
+
+    transition.selectAll('path.main-arc')
+        .attrTween('d', d => () => arc(d));
+
+    transition.selectAll('path.hidden-arc')
+        .attrTween('d', d => () => middleArcLine(d));
+
+    transition.selectAll('text')
+        .attrTween('display', d => () => textFits(d) ? null : 'none');
+
+    moveStackToFront(d);
+
+
+    function moveStackToFront(elD) {
+        svg.selectAll('.slice').filter(d => d === elD)
+            .each(function (d) {
+                this.parentNode.appendChild(this);
+                if (d.parent) { moveStackToFront(d.parent); }
+            })
+    }
+}

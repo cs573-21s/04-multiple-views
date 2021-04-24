@@ -1,6 +1,49 @@
 Assignment 4 - Visualizations and Multiple Views  
 ===
 
+Imogen Cleaver-Stigum
+CS 573 Data Vis
+
+Writeup
+===
+
+http://imogencs.github.io/04-MapsAndViews/index.html
+
+Description
+---
+
+I used a dataset from Data Is Plural about the lifespans of different species from https://genomics.senescence.info/species/index.html. The dataset contained the classification of each species as well as the number of days to reach maturity, maximum lifespan, and other data points. I did some preprocessing of the data so the files in the repo do not match exactly to the download on the site. 
+
+Species are classified as follows:
+0. Domain 
+1. Kingdom
+2. Phylum
+3. Class
+4. Order
+5. Family
+6. Genus
+7. Species
+
+I made a scatterplot that plots the number of days to reach maturity for each species for females (x axis) and males (y axis). The points are scaled to correspond to the maximum longevity of the species, and color coded based on the class of the species. The scatterplot has some features:
+- Hovering over a point brings it into focus
+- You can select the class to highlight using a dropdown menu
+
+There is also a sunburst diagram that shows the classifications of the animals hierarchically. This required some preprocessing because the original data was in csv format with the classifications for each species, so I used python to convert it into a json format so that each class is a child of the phylum, etc. This helps it be displayed in this hierarchical format. 
+
+These views compliment each other because the scatterplot provides more quantitative data about each species (maturity timeframe and lifespan) while the sunburst diagram shows how the species relate to each other. 
+
+References
+===
+
+- https://bl.ocks.org/mbostock/ca5b03a33affa4160321
+- https://medium.com/@mbostock/a-better-way-to-code-2b1d2876a3a0
+- https://bl.ocks.org/vasturiano/12da9071095fbd4df434e60d52d2d58d
+- https://www.d3-graph-gallery.com/graph/connectedscatter_select.html
+
+
+Assignment Details
+===
+
 One of the most powerful techniques for mitigating the shortcomings of a given visualization is to link it with other views.
 Linking a map to a bar or scatterplot, for instance, may allow you to overcome the shortcomings of a map.
 In general, linking visualizations allows you to explore different parts of the data between views, and mitigates the shortcomings of a given view by pairing it with other views.
@@ -56,4 +99,3 @@ GitHub Details
 ```
 a4-username-firstName-lastName
 ```
-
