@@ -1,0 +1,71 @@
+/* Make the axis font size bigger */
+#boxplot .tick{
+    font-size: 11px;
+}
+
+/* Color the tick marks to the appropriate color for each type */
+#boxplot .xaxis .tick:nth-child(2){
+    color: #78c850;
+}
+#boxplot .xaxis .tick:nth-child(3){
+    color: #F08030;
+}
+#boxplot .xaxis .tick:nth-child(4){
+    color: #6890f0ed;
+}
+#boxplot .xaxis .tick:nth-child(5){
+    color: #a8b820;
+}
+#boxplot .xaxis .tick:nth-child(6){
+    color: #a8a878;
+}
+#boxplot .xaxis .tick:nth-child(7){
+    color: #000000;
+}
+#boxplot .xaxis .tick:nth-child(8){
+    color: #a040a0;
+}
+#boxplot .xaxis .tick:nth-child(9){
+    color: #f8d030;
+}
+#boxplot .xaxis .tick:nth-child(10){
+    color: #e0c068;
+}
+#boxplot .xaxis .tick:nth-child(11){
+    color: #98D8D8;
+}
+#boxplot .xaxis .tick:nth-child(12){
+    color: #ee99ac;
+}
+#boxplot .xaxis .tick:nth-child(13){
+    color: #b8b8d0;
+}
+#boxplot .xaxis .tick:nth-child(14){
+    color: #c03028;
+}
+#boxplot .xaxis .tick:nth-child(15){
+    color: #f85888;
+}
+#boxplot .xaxis .tick:nth-child(16){
+    color: #b8a038;
+}
+#boxplot .xaxis .tick:nth-child(17){
+    color: #705898;
+}
+#boxplot .xaxis .tick:nth-child(18){
+    color: #7038f8;
+}
+#boxplot .xaxis .tick:nth-child(19){
+    color: #a890f0;
+}
+
+#boxplotzone .filterRow select{
+    margin-right: 0px;
+    margin-left: 0px;
+    margin-right: 3px;
+}
+
+#boxplotzone .filterRow p{
+    color: yellow;
+    margin-right: 3px;
+}
