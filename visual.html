@@ -18,8 +18,10 @@
         <div id="viz1"></div>
         <div id="viz2"></div>
       
-        <div id="pointer"style="margin: 20px 10px 10px 0px;">\/ check out more cool things below \/</div>
-        <div id="viz3" style="margin-left: 70px;"></div>
+        <div style="margin: 20px 10px 10px 0px;">\/ check out more cool things below \/</div>
+        <div style="margin-left: 68px;">        
+            <button><a href="vis3.html" style="text-decoration: none;color: black;">cool stuff</button>
+        </div>
    
   </div>    
 
@@ -28,7 +30,6 @@
 
 <script>
 
-// set the dimensions and margins of the graph
 var margin = {top: 30, right: 70, bottom: 150, left: 70},
     width = 700 - margin.left - margin.right,
     height = 700 - margin.top - margin.bottom;
@@ -49,16 +50,13 @@ var svgG = d3.select("#viz2")
     .attr("transform",
           "translate(" + margin.left + "," + margin.top + ")");
 
-var listBrands = ["BudLight","Budweiser","Coca Cola","Doritos","E-Trade","Hynundai","Kia","NFL","Pepsi","Toyota"];
-var dropMenu = d3.select("#viz3")
-  .append('select')
-
-dropMenu.selectAll('myOptions') 
- 	.data(listBrands)
-  .enter()
-	.append('option')
-  .text(function (d) { return d; }) 
-  .attr("value", function (d) { return d; })
+var svgD = d3.select("#viz3")
+  .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
 
 // Parse the Data
 d3.csv("https://raw.githubusercontent.com/geacquista/04-multiple-views/main/superbowl-ads.csv", function(data) {
@@ -531,6 +529,3 @@ d3.csv("https://raw.githubusercontent.com/geacquista/04-multiple-views/main/supe
 
       
 })
-
-</script>
-</html>
