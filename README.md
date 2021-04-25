@@ -25,34 +25,34 @@ Below are some screenshots of the completed visualization.
 Technical Acheivements
 ---
 
-Tooltip
--
--I consider this a technical acheivement because of how much debugging it required.
--I was able to get it to appear only on hover and follow the mouse around.
--This was a really fun way to add more information about what was going on in my vis without cluttering up the screen.
+### Tooltip
 
-Scatterplot
--
--This was an extra visualizing element not required for the multiple views assignment.
--I figured that a dropdown menu would be a fun way to explore more of d3.
+*I consider this a technical acheivement because of how much debugging it required.
+*I was able to get it to appear only on hover and follow the mouse around.
+*This was a really fun way to add more information about what was going on in my vis without cluttering up the screen.
 
-Functions
--
--This was the first project that I truly came to understand using functions in Javascript.
--Because I wanted to change certain elements of the chart depending on the brand, I was able to add a lot more "meat" to my functions.
+### Scatterplot
+
+*This was an extra visualizing element not required for the multiple views assignment.
+*I figured that a dropdown menu would be a fun way to explore more of d3.
+
+### Functions
+
+*This was the first project that I truly came to understand using functions in Javascript.
+*Because I wanted to change certain elements of the chart depending on the brand, I was able to add a lot more "meat" to my functions.
 
 Design Acheivements
 ---
 
-###CSS
--I played around with a lot of CSS/HTML elements to make this visualization a lot more visually appealing.
+### CSS
+*I played around with a lot of CSS/HTML elements to make this visualization a lot more visually appealing.
 
-###Theme
--Like the point above, I made a lot of design decisions to stick with a theme of football because the data comes from Superbowl ads. 
+### Theme
+*Like the point above, I made a lot of design decisions to stick with a theme of football because the data comes from Superbowl ads. 
 
-###Animations
--For the linked view the bars animate up from the x-axis.
--For the scatterplot, changing the selected brand shifts the lines/dots so it looks easy on the eyes.
+### Animations
+*For the linked view the bars animate up from the x-axis.
+*For the scatterplot, changing the selected brand shifts the lines/dots so it looks easy on the eyes.
 
 Referenece
 ---
