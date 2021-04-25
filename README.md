@@ -1,16 +1,16 @@
 Assignment 4 - [Visualizations and Multiple Views](https://ashishjumbo.github.io/04-multiple-views/)  
 ===
 
-For this analysis I explored a topic that has lately been on the news recently due to President Baiden's tax proposals. For this analysis I collected the tax rates for various countries around the world and extracted their tax from the fiscal year 2015 to 2020. I also extracted the data for the commonly recognized Tax-Heavens. The data-set generation and preprocessing was conducted using Python.
+For this analysis, I explored a topic that has been on the news recently due to President Baiden's tax proposals. For this analysis, I collected the tax rates for various countries worldwide and extracted their tax from 2015 to 2020. I also pulled the data for the commonly recognized Tax-Heavens. The data-set generation and preprocessing was run using Python.
 
-For the visualization I mapped a global map that a user can hover on to pull out the tax rates and other relevant information about the country where the darker shade of the color green represents the magnitude of the tax rates of the country. I also plotted a bar-chart to allow users to compare the tax-rates between countries across multiple years. Countries can also be plotted with regions based off of the taxation rules followed/practiced by the countries.   
+For the visualization, I mapped a global map that a user can hover on to pull out the tax rates and other relevant information about the country where the darker shade of the color green represents the magnitude of the country's tax rates. I also plotted a bar chart to allow users to compare the tax rates between countries across multiple years. Countries can also be plotted with regions based on the taxation rules followed/practiced by the governments.   
 
 Screenshot
 -----------------
 ![Example Image](./images/screenshot3.png)
 
 
-Both the Map and the Barchart can be interacted with to gain insight into current and past tax records of countries across the world.
+Both the Map and the Barchart can be interacted with to gain insight into current and past tax records of countries worldwide.
 
 Technical Achievements
 ------------
@@ -22,7 +22,7 @@ Design Achievements
 ----------------
 - Implemented a world map view
 - Arranged Div elements using flex displays to make the view more responsive
-- I wanted to see if there are underlying patterns that are present in countries that are known as tax-heavens and it doesn't seem that the tax rate or the geographical location of the tax-heaven plays a role. Interestingly however most of the tax heavens seem to have easy access to sea ports.
+- I wanted to see if there are underlying patterns present in countries known as tax-heavens, and it doesn't seem that the tax rate or the geographical location of the tax-heaven plays a role. Interestingly however, most of the tax heavens seem to have easy access to seaports.
 
 References:
 ------------------
