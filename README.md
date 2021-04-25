@@ -5,9 +5,9 @@ For this analysis I explored a topic that has lately been on the news recently d
 
 For the visualization I mapped a global map that a user can hover on to pull out the tax rates and other relevant information about the country where the darker shade of the color green represents the magnitude of the tax rates of the country. I also plotted a bar-chart to allow users to compare the tax-rates between countries across multiple years. Countries can also be plotted with regions based off of the taxation rules followed/practiced by the countries.   
 
-Example
+Screenshot
 -----------------
-![Example Image](./image/screenshot3.png)
+![Example Image](../image/screenshot3.png)
 
 
 Both the Map and the Barchart can be interacted with to gain insight into current and past tax records of countries across the world.
