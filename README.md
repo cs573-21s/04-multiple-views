@@ -1,4 +1,4 @@
-Assignment 4 - [Visualizations and Multiple Views]()  
+Assignment 4 - [Visualizations and Multiple Views](https://ashishjumbo.github.io/04-multiple-views/)  
 ===
 
 For this analysis I explored a topic that has lately been on the news recently due to President Baiden's tax proposals. For this analysis I collected the tax rates for various countries around the world and extracted their tax from the fiscal year 2015 to 2020. I also extracted the data for the commonly recognized Tax-Heavens. The data-set generation and preprocessing was conducted using Python.
