@@ -1,0 +1,522 @@
+<html>
+
+<head>
+  <meta charset="utf-8">
+  
+  <!-- Load d3.js & color palette-->
+  <script src="https://d3js.org/d3.v4.js"></script>
+  <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+
+  <h1>Ever thinking about SuperBowl ads for no reason? Me too.</h1>
+  <p>PSA: many of the Super Bowl commercials used multiple marketing tactics in each ad. For the purposes of this vis, I focus on each element separately.</p>
+</head>
+<body>
+  <!--where the graph will be-->
+  <div class="container">
+    
+        <div id="viz1"></div>
+        <div id="viz2"></div>
+      
+        <div style="margin: 20px 10px 10px 0px;">\/ check out more cool things below \/</div>
+        <div style="margin-left: 68px;">        
+            <button><a href="vis3.html" style="text-decoration: none;color: black;">cool stuff</button>
+        </div>
+   
+  </div>    
+
+
+</body>
+
+<script>
+
+var margin = {top: 30, right: 70, bottom: 150, left: 70},
+    width = 700 - margin.left - margin.right,
+    height = 700 - margin.top - margin.bottom;
+
+var svg = d3.select("#viz1")
+  .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
+var svgG = d3.select("#viz2")
+  .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
+// Parse the Data
+d3.csv("https://raw.githubusercontent.com/geacquista/04-multiple-views/main/superbowl-ads.csv", function(data) {
+
+  var subgroups = data.columns.slice(1)
+  var groups = d3.map(data, function(d){return(d.brand)}).keys()
+  
+  // main X axis
+  var x = d3.scaleBand()
+      .domain(groups)
+      .range([0, width])
+      .padding([0.3])
+  svg.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x).tickSizeOuter(0))
+
+  svg.append("text")
+    .attr("x", 265 )
+    .attr("y",  580 )
+    .style("text-anchor", "middle")
+    .text("Brand");
+
+  svg.append("text")
+    .attr("x", 265 )
+    .attr("y",  0 )
+    .style("text-anchor", "middle")
+    .style("font-size", "24px")
+    .text("Marketing Tactics Used by Different");
+    
+    svg.append("text")
+    .attr("x", 265 )
+    .attr("y",  22 )
+    .style("text-anchor", "middle")
+    .style("font-size", "24px")
+    .text("Companies in SuperBowl Commercials");
+
+
+  // main Y axis
+  var y = d3.scaleLinear()
+    .domain([0, 200])
+    .range([ height, 0 ]);
+  svg.append("g")
+    .call(d3.axisLeft(y));
+
+  svg.append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("y", 0 - margin.left)
+    .attr("x", 0 - (height / 2))
+    .attr("dy", "1em")
+    .style("text-anchor", "middle")
+    .text("# of Each Marketing Method Used");
+  
+  var x1 = d3.scaleBand()
+    .range([ 0, width ])
+    .domain(data.map(function(d) { return d.brand; }))
+    .padding([0.3]);
+  var xAx = svgG.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x1).tickSizeOuter(0));
+
+  svgG.append("text")
+    .attr("x", 265 )
+    .attr("y",  600 )
+    .style("text-anchor", "middle")
+    .text("Brand");
+  
+
+  var y1 = d3.scaleLinear()
+    .range([ height, 0])
+    .domain([0, 200]);
+  var yAx = svgG.append("g")
+    .attr("class", "myY")
+    .call(d3.axisLeft(y1));
+
+ 
+  // one color per subgroup
+  var color = d3.scaleOrdinal()
+    .domain(subgroups)
+    .range(d3.schemeSet3);
+
+  // stack per subgroup
+  var stackedData = d3.stack()
+    .keys(subgroups)
+    (data)
+
+
+  var Tooltip = d3.select('body')
+  .append('div')
+  .attr('id', 'tooltip')
+  .attr('style', 'position: absolute; opacity: 0; padding:2%; text-align:center; background:whitesmoke; border-radius:20px;box-shadow: 0 0 5px black;');
+
+   d3.select('body')
+   .append('svg')
+   .attr('width', 300)
+   .attr('height', 300);
+
+
+  var mouseover = function(d) {
+
+    var groupNames = d3.select(this.parentNode).datum().key;
+    var groupNameValue = d.data[groupNames];
+
+    d3.selectAll(".myRect").style("opacity", 0.2)
+    d3.selectAll("." + groupNames)
+      .style("opacity", 1)  
+    
+    y1.domain([0, 60]);
+    yAx.transition().duration(1000).call(d3.axisLeft(y1)); 
+    svgG.append("g")
+    .transition().duration(1200)
+    .attr("class", "myY")
+    .call(d3.axisLeft(y1));
+
+    svgG.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x1).tickSizeOuter(0));
+
+    
+
+
+    if (groupNames === "funny") {
+     
+    svgG.append("text")
+        .attr("x", 265 )
+        .attr("y",  10 )
+        .transition().duration(200)
+        .style("text-anchor", "middle")
+        .style("font-size", "24px")
+        .text("Marketing Method: FUNNY");
+
+    svgG.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - margin.left)
+        .attr("x", 0 - (height / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("# of Ads that Used a Funny Marketing Method");
+
+      svgG.selectAll("mybar")
+          .data(data)
+            .enter()
+            .append("rect")
+            .attr("y", height)
+            .attr("x", function(d) { return x1(d.brand); })
+            .transition() 
+            .duration(1000)
+            .ease(d3.easeExp)
+              .attr("x", function(d) { return x1(d.brand); })
+              .attr("y", function(d) { return y1(d.funny); })
+              .attr("width", x1.bandwidth())
+              .attr("height", function(d) { return height - y1(d.funny); })
+              .attr("fill", "rgb(141, 211, 199)")
+              .attr("stroke", "grey")
+
+    }
+
+    else if (groupNames === "quick_show") {
+          
+    svgG.append("text")
+        .attr("x", 265 )
+        .attr("y",  10 )
+        .transition().duration(200)
+        .style("text-anchor", "middle")
+        .style("font-size", "24px")
+        .text("Marketing Method: Quickly Show Product");
+
+    svgG.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - margin.left)
+        .attr("x", 0 - (height / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("# of Ads that Used a Quick-Show Marketing Method");
+    
+      svgG.selectAll("mybar")
+          .data(data)
+            .enter()
+            .append("rect")
+            .attr("y", height)
+            .attr("x", function(d) { return x1(d.brand); })
+            .transition() 
+            .duration(1000)
+            .ease(d3.easeExp)
+              .attr("x", function(d) { return x1(d.brand); })
+              .attr("y", function(d) { return y1(d.quick_show); })
+              .attr("width", x1.bandwidth())
+              .attr("height", function(d) { return height - y1(d.quick_show); })
+              .attr("fill", "rgb(255, 255, 179)")
+              .attr("stroke", "grey")
+
+    }
+
+    else if (groupNames === "patriotic") {
+          
+    svgG.append("text")
+        .attr("x", 265 )
+        .attr("y",  10 )
+        .transition().duration(200)
+        .style("text-anchor", "middle")
+        .style("font-size", "24px")
+        .text("Marketing Method: Patriotic");
+
+    svgG.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - margin.left)
+        .attr("x", 0 - (height / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("# of Ads that Used a Patriotic Marketing Method");
+     
+      svgG.selectAll("mybar")
+          .data(data)
+            .enter()
+            .append("rect")
+            .attr("y", height)
+            .attr("x", function(d) { return x1(d.brand); })
+            .transition() 
+            .duration(1000)
+            .ease(d3.easeExp)
+              .attr("x", function(d) { return x1(d.brand); })
+              .attr("y", function(d) { return y1(d.patriotic); })
+              .attr("width", x1.bandwidth())
+              .attr("height", function(d) { return height - y1(d.patriotic); })
+              .attr("fill", "rgb(190, 186, 218)")
+              .attr("stroke", "grey")
+
+    }
+
+    else if (groupNames === "celebrity") {
+          
+    svgG.append("text")
+        .attr("x", 265 )
+        .attr("y",  10 )
+        .transition().duration(200)
+        .style("text-anchor", "middle")
+        .style("font-size", "24px")
+        .text("Marketing Method: Celebrity Guest");
+
+    svgG.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - margin.left)
+        .attr("x", 0 - (height / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("# of Ads that Used a Celebrity for Marketing");
+    
+      svgG.selectAll("mybar")
+          .data(data)
+            .enter()
+            .append("rect")
+            .attr("y", height)
+            .attr("x", function(d) { return x1(d.brand); })
+            .transition() 
+            .duration(1000)
+            .ease(d3.easeExp)
+              .attr("x", function(d) { return x1(d.brand); })
+              .attr("y", function(d) { return y1(d.celebrity); })
+              .attr("width", x1.bandwidth())
+              .attr("height", function(d) { return height - y1(d.celebrity); })
+              .attr("fill", "rgb(251, 128, 114)")
+              .attr("stroke", "grey")
+
+    }
+
+    else if (groupNames === "danger") {
+          
+    svgG.append("text")
+        .attr("x", 265 )
+        .attr("y",  10 )
+        .transition().duration(200)
+        .style("text-anchor", "middle")
+        .style("font-size", "24px")
+        .text("Marketing Method: Danger");
+
+    svgG.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - margin.left)
+        .attr("x", 0 - (height / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("# of Ads that Used Danger as a Marketing Method");
+    
+      svgG.selectAll("mybar")
+          .data(data)
+            .enter()
+            .append("rect")
+            .attr("y", height)
+            .attr("x", function(d) { return x1(d.brand); })
+            .transition() 
+            .duration(1000)
+            .ease(d3.easeExp)
+              .attr("x", function(d) { return x1(d.brand); })
+              .attr("y", function(d) { return y1(d.danger); })
+              .attr("width", x1.bandwidth())
+              .attr("height", function(d) { return height - y1(d.danger); })
+              .attr("fill", "rgb(128, 177, 211)")
+              .attr("stroke", "grey")
+
+
+    }
+
+    else if (groupNames === "animals") {
+          
+    svgG.append("text")
+        .attr("x", 265 )
+        .attr("y",  10 )
+        .transition().duration(200)
+        .style("text-anchor", "middle")
+        .style("font-size", "24px")
+        .text("Marketing Method: Animals");
+
+    svgG.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - margin.left)
+        .attr("x", 0 - (height / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("# of Ads that Used Animals for Marketing");
+    
+      svgG.selectAll("mybar")
+          .data(data)
+            .enter()
+            .append("rect")
+            .attr("y", height)
+            .attr("x", function(d) { return x1(d.brand); })
+            .transition() 
+            .duration(1000)
+            .ease(d3.easeExp)
+              .attr("x", function(d) { return x1(d.brand); })
+              .attr("y", function(d) { return y1(d.animals); })
+              .attr("width", x1.bandwidth())
+              .attr("height", function(d) { return height - y1(d.animals); })
+              .attr("fill", "rgb(253, 180, 98)")        
+              .attr("stroke", "grey")
+
+    
+    }
+
+    else if (groupNames === "use_sex") {
+          
+    svgG.append("text")
+        .attr("x", 265 )
+        .attr("y",  10 )
+        .transition().duration(200)
+        .style("text-anchor", "middle")
+        .style("font-size", "24px")
+        .text("Marketing Method: Sexual");
+
+    svgG.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - margin.left)
+        .attr("x", 0 - (height / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("# of Ads that Used Sex for a Marketing Tactic");
+    
+      svgG.selectAll("mybar")
+          .data(data)
+            .enter()
+            .append("rect")
+            .attr("y", height)
+            .attr("x", function(d) { return x1(d.brand); })
+            .transition() 
+            .duration(1000)
+            .ease(d3.easeExp)
+              .attr("x", function(d) { return x1(d.brand); })
+              .attr("y", function(d) { return y1(d.use_sex); })
+              .attr("width", x1.bandwidth())
+              .attr("height", function(d) { return height - y1(d.use_sex); })
+              .attr("fill", "rgb(179,222,105)")
+              .attr("stroke", "grey")
+
+    }  
+    
+    
+  }
+
+  var mousemove = function(d) {
+    var groupNames = d3.select(this.parentNode).datum().key;
+
+    if (groupNames === "funny") { 
+    
+     Tooltip
+      .style("opacity", 1)
+      .html("This section of the stack represents <br> the number of funny advertisements <br> each company used.")
+        .style('left', (d3.event.pageX+10) + 'px')
+        .style('top', (d3.event.pageY+10) + 'px')
+    }
+    else if (groupNames === "quick_show") {
+     Tooltip
+      .style("opacity", 1)
+      .html("This section of the stack represents <br> the number of advertisements each <br> company quickly showed the product.")
+        .style('left', (d3.event.pageX+10) + 'px')
+        .style('top', (d3.event.pageY+10) + 'px')
+    }
+    else if (groupNames === "patriotic") {
+     Tooltip
+      .style("opacity", 1)
+      .html("This section of the stack represents <br> the number of patriotic advertisements <br> each company released.")
+        .style('left', (d3.event.pageX+10) + 'px')
+        .style('top', (d3.event.pageY+10) + 'px')
+    }
+    else if (groupNames === "celebrity") {
+     Tooltip
+      .style("opacity", 1)
+      .html("This stacked section represents <br> the number of advertisements featuring <br> a celebrity (for each company).")
+        .style('left', (d3.event.pageX+10) + 'px')
+        .style('top', (d3.event.pageY+10) + 'px')
+    }
+    else if (groupNames === "danger") {
+     Tooltip
+      .style("opacity", 1)
+      .html("This section of the stack represents <br> the number of advertisements involving <br> a dangerous element that each company released.")
+        .style('left', (d3.event.pageX+10) + 'px')
+        .style('top', (d3.event.pageY+10) + 'px')
+    }
+    else if (groupNames === "animals") {
+     Tooltip
+      .style("opacity", 1)
+      .html("This section of the stack represents <br> the number of advertisements in which <br> the company featured animals.")
+        .style('left', (d3.event.pageX+10) + 'px')
+        .style('top', (d3.event.pageY+10) + 'px')
+    }
+    else if (groupNames === "use_sex") {
+     Tooltip
+      .style("opacity", 1)
+      .html("This section of the stack represents <br> the number of sexually-appealing <br> advertisements each company made.")
+        .style('left', (d3.event.pageX+10) + 'px')
+        .style('top', (d3.event.pageY+10) + 'px')
+        
+    }
+}
+
+  var mouseleave = function(d) {
+    d3.selectAll(".myRect")
+      .style("opacity", 1)
+    
+    
+    svgG.selectAll("rect").remove();
+    svgG.selectAll("text").remove();
+
+    Tooltip
+      .style("opacity", 0)
+
+  }
+
+
+  svg.append("g")
+    .selectAll("g")
+    .data(stackedData)
+    .enter().append("g")
+      .attr("fill", function(d) { return color(d.key); })
+      .attr("class", function(d){ return "myRect " + d.key }) 
+      .selectAll("rect")
+      .data(function(d) { return d; })
+      .enter().append("rect")
+        .attr("x", function(d) { return x(d.data.brand); })
+        .attr("y", function(d) { return y(d[1]); })
+        .attr("height", function(d) { return y(d[0]) - y(d[1]); })
+        .attr("width",x.bandwidth())
+        .attr("stroke", "grey")
+      .on("mouseover", mouseover)
+      .on("mouseleave", mouseleave)
+      .on("mousemove", mousemove)
+
+
+      
+})
+
+</script>
+</html>

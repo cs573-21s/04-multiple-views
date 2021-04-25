@@ -1,0 +1,69 @@
+
+    .button {
+        background-color: rgb(104, 47, 47); /* color of a football lol */
+        border: white;
+        color: white;
+        text-align: center;
+        align-items: middle;
+        border-radius: 10px;
+        text-decoration: none;
+        display: inline-block;
+        margin: 8%;
+        width: 250px;
+        height: 100px;
+        font-size: 26px;
+        cursor: pointer;
+      }
+      
+      h1 {
+        text-align: center;
+        margin-left: 5%;
+        margin-right: 5%;
+        margin-top: 3%;
+        padding:2%;
+        font-size: 50px;
+        font-family: fantasy;
+        text-shadow: 0 0 5px green;
+        background-color: rgb(99, 60, 29);
+        border-radius: 25px;
+        color:rgb(255, 255, 255);
+        
+      }
+
+    p {
+        text-align: center;
+        background-color: green;
+        box-shadow: rgb(99, 60, 29);
+        color: white;
+        padding:1%;
+        margin-left: 15%;
+        margin-right: 15%;
+        font-size: 14px;
+        border-radius: 25px;
+
+    }
+      .disabled {
+        opacity: .9;
+        cursor: not-allowed;
+        
+      }
+
+      .container {
+        width: 100%;
+        height: 800px;
+        padding: 5%;
+        align-items: center;
+      }
+      
+      #container1 {
+        text-align: center;
+        padding: 20%;
+      }
+    
+
+      .container div {
+        float: left;
+        width: 50%;
+      }
+
+      
