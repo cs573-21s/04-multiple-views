@@ -25,16 +25,19 @@ Below are some screenshots of the completed visualization.
 Technical Acheivements
 ---
 
-###Tooltip
+Tooltip
+-
 -I consider this a technical acheivement because of how much debugging it required.
 -I was able to get it to appear only on hover and follow the mouse around.
 -This was a really fun way to add more information about what was going on in my vis without cluttering up the screen.
 
-###Scatterplot
+Scatterplot
+-
 -This was an extra visualizing element not required for the multiple views assignment.
 -I figured that a dropdown menu would be a fun way to explore more of d3.
 
-###Functions
+Functions
+-
 -This was the first project that I truly came to understand using functions in Javascript.
 -Because I wanted to change certain elements of the chart depending on the brand, I was able to add a lot more "meat" to my functions.
 
