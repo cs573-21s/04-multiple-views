@@ -25,6 +25,7 @@ Design Achievements
 - I wanted to see if there are underlying patterns that are present in countries that are known as tax-heavens and it doesn't seem that the tax rate or the geographical location of the tax-heaven plays a role. Interestingly however most of the tax heavens seem to have easy access to sea ports.
 
 References:
--[d3 barchart tutorial](https://bl.ocks.org/mbostock/3885304)
--[d3 barchart example documentation](https://www.d3-graph-gallery.com/barplot.html)
--[d3 map tutorial](https://www.d3-graph-gallery.com/graph/choropleth_hover_effect.html)
+------------------
+- [d3 barchart tutorial](https://bl.ocks.org/mbostock/3885304)
+- [d3 barchart example documentation](https://www.d3-graph-gallery.com/barplot.html)
+- [d3 map tutorial](https://www.d3-graph-gallery.com/graph/choropleth_hover_effect.html)
