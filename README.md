@@ -7,7 +7,7 @@ For the visualization I mapped a global map that a user can hover on to pull out
 
 Screenshot
 -----------------
-![Example Image](../image/screenshot3.png)
+![Example Image](/image/screenshot3.png)
 
 
 Both the Map and the Barchart can be interacted with to gain insight into current and past tax records of countries across the world.
