@@ -7,7 +7,7 @@ For the visualization I mapped a global map that a user can hover on to pull out
 
 Screenshot
 -----------------
-![Example Image](/image/screenshot3.png)
+![Example Image](./images/screenshot3.png)
 
 
 Both the Map and the Barchart can be interacted with to gain insight into current and past tax records of countries across the world.
@@ -24,6 +24,6 @@ Design Achievements
 - Arranged Div elements using flex displays to make the view more responsive
 
 References:
-[d3 barchart tutorial](https://bl.ocks.org/mbostock/3885304)
-[d3 barchart example documentation](https://www.d3-graph-gallery.com/barplot.html)
-[d3 map tutorial](https://www.d3-graph-gallery.com/graph/choropleth_hover_effect.html)
+-[d3 barchart tutorial](https://bl.ocks.org/mbostock/3885304)
+-[d3 barchart example documentation](https://www.d3-graph-gallery.com/barplot.html)
+-[d3 map tutorial](https://www.d3-graph-gallery.com/graph/choropleth_hover_effect.html)
