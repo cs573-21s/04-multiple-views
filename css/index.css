@@ -1,0 +1,154 @@
+html {
+  background-color: #fff;
+}
+
+body {
+  display: flex;
+  padding: 100px 15px 15px 15px;
+  flex-direction: column;
+}
+
+#root-container {
+  display: flex;
+  justify-content: space-evenly;
+  justify-content: flex-start;
+}
+
+.heading {
+  width: 100%;
+  position: absolute;
+  text-align: center;
+  top: 0;
+  left: 0;
+  font-size: 2.56rem;
+  margin: 5px 0 0 0;
+  line-height: 1;
+}
+
+.note {
+  font-size: 1.36rem;
+}
+
+#map_container {
+  order: 1;
+  align-self: center;
+  /* position: relative; */
+}
+
+#map_container {
+  background-color: #0077be0d;
+  border: 1px solid #0077bee8;
+}
+
+#my_dataviz {
+  order: 2;
+  align-self: center;
+  /* padding: 30px 15px 15px 15px; */
+  margin-left: 20px;
+  background-color: #fff;
+  border: 1px solid #0077bee8;
+  position: relative;
+  /* background-color: #afa; */
+}
+
+.foot-note {
+  position: relative;
+  width: 96%;
+  padding: 15px;
+  margin-top: 20px;
+  border: 1px solid #0077bee8;
+  border-radius: 5px;
+}
+
+.select-region {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  background-color: #eee;
+  font-size: 1.2rem;
+}
+
+.tooltip2 {
+  opacity: 0;
+  background-color: #fff;
+  border: solid;
+  border-width: 1px;
+  border-radius: 5px;
+  padding: 10px;
+  top: 5px;
+  right: 5px;
+  position: absolute;
+}
+
+.names {
+  fill: none;
+  stroke: #fff;
+  stroke-linejoin: round;
+}
+
+/* Tooltip CSS */
+.d3-tip {
+  line-height: 1.5;
+  font-weight: 400;
+  font-family: "avenir next", Arial, sans-serif;
+  padding: 6px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #FFA500;
+  border-radius: 1px;
+  pointer-events: none;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 8px;
+  width: 100%;
+  line-height: 1.5;
+  color: rgba(0, 0, 0, 0.6);
+  position: absolute;
+  pointer-events: none;
+}
+
+/* Northward tooltips */
+.d3-tip.n:after {
+  content: "\25BC";
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+  text-align: center;
+}
+
+/* Eastward tooltips */
+.d3-tip.e:after {
+  content: "\25C0";
+  margin: -4px 0 0 0;
+  top: 50%;
+  left: -8px;
+}
+
+/* Southward tooltips */
+.d3-tip.s:after {
+  content: "\25B2";
+  margin: 0 0 1px 0;
+  top: -8px;
+  left: 0;
+  text-align: center;
+}
+
+/* Westward tooltips */
+.d3-tip.w:after {
+  content: "\25B6";
+  margin: -4px 0 0 -1px;
+  top: 50%;
+  left: 100%;
+}
+
+/*
+  text{
+    pointer-events:none;
+  }
+  */
+.details {
+  color: white;
+}
