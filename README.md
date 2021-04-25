@@ -22,6 +22,7 @@ Design Achievements
 ----------------
 - Implemented a world map view
 - Arranged Div elements using flex displays to make the view more responsive
+- I wanted to see if there are underlying patterns that are present in countries that are known as tax-heavens and it doesn't seem that the tax rate or the geographical location of the tax-heaven plays a role. Interestingly however most of the tax heavens seem to have easy access to sea ports.
 
 References:
 -[d3 barchart tutorial](https://bl.ocks.org/mbostock/3885304)
