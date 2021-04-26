@@ -1,0 +1,7 @@
+<p>The following is a pie chart. {{changeTrigger}}</p>
+<button mat-flat-button color="primary" (click)="updateChart()">Update</button>
+<button mat-flat-button color="warn" (click)="debug()">Debug</button>
+<p>Selected years in pie component: {{this.selectedYears | json}}</p>
+<p>Parsed Selected years: {{this.parseSelectedYears()}}</p>
+<p *ngIf="this.parseSelectedYears().length">Data from {{this.parseSelectedYears()[0]}} to {{this.parseSelectedYears()[this.parseSelectedYears().length - 1]}}</p>
+<figure id="pie"></figure>

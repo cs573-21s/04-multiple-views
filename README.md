@@ -1,59 +1,51 @@
 Assignment 4 - Visualizations and Multiple Views  
 ===
 
-One of the most powerful techniques for mitigating the shortcomings of a given visualization is to link it with other views.
-Linking a map to a bar or scatterplot, for instance, may allow you to overcome the shortcomings of a map.
-In general, linking visualizations allows you to explore different parts of the data between views, and mitigates the shortcomings of a given view by pairing it with other views.
-This technique, called coordinated multiple views, is the focus of this assignment.
+Matthew St Louis
 
-Your task is to choose an interesting dataset and visualize it in *at least two* **linked** views, where interactions in any given view updates the others.
-Each view should use a different visualization type, and interaction in one of the views should impact what's shown in the other views.
+Submission Link: https://mastlouis.github.io/04-multiple-views/
 
-You should choose data and visualizations that are sufficiently complex and interesting to ensure a user can discover interesting patterns and trends on their own.
+## Summary
+The following is a visualization of [US greenhouse gas emissions from 1990 to 2019](https://cfpub.epa.gov/ghgdata/inventoryexplorer/index.html).
 
-For this assignment you should write everything from scratch.
-You may *reference and adapt* code from books or the web, and if you do please provide a References section with links at the end of your Readme.
+The raw data is presented in a table for convenience.
+The stacked bar chart shows the trend of emissions for every year and what
+sources contribute to these emissions by economic sector. The pie chart acts
+as the key to the stacked bar chart.
 
-Resources
----
+The pie chart shows the relative
+contributions of each sector for the selected time period. By default, the
+entire range is selected, but the user can select a subset of the data by
+brushing over the stacked bar chart.
 
-Data is Plural has a list of interesting datasets, many of which require processing.
+Mousing over the name of an economic sector on the pie chart will eliminate
+that sector from the bar chart, allowing the user to see what trends would
+hold or change without that sector. The graph does not rescale, reinforcing
+how much of an impact that sector has on greenhouse gas emissions.
 
-These three examples are intended to show you what multiple views visualizations might look like. 
-I wouldn't recommend using them as a your starting point, but you may find some inspiration:
+As a note, the project is deployed on the ghpages branch using [`angular-cli-ghpages`](https://www.npmjs.com/package/angular-cli-ghpages). This was built from the main branch.
 
-1. This [scatterplot matrix](http://bl.ocks.org/mbostock/4063663) has code that explains brushing and linking. But remember you'll be doing this with different types of views.
+## Design Achievements
+This project is built using [Angular](https://angular.io/). I wanted to see how hard it would be to integrate d3 with Angular and how much of a challenge it would be to write d3 in typescript. I was surprised how far you can get with the default `any` type, but there were many times I needed to work around having my code stored in an Angular component. I tried passing data between components, and I was successful, but I ended up moving everything to the same component when I couldn't get the [`ngOnChanges`](https://angular.io/api/core/OnChanges) lifecycle hook to fire properly.
 
-2. The example visualization for [Crossfilter](http://square.github.io/crossfilter/) uses coordinated multiple views. The interaction and brushing technique is well-executed.
+## Design Achievements
+I styled this project using [Angular Material](https://material.angular.io/). This is where the banner at the top and the styles for the table come from.
 
-3. The [dispatching events](https://github.com/d3/d3-dispatch) page is a good example of using events, rather than explicit functions, for controlling behavior. Views can listen for events in other views and respond accordingly.
+## References
+I used the following references for the listed roles in completing this project.
 
-*If you aren't familiar with event-based programming you should experiment with d3.dispatch and other approaches to coordinating views well before the deadline (it's tricky.)*
+- [Angular D3 Tutorial](https://blog.logrocket.com/data-visualization-angular-d3/): Learned how to integrate angular with d3; sample pie chart.
+- [Data Source](https://cfpub.epa.gov/ghgdata/inventoryexplorer/index.html): This is where I got the greenhouse gas emissions data.
+- [Bar Chart Tutorial](https://www.d3-graph-gallery.com/graph/barplot_stacked_basicWide.html): This was the reference I used to make a stacked bar plot.
+- [Alt bar tutorial](https://observablehq.com/@d3/stacked-bar-chart): Supplementary stacked bar chart example.
+- [How to brush a bar chart](http://codexe.net/d3/d3-brush-zoom-bar-chart.html)
+- [How to clean ticks in d3](https://stackoverflow.com/questions/38921226/show-every-other-tick-label-on-d3-time-axis)
+- [Map over JS object's keys and values](https://stackoverflow.com/questions/62445521/typescript-map-over-objects-keys-and-values)
+- [Removing a property from an object in js](https://www.w3schools.com/howto/howto_js_remove_property_object.asp)
+- [Charts that respond to dynamic data example](https://medium.com/swlh/reactive-charts-in-angular-8-using-d3-4550bb0b4255)
+- [Angular Lifecycle hooks](https://www.freecodecamp.org/news/angular-lifecycle-hooks/)
+- [Pie chart transitions](https://dzone.com/articles/silky-smooth-piechart-transitions-with-react-and-d)
+  - [Supplemental pie chart transitions](https://www.d3-graph-gallery.com/graph/pie_changeData.html)
 
-Don't forget to run a local webserver when you're coding and debugging.
-
-Requirements
----
-
-0. Your code should be forked from the GitHub repo and linked using GitHub pages.
-1. Your project should load a dataset you found on the web. Put this file in your repo.
-2. Your project should use d3 to build a visualization of the dataset. 
-3. Your writeup (readme.md in the repo) should contain the following:
-
-- Working link to the visualization hosted on gh-pages.
-- Concise description and screenshot of your visualization.
-- Description of the technical achievements you attempted with this visualization.
-- Description of the design achievements you attempted with this visualization.
-
-GitHub Details
----
-
-- Fork the GitHub Repository. You now have a copy associated with your username.
-- Make changes to index.html to fulfill the project requirements. 
-- Make sure your "master" branch matches your "gh-pages" branch, if using gh-pages for hosting. See the GitHub Guides referenced above if you need help.
-- Edit the README.md with a link to your site, for example http://YourUsernameGoesHere.github.io/04-MapsAndViews/index.html
-- To submit, make a [Pull Request](https://help.github.com/articles/using-pull-requests/) on the original repository. Name it: 
-```
-a4-username-firstName-lastName
-```
-
+## Screenshot
+![Screenshot](site.png)
