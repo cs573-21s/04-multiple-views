@@ -7,7 +7,7 @@ CS 573 Data Vis
 Writeup
 ===
 
-http://imogencs.github.io/04-MapsAndViews/index.html
+https://imogencs.github.io/04-multiple-views/
 
 Description
 ---
