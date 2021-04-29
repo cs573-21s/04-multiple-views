@@ -1,0 +1,29 @@
+HAGRID,Kingdom,Phylum,Class,Order,Family,Genus,Species,class,Commonname,fmat,Malematurity,diffmalefemalematurity,Gestation,Weaning,LitterClutchsize,LittersClutchesperyear,InterlitterInterbirthinterval,Birthweight,Weaningweight,Adultweight,Growthrate,Maximumlongevity,Source,Specimenorigin,Samplesize,Dataquality,IMR,MRDT,Metabolicrate,Bodymass,Temperature,References
+9999,,,,,,,,Alligatoridae,,,,,,,,,,,,,,,,,,,,,,,,
+9999,,,,,,,,Alligatoridae.Alligator,,,,,,,,,,,,,,,,,,,,,,,,
+2877,Animalia,Chordata,Reptilia,Crocodilia,Alligatoridae,Alligator,mississippiensis,Alligatoridae.Alligator.mississippiensis,American alligator,4380,4380,0,,,,,,,,150000,,77,1298,captivity,large,high,,,0.1539,1079,295.31,"19,37,485,527,586,1142,1249,1298"
+2878,Animalia,Chordata,Reptilia,Crocodilia,Alligatoridae,Alligator,sinensis,Alligatoridae.Alligator.sinensis,Chinese alligator,,,0,,,,,,,,,,65,1298,captivity,medium,acceptable,,,,,,"4,511,298"
+9999,,,,,,,,Alligatoridae.Caiman,,,,,,,,,,,,,,,,,,,,,,,,
+2879,Animalia,Chordata,Reptilia,Crocodilia,Alligatoridae,Caiman,crocodilus,Alligatoridae.Caiman.crocodilus,Spectacled caiman,,,0,,,,,,,,,,40,1298,captivity,medium,acceptable,,,,,,"4,851,298"
+2880,Animalia,Chordata,Reptilia,Crocodilia,Alligatoridae,Caiman,latirostris,Alligatoridae.Caiman.latirostris,Broad-snouted caiman,,,0,,,,,,,,,,58,1298,captivity,medium,acceptable,,,,,,"4,851,298"
+9999,,,,,,,,Alligatoridae.Melanosuchus,,,,,,,,,,,,,,,,,,,,,,,,
+2881,Animalia,Chordata,Reptilia,Crocodilia,Alligatoridae,Melanosuchus,niger,Alligatoridae.Melanosuchus.niger,Black caiman,,,0,,,,,,,,,,40,1298,captivity,small,acceptable,,,,,,"4,851,298"
+9999,,,,,,,,Alligatoridae.Paleosuchus,,,,,,,,,,,,,,,,,,,,,,,,
+2882,Animalia,Chordata,Reptilia,Crocodilia,Alligatoridae,Paleosuchus,palpebrosus,Alligatoridae.Paleosuchus.palpebrosus,Dwarf caiman,,,0,,,,,,,,,,24.1,451,captivity,medium,acceptable,,,,,,"4,511,298"
+2883,Animalia,Chordata,Reptilia,Crocodilia,Alligatoridae,Paleosuchus,trigonatus,Alligatoridae.Paleosuchus.trigonatus,Smooth-fronted caiman,,,0,,,,,,,,,,40,1298,captivity,medium,acceptable,,,,,,"4,851,298"
+9999,,,,,,,,Crocodylidae,,,,,,,,,,,,,,,,,,,,,,,,
+9999,,,,,,,,Crocodylidae.Crocodylus,,,,,,,,,,,,,,,,,,,,,,,,
+2884,Animalia,Chordata,Reptilia,Crocodilia,Crocodylidae,Crocodylus,acutus,Crocodylidae.Crocodylus.acutus,American crocodile,,,0,,,,,,,,,,47,1298,captivity,medium,acceptable,,,,,,"4,851,298"
+2885,Animalia,Chordata,Reptilia,Crocodilia,Crocodylidae,Crocodylus,intermedius,Crocodylidae.Crocodylus.intermedius,Orinoco crocodile,,,0,,,,,,,,,,41,1298,captivity,medium,acceptable,,,,,,"4,851,298"
+2886,Animalia,Chordata,Reptilia,Crocodilia,Crocodylidae,Crocodylus,johnstoni,Crocodylidae.Crocodylus.johnstoni,Johnson's crocodile,,,0,,,,,,,,,,55,1298,wild,medium,questionable,,,,,,"4,855,861,082,114,210,000,000"
+2887,Animalia,Chordata,Reptilia,Crocodilia,Crocodylidae,Crocodylus,moreletii,Crocodylidae.Crocodylus.moreletii,Morelet's crocodile,,,0,,,,,,,,,,25.4,451,captivity,medium,acceptable,,,,,,"4,511,298"
+2888,Animalia,Chordata,Reptilia,Crocodilia,Crocodylidae,Crocodylus,niloticus,Crocodylidae.Crocodylus.niloticus,Nile crocodile,,,0,,,,,,,,,,56,1298,captivity,medium,acceptable,,,,,,"4,515,275,861,298"
+2889,Animalia,Chordata,Reptilia,Crocodilia,Crocodylidae,Crocodylus,novaeguineae,Crocodylidae.Crocodylus.novaeguineae,New Guinea crocodile,,,0,,,,,,,,,,51,451,captivity,medium,acceptable,,,,,,"4,511,298"
+2890,Animalia,Chordata,Reptilia,Crocodilia,Crocodylidae,Crocodylus,palustris,Crocodylidae.Crocodylus.palustris,Mugger or marsh crocodile,,,0,,,,,,,,,,44,1298,captivity,small,acceptable,,,,,,"4,851,298"
+2891,Animalia,Chordata,Reptilia,Crocodilia,Crocodylidae,Crocodylus,porosus,Crocodylidae.Crocodylus.porosus,Saltwater crocodile,,,0,,,,,,,,,,57,1298,captivity,medium,questionable,,,,,,"4,851,298"
+2892,Animalia,Chordata,Reptilia,Crocodilia,Crocodylidae,Crocodylus,rhombifer,Crocodylidae.Crocodylus.rhombifer,Cuban crocodile,,,0,,,,,,,,,,48,1298,captivity,medium,acceptable,,,,,,"45,111,421,298"
+2893,Animalia,Chordata,Reptilia,Crocodilia,Crocodylidae,Crocodylus,siamensis,Crocodylidae.Crocodylus.siamensis,Siamese crocodile,,,0,,,,,,,,,,49,1298,captivity,medium,acceptable,,,,,,"4,511,298"
+9999,,,,,,,,Crocodylidae.Mecistops,,,,,,,,,,,,,,,,,,,,,,,,
+2894,Animalia,Chordata,Reptilia,Crocodilia,Crocodylidae,Mecistops,cataphractus,Crocodylidae.Mecistops.cataphractus,African slender-snouted crocodile,,,0,,,,,,,,,,56.1,485,captivity,medium,acceptable,,,,,,"4,851,298"
+9999,,,,,,,,Crocodylidae.Osteolaemus,,,,,,,,,,,,,,,,,,,,,,,,
+2895,Animalia,Chordata,Reptilia,Crocodilia,Crocodylidae,Osteolaemus,tetraspis,Crocodylidae.Osteolaemus.tetraspis,West African dwarf crocodile,1825,1825,0,,,10,,,,,40000,,70,"John Gramieri, pers. comm.",captivity,medium,acceptable,,,,,,"4,481,298"

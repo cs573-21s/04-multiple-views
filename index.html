@@ -1,0 +1,46 @@
+<head>
+    <style>
+        body {
+            font-family: Sans-serif;
+            font-size: 11px;
+        }
+
+        .slice {
+            cursor: pointer;
+        }
+
+        .slice .main-arc {
+            stroke: #fff;
+            stroke-width: 1px;
+        }
+
+        .slice .hidden-arc {
+            fill: none;
+        }
+
+        .slice text {
+            pointer-events: none;
+            dominant-baseline: middle;
+            text-anchor: middle;
+        }
+
+        
+        .highlight {
+        background: #00ffff;
+    }
+    </style>
+
+    <script src='https://d3js.org/d3.v4.min.js'></script>
+</head>
+
+<body>
+    <h1>a4</h1>
+    <select id="selectButton"></select>
+
+    <!-- <div></div> -->
+    
+    <!-- <svg width="900" height="500" id="svg"></svg> -->
+    <!-- <svg width="900" height="200" id="svg2"></svg> -->
+    <script defer src='./bubbles.js'></script>
+
+</body>
