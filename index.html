@@ -1,243 +1,351 @@
 <html>
+
 <head>
-<style>
-  html, body{
-    background-color: #407c4d;
-  }
-  .yearBar{
-    fill: white;
-  }
-</style>
+    <style>
+        html,
+        body {
+            background-color: #191414;
+            font-family: "Open Sans";
+            color: #ffffff;
+        }
+        #charts{
+            display: flex;
+            justify-content: center;
+        }
+        #header{
+            text-align: center;
+            margin-top: 5rem;
+            margin-bottom: 5rem;
+        }
+        h2{
+            text-align: center;
+            margin-left: 2rem;
+        }
+        svg{
+            margin: auto;
+            display: block;
+        }
+        text{
+            fill: #ffffff;
+        }
+        path, line{
+            stroke: #ffffff;
+        }
+        .bar {
+            fill: #1DB954;
+        }
+
+        .bar:hover {
+            fill: #5cd486;
+        }
+        div.tooltip {
+            position: absolute;
+            text-align: center;
+            padding: .2rem;
+            background: rgb(87, 94, 99);
+            color: #f9f9f9;
+            border: 0px;
+            border-radius: 8px;
+            pointer-events: none;
+            font-size: .7rem;
+        }
+    </style>
 </head>
+
 <body>
-    <svg id="yearOverview"></svg> <br>
-    <svg id="dayOverview"></svg>
+    <div id = "header">
+        <h1>Evelyn's Spotify Top 10 Artists</h1>
+        <text > Here we have my top 10 artists based on my Spotify data from
+            March 26, 2020 to March 26, 2021. <br> Click the bars on the "Top Artists" chart
+            to see how often I listened to them in each month.
+        </text>
+    </div>
+    
+    <div id="charts">
+        <div id="topArtists">
+            <h2>Top Artists</h2>
+        </div>
+        <div id="howOften">
+            <h2 id="chartTitle">How Often I Listened to the Artist</h2>
+        </div>
+    </div>
 </body>
+
 </html>
+
+<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" /><link rel='stylesheet' href='//fonts.googleapis.com/css?family=Raleway' type='text/css' />
 
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="//alexmacy.github.io/crossfilter/crossfilter.v1.min.js"></script>
+<script src="https://dc-js.github.io/dc.js/js/dc.js"></script>
 
 <script>
-console.log(d3);
-// Load data in
-d3.csv('spotify.csv', function(er, data){
-    data.forEach(function(d){
-        d["endTime"] = d["endTime"],
-        d["artistName"] = d["artistName"],
-        d["trackName"] = d["trackName"],
-        d["minPlayed"] = +d["msPlayed"]/60000
+    console.log(d3);
 
-        //console.log(d)
+    // Load data in
+    d3.csv('spotify.csv', function (er, data) {
+
+        data.forEach(function (d) {
+            d["endTime"] = new Date(d["endTime"])
+            d["month"] = d.endTime.getUTCMonth() + 1 + "/" + d.endTime.getUTCFullYear()
+            d["artistName"] = d["artistName"]
+            d["trackName"] = d["trackName"]
+            d["minPlayed"] = +d["msPlayed"] / 60000
+        })
+
+        var spotify = crossfilter(data),
+            artist = spotify.dimension(d => d.artistName),
+            artists = artist.group(),
+            month = spotify.dimension(d => d.month);
+
+        var artistArray = new Map();
+        topArtists = artists.top(10);
+
+        console.log(topArtists)
+
+        var i = 0;
+        for (i; i < 10; i++) {
+
+            var filteredArtist = artist.filterFunction(function (d) { return d == topArtists[i].key })
+            tempCrossfilter = crossfilter(filteredArtist.top(Infinity)),
+                byMonth = tempCrossfilter.dimension(function (d) { return d.month; }),
+                months = byMonth.group().top(Infinity);
+
+            console.log(months)
+
+            var yearOverview = [],
+                j = 0;
+
+            for (j; j < 12; j++) {
+                if (months[j] != null) {
+                    var m = { "key": months[j].key, "value": months[j].value }
+                }
+                yearOverview.push(m);
+            }
+
+            artistArray.set(topArtists[i].key, yearOverview)
+        }
+
+        console.log(artistArray);
+
+        var div = d3.select("body").append('div')
+            .attr("class", "tooltip")
+            .style("opacity", 0)
+
+
+        // establishing variables
+        var margin = 50,
+            width = 500 - 2 * margin,
+            height = 500 - 2 * margin;
+
+        //----------- TOP ARTISTS CHART ------------//
+
+        // creating svg
+        var svg = d3.select("div#topArtists").append('svg')
+            .attr("width", width + 2 * margin)
+            .attr("height", height + 2 * margin)
+            .attr("transform", "translate(" + margin + ", " + margin + ")")
+
+        // scaling
+        var domain = new Array()
+        for (var i = 0; i < 10; i++) {
+            domain.push(topArtists[i].key)
+        }
+
+        var xscale = d3.scaleBand()
+            .domain(domain)
+            .range([0, width])
+            .padding(0.4);
+
+        var yscale = d3.scaleLinear()
+            .domain([0, 600])
+            .range([height, 0]);
+
+        // Add X axis
+        var x_axis = d3.axisBottom()
+            .scale(xscale)
+        svg.append("g")
+            .attr("transform", "translate(" + margin + "," + height + ")")
+            .call(x_axis)
+            .attr("class", "xAxis")
+            .selectAll("text")
+            .style("text-anchor", "end")
+            .attr("dx", "-.8em")
+            .attr("dy", ".15em")
+            .attr("transform", "rotate(-45)");
+
+        // Add Y axis
+        var y_axis = d3.axisLeft()
+            .scale(yscale)
+        svg.append("g")
+            .attr("transform", "translate(" + margin + ", 0 )")
+            .call(y_axis)
+            .attr("class", "yAxis")
+
+        // Add X axis label
+        svg.append("text")
+            .attr("text-anchor", "middle")
+            .attr("x", width / 2 + margin)
+            .attr("y", height + 80)
+            .text("Artist");
+
+        // Add Y axis label
+        svg.append("text")
+            .attr("text-anchor", "middle")
+            .attr("x", -(height / 2))
+            .attr("y", 0)
+            .attr("dy", ".75em")
+            .attr("transform", "rotate(-90)")
+            .text("Times Played");
+
+        // Add Bars
+        var bars = svg.selectAll(".bar")
+            .data(topArtists)
+            .enter().append("rect")
+            .attr("class", "bar")
+            .attr("id", function (d) { return d.key; })
+            .attr("x", function (d) { return xscale(d.key) + margin })
+            .attr("y", function (d) { return yscale(d.value) })
+            .attr("height", function (d) { return height - yscale(d.value) })
+            .attr("width", function (d) { return xscale.bandwidth() })
+            .on("click", artistYearChart)
+            .on('mouseover', function (d) {
+                div.transition()
+                    .duration('300')
+                    .style("opacity", 1);
+                div.html(
+                    "Artist: " + d.key +
+                    ", Times Played: " + d.value
+                )
+                    .style("left", d3.event.pageX)
+                    .style("top", d3.event.pageY);
+
+            })
+            .on('mouseout', function (d) {
+                div.transition()
+                    .duration('300')
+                    .style("opacity", 0);
+            });
+
+        //----------- HOW OFTEN CHART ------------//
+
+        // creating svg
+        var svg = d3.select("div#howOften").append('svg')
+            .attr("width", width + 2 * margin)
+            .attr("height", height + 2 * margin)
+            .attr("transform", "translate(" + margin + ", " + margin + ")")
+            .attr("id", "howOftenChart")
+
+
+        //scaling
+        var xscale2 = d3.scaleBand()
+            .domain(["3/2020", "4/2020", "5/2020", "6/2020",
+                "7/2020", "8/2020", "9/2020", "10/2020",
+                "11/2020", "12/2020", "1/2021", "2/2021", "3/2021"])
+            .range([0, width])
+            .padding(0.4);
+
+        var yscale2 = d3.scaleLinear()
+            .domain([0, function () { return d3.max(); }])
+            .range([height, 0]);
+
+        // Add X axis
+        var x_axis = d3.axisBottom()
+            .scale(xscale2)
+            .tickPadding([10])
+        svg.append("g")
+            .attr("transform", "translate(" + margin + "," + height + ")")
+            .call(x_axis)
+            .attr("class", "xAxis")
+            .selectAll("text")
+            .style("text-anchor", "end")
+            .attr("dx", "-.8em")
+            .attr("dy", ".15em")
+            .attr("transform", "rotate(-45)");
+
+        // Add Y axis
+        var y_axis = d3.axisLeft()
+            .scale(yscale2)
+        svg.append("g")
+            .attr("transform", "translate(" + margin + ", 0 )")
+            .call(y_axis)
+            .attr("class", "yAxis")
+
+        // Add X axis label
+        svg.append("text")
+            .attr("text-anchor", "middle")
+            .attr("x", width / 2 + margin)
+            .attr("y", height + 80)
+            .text("Month");
+
+        // Add Y axis label
+        svg.append("text")
+            .attr("text-anchor", "middle")
+            .attr("x", -(height / 2))
+            .attr("y", 0)
+            .attr("dy", ".75em")
+            .attr("transform", "rotate(-90)")
+            .text("Times Played");
+
+
+        // Updates chart based on artist selected
+        function artistYearChart() {
+
+            d3.select("#howOftenChart")
+                .selectAll(".bar")
+                .remove()
+            
+            document.getElementById("chartTitle")
+                .innerHTML = "How Often I Listened to " + this.id;
+
+            var current = artistArray.get(this.id)
+            
+            // Update y axis
+            yscale2.domain([ 0, d3.extent(current, function(d){ return d.value})[1] ])
+
+            svg.select(".yAxis")
+                .transition()
+                .duration(500)
+                .call(y_axis)
+
+            // Add Bars
+            var bars = svg.selectAll(".bar")
+                .data(current)
+                .enter().append("rect")
+                .attr("class", "bar")
+                .attr("x", function (d) { return xscale2(d.key) + margin })
+                .attr("y", function (d) { return yscale2(0) })
+                .attr("height", function (d) { return height - yscale2(0) })
+                .attr("width", function (d) { return 25 })
+                .on('mouseover', function (d) {
+                    div.transition()
+                        .duration('300')
+                        .style("opacity", 1);
+                    div.html(
+                        "Month: " + d.key +
+                        ", Times Played: " + d.value
+                    )
+                        .style("left", d3.event.pageX)
+                        .style("top", d3.event.pageY);
+
+                })
+                .on('mouseout', function (d) {
+                    div.transition()
+                        .duration('300')
+                        .style("opacity", 0);
+                });
+
+            svg.selectAll(".bar")
+                .transition()
+                .duration(800)
+                .attr("y", function (d) { return yscale2(d.value) })
+                .attr("height", function (d) { return height - yscale2(d.value) })
+        }
+
+
     })
 
-    /*var spotify = crossfilter(data),
-      all = spotify.groupAll(),
-      date = spotify.dimension(function(d){ return d.date });
-      dates = date.group(d3.timeDay),
-      hour = spotify.dimension(function(d){ return d.endTime }),
-      hours = hour.group(d3.timeHour);*/
-    
-  /*  var charts = [
-      barChart()
-        .dimension(date)
-        .group(dates)
-        .x(d3.)
 
-    ]
-    */
 
-    var spotifyData = buildData(data);
-    yearChart(spotifyData);
-    var averages = dailyAvg(spotifyData);
-    dayChart(averages);
-
-  });
-// hash key function (difference between 3/26/20 to the date)
-function hashKey(date){
-    var index, difference,
-    startingDate = new Date("2020-03-26"),
-    newDate  = new Date(date);
-
-    difference = newDate.getTime() - startingDate.getTime();
-    index = difference / (1000 * 3600 * 24);
-    
-    //console.log(index);
-    return index;
-}
-
-// build data struct
-function buildData(d){
-    console.log(d);
-    //initializing data struct
-    var data = new Array(366)
-    
-    for (var i = 0; i < data.length; i++){
-      var byHour = new Array(24).fill(0);
-        data[i] = {
-            "date" : "",
-            "total": 0,
-            "time": byHour
-        }
-    }
-    //console.log(data);
-    var row;
-    for (row = 0; row < d.length; row++){ //d.length
-        var index, day;
-
-        day = d[row].endTime.substring(0,10);                   //getting date
-        index = hashKey(day);                                   //getting index for data struct       
-        var hour = parseInt(d[row].endTime.substring(11,13));   //getting hour
-        
-        if (data[index].date == ""){                            //if date not added yet, add date
-            data[index].date = day;
-        }
-        data[index].total += d[row].minPlayed;                  //adding to total time for specific date
-        data[index].time[hour] += d[row].minPlayed;             //adding time to corresponding hour
-    };
-    
-    console.log(data);
-    return data;
-}
-
-// getting averages
-function dailyAvg(d){
-  var averages = new Array(24);
-  for (var i = 0; i < averages.length; i++){
-    averages[i] = {"hour": i, "time": 0}
-  }
-  
-  for (var i = 0; i < d.length; i++){     //for every row in year data set
-    var byHour = d[i].time; 
-    for (var j = 0; j < averages.length; j++){
-     averages[j].time += byHour[j];       //add the time by hour to new struct
-    }
-  }
-
-  for (var i = 0; i < averages.length; i++){
-    averages[i].time = (averages[i].time/d.length)
-  }
-  console.log(averages)
-  return averages;
-}
 
 </script>
-
-<script>
-  // establishing variables
-  var margin = 50,
-    width = window.innerWidth - (2 * margin),
-    height = 500 - 2 * margin;
-  
-  function yearChart(d){
-    // creating svg
-    var svg = d3.select("#yearOverview")
-      .attr("width", width + 2 * margin)
-      .attr("height", height + 2 * margin)
-      .attr("transform", "translate(" + margin + ", " + margin + ")")
-
-    // scaling
-    var xscale = d3.scaleBand()
-      .domain(d.map(function(d){ return (d.date) }))
-      .range( [0, width])
-      .padding(0.4);
-
-    var yscale = d3.scaleLinear()
-      .domain( d3.extent(d, function(d){ return d.total; }))
-      .range( [height, 0] );
-
-    var brush = d3.brush()
-      .extent([ [0,0], [1600,1600] ])
-      .on('brush end', brushed)
-    
-      d3.select('#yearOverview')
-        .append('g')
-        .call(brush);
-
-    // Add Y axis label
-    svg.append("text")
-      .attr("text-anchor", "middle")
-      .attr("x", -(height/2))
-      .attr("y", 0)
-      .attr("dy", ".75em")
-      .attr("transform", "rotate(-90)")
-      .text("Amount of Time on Spotify");
-
-    // Add Bars
-    var bars = svg.selectAll(".bar")
-      .data(d)
-      .enter().append("rect")
-      .attr("class", "yearBar")
-      .attr("x", function(d){ return xscale(d.date) + margin })
-      .attr("y", function(d){ return yscale(d.total)/2 })
-      .attr("height", function(d){ return height - yscale(d.total) })
-      .attr("width", function(d){ return xscale.bandwidth() })
-     /* .on("select", function(d){ return
-        console.log(d.date);
-      })*/
-      
-  }
-
-  function dayChart(d){
-    // creating svg
-    var svg = d3.select("#dayOverview")
-    .attr("width", width + 2 * margin)
-    .attr("height", height + 2 * margin)
-    .attr("transform", "translate(" + margin + ", " + margin + ")")
-
-    // scaling
-    //var maxTime = d3.max(d, function(d){ return d.time; })
-    var xscale = d3.scaleLinear()
-      .domain([0, 60])
-      .range([0, width])
-
-    var yscale = d3.scaleBand()
-      .domain(d.map(function(d){ return d.hour }))
-      .range([0, height]);
-
-    // Add Y axis label
-    svg.append("text")
-      .attr("text-anchor", "middle")
-      .attr("x", -(height/2))
-      .attr("y", 0)
-      .attr("dy", ".75em")
-      .attr("transform", "rotate(-90)")
-      .text("Time");
-
-    // Add Bars
-    var bars = svg.selectAll(".bar")
-      .data(d)
-      .enter().append("rect")
-      .attr("class", "dayBar")
-      .attr("x", function(d){ return xscale(2.75); })
-      .attr("y", function(d){ return yscale(d.hour); })
-      .attr("height", function(d){ return 10; })
-      .attr("width", function(d){ return xscale(d.time); })
-}
-
-  function brushed(e){
-    var sel = e.selection;
-    
-    d3.selectAll('.yearBar')
-      .style("fill", function(d){
-        console.log(d.date);
-
-        x = d3.scaleBand()
-        .domain(d.map(function(d){ return (d.date) }))
-        .range( [0, window.innerWidth])
-        .padding(0.4);  
-
-        // if in box
-        if (d.date >= sel[0][0] && (xscale(d.date) + 50) <= sel[1][0]){
-          console.log("red");
-          return "red";
-        }else{
-        //if out box
-        console.log(d);
-        return "white";
-        }
-    })
-  }
-
-</script>
-
