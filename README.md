@@ -1,59 +1,33 @@
-Assignment 4 - Visualizations and Multiple Views  
-===
+Assignment 4
+==
+[Link to Visualization](https://evelyntrvn.github.io/04-multiple-views/)
+## Description
+For this assignment, I used my personal Spotify data from March 26, 2020 to March 26, 2021. It took me a bit to figure out what I was going to do with the data, but I decided to focus on my top 10 artists to utilize the top() function in the crossfilter library. 
 
-One of the most powerful techniques for mitigating the shortcomings of a given visualization is to link it with other views.
-Linking a map to a bar or scatterplot, for instance, may allow you to overcome the shortcomings of a map.
-In general, linking visualizations allows you to explore different parts of the data between views, and mitigates the shortcomings of a given view by pairing it with other views.
-This technique, called coordinated multiple views, is the focus of this assignment.
+To visualize this data, I have 2 bar graphs. The first displays my top 10 artists and how often I played their songs during the year. When clicking on the bar, the bar graph on the right will update and display how often I played that specific artist in a given month. 
 
-Your task is to choose an interesting dataset and visualize it in *at least two* **linked** views, where interactions in any given view updates the others.
-Each view should use a different visualization type, and interaction in one of the views should impact what's shown in the other views.
+## Screenshots
+- Default Page
+![Default Page](images/initial.png)
+- Selected Artist
+![Selected Artist](images/selectedArtist.png)
 
-You should choose data and visualizations that are sufficiently complex and interesting to ensure a user can discover interesting patterns and trends on their own.
+## Technical Achievements
+- **Crossfilter Dimensions and Filtering** : This was probably the hardest for me to understand and figure out. Once I got the concept, I based my visualizations on what I could do with the crossfilter. It allowed me to filter through all my data, such as filtering for specific artists.
+- **Tooltip** : When hovering over a given bar, a tooltip appears and shows the exact value of the data.
+![Tooltip](images/tooltip.gif)
+- **Dynamic Y-axis** : When changing between artists, the y-axis on the bar graph on the right side will adjust itself to better fit the data of the selected artist.
+![Dynamic Y-axis](images/dynamicYAxis.gif)
 
-For this assignment you should write everything from scratch.
-You may *reference and adapt* code from books or the web, and if you do please provide a References section with links at the end of your Readme.
+## Design Achievements
+- **Animation** : I played around a lot with the animation from the color changing, to the bar graph growing, to the y-axis changing to create a more seamless visual.
+- **Color Scheme** : I tried to match the colors of Spotify to stick with the theme. In addition to that, when hovering over a bar, the bar will highlight and will turn white when clicked on. 
+![Color Scheme](images/color.gif)
+- **Updating Title** : The title on the bar graph on the right will update to whichever artist was selected.
 
-Resources
----
 
-Data is Plural has a list of interesting datasets, many of which require processing.
-
-These three examples are intended to show you what multiple views visualizations might look like. 
-I wouldn't recommend using them as a your starting point, but you may find some inspiration:
-
-1. This [scatterplot matrix](http://bl.ocks.org/mbostock/4063663) has code that explains brushing and linking. But remember you'll be doing this with different types of views.
-
-2. The example visualization for [Crossfilter](http://square.github.io/crossfilter/) uses coordinated multiple views. The interaction and brushing technique is well-executed.
-
-3. The [dispatching events](https://github.com/d3/d3-dispatch) page is a good example of using events, rather than explicit functions, for controlling behavior. Views can listen for events in other views and respond accordingly.
-
-*If you aren't familiar with event-based programming you should experiment with d3.dispatch and other approaches to coordinating views well before the deadline (it's tricky.)*
-
-Don't forget to run a local webserver when you're coding and debugging.
-
-Requirements
----
-
-0. Your code should be forked from the GitHub repo and linked using GitHub pages.
-1. Your project should load a dataset you found on the web. Put this file in your repo.
-2. Your project should use d3 to build a visualization of the dataset. 
-3. Your writeup (readme.md in the repo) should contain the following:
-
-- Working link to the visualization hosted on gh-pages.
-- Concise description and screenshot of your visualization.
-- Description of the technical achievements you attempted with this visualization.
-- Description of the design achievements you attempted with this visualization.
-
-GitHub Details
----
-
-- Fork the GitHub Repository. You now have a copy associated with your username.
-- Make changes to index.html to fulfill the project requirements. 
-- Make sure your "master" branch matches your "gh-pages" branch, if using gh-pages for hosting. See the GitHub Guides referenced above if you need help.
-- Edit the README.md with a link to your site, for example http://YourUsernameGoesHere.github.io/04-MapsAndViews/index.html
-- To submit, make a [Pull Request](https://help.github.com/articles/using-pull-requests/) on the original repository. Name it: 
-```
-a4-username-firstName-lastName
-```
-
+## References
+- https://danayao.com/design/my-spotify
+- http://square.github.io/crossfilter/
+- https://eng.wealthfront.com/2012/09/05/explore-your-multivariate-data-with-crossfilter/
+- https://www.animateddata.com/articles/crossfilter/
