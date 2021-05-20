@@ -8,29 +8,37 @@
             font-family: "Open Sans";
             color: #ffffff;
         }
-        #charts{
+
+        #charts {
             display: flex;
             justify-content: center;
         }
-        #header{
+
+        #header {
             text-align: center;
             margin-top: 5rem;
             margin-bottom: 5rem;
         }
-        h2{
+
+        h2 {
             text-align: center;
             margin-left: 2rem;
         }
-        svg{
+
+        svg {
             margin: auto;
             display: block;
         }
-        text{
+
+        text {
             fill: #ffffff;
         }
-        path, line{
+
+        path,
+        line {
             stroke: #ffffff;
         }
+
         .bar {
             fill: #1DB954;
         }
@@ -38,6 +46,7 @@
         .bar:hover {
             fill: #5cd486;
         }
+
         div.tooltip {
             position: absolute;
             text-align: center;
@@ -53,14 +62,14 @@
 </head>
 
 <body>
-    <div id = "header">
+    <div id="header">
         <h1>Evelyn's Spotify Top 10 Artists</h1>
-        <text > Here we have my top 10 artists based on my Spotify data from
+        <text> Here we have my top 10 artists based on my Spotify data from
             March 26, 2020 to March 26, 2021. <br> Click the bars on the "Top Artists" chart
             to see how often I listened to them in each month.
         </text>
     </div>
-    
+
     <div id="charts">
         <div id="topArtists">
             <h2>Top Artists</h2>
@@ -73,7 +82,8 @@
 
 </html>
 
-<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" /><link rel='stylesheet' href='//fonts.googleapis.com/css?family=Raleway' type='text/css' />
+<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
+<link rel='stylesheet' href='//fonts.googleapis.com/css?family=Raleway' type='text/css' />
 
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="//alexmacy.github.io/crossfilter/crossfilter.v1.min.js"></script>
@@ -290,18 +300,27 @@
 
         // Updates chart based on artist selected
         function artistYearChart() {
+            d3.selectAll(".bar")
+                .transition()
+                .duration(300)
+                .style("fill", "")
+
+            d3.select(this)
+                .transition()
+                .duration(300)
+                .style("fill", "#ffffff")
 
             d3.select("#howOftenChart")
                 .selectAll(".bar")
                 .remove()
-            
+
             document.getElementById("chartTitle")
                 .innerHTML = "How Often I Listened to " + this.id;
 
             var current = artistArray.get(this.id)
-            
+
             // Update y axis
-            yscale2.domain([ 0, d3.extent(current, function(d){ return d.value})[1] ])
+            yscale2.domain([0, d3.extent(current, function (d) { return d.value })[1]])
 
             svg.select(".yAxis")
                 .transition()
