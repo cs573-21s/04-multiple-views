@@ -23,6 +23,7 @@ To visualize this data, I have 2 bar graphs. The first displays my top 10 artist
 - **Animation** : I played around a lot with the animation from the color changing, to the bar graph growing, to the y-axis changing to create a more seamless visual.
 - **Color Scheme** : I tried to match the colors of Spotify to stick with the theme. In addition to that, when hovering over a bar, the bar will highlight and will turn white when clicked on. 
 ![Color Scheme](images/color.gif)
+- **Updating Title** : The title on the bar graph on the right will update to whichever artist was selected.
 
 
 ## References
