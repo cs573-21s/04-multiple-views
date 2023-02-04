@@ -28,7 +28,7 @@ function generateSplom(legend, generation) {
     let columns = [];
 
     // Read the csv
-    d3.csv("http://acnolan.tech/04-multiple-views/pokedex.csv").then(function (data) {
+    d3.csv("http://andrewnolan.dev/Pokemon-Visualization/pokedex.csv").then(function (data) {
         pokemonData = data;
 
         columns = data.columns.filter(d => filterStats(d));
@@ -259,7 +259,7 @@ generateParallelAxis(0, "9");
 // Generate the parallel axis
 function generateParallelAxis(legend, generation) {
     // Read the csv
-    d3.csv("http://acnolan.tech/04-multiple-views/pokedex.csv").then(function (data) {
+    d3.csv("http://andrewnolan.dev/Pokemon-Visualization/pokedex.csv").then(function (data) {
 
         // Set up the SVG properties
         let margin = ({ top: 25, right: 30, bottom: 20, left: 20 });

@@ -6,7 +6,7 @@ By: Andrew Nolan
 
 Link
 ---
-http://acnolan.tech/04-multiple-views/
+http://andrewnolan.dev/Pokemon-Visualization/
 
 Project Overview
 ---

@@ -7,7 +7,7 @@
 
 
 // Read the pokedex csv
-d3.csv("http://acnolan.tech/04-multiple-views/pokedex.csv").then(function (data) {
+d3.csv("http://andrewnolan.dev/Pokemon-Visualization/pokedex.csv").then(function (data) {
     buildBigTable(data);
 });
 
