@@ -38,7 +38,7 @@ function typeComparison() {
     pokedexData = [];
 
     // Read the pokedex csv
-    d3.csv("http://andrewnolan.dev/Pokemon-Visualization/pokedex.csv").then(function (data) {
+    d3.csv("https://andrewnolan.dev/Pokemon-Visualization/pokedex.csv").then(function (data) {
         pokedexData = data;
         buildBoxPlot(data, "hp", 0, "9");
         readPokemonTypes();
@@ -207,7 +207,7 @@ function typeComparison() {
 
     // Read the csv for the type advantage data
     function readPokemonTypes() {
-        d3.csv("http://andrewnolan.dev/Pokemon-Visualization/typeadvantage.csv").then(function (data) {
+        d3.csv("https://andrewnolan.dev/Pokemon-Visualization/typeadvantage.csv").then(function (data) {
             buildHeatMap(data);
         });
     }
